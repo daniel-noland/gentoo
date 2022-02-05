@@ -3,7 +3,12 @@
 
 # we use glibc here, so we still need these in stage1
 # later stages should pull them in as BDEPEND anyway
-sys-devel/gcc
-sys-devel/gcc-config
-sys-devel/binutils
-sys-devel/binutils-config
+# sys-devel/gcc
+# sys-devel/gcc-config
+# sys-devel/binutils
+# sys-devel/binutils-config
+sys-devel/clang
+sys-devel/lld
+sys-devel/llvm
+sys-libs/compiler-rt
+sys-libs/llvm-libunwind
