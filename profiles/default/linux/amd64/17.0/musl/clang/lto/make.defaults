@@ -1,0 +1,7 @@
+_COMMON_COMPILE_FLAGS="-O3 -march=native -pipe -flto=thin"
+CFLAGS="${CFLAGS} ${_COMMON_COMPILE_FLAGS}"
+CXXFLAGS="${CXXFLAGS} ${_COMMON_COMPILE_FLAGS}"
+FCFLAGS="${FCFLAGS} ${_COMMON_COMPILE_FLAGS}"
+FFLAGS="${FFLAGS} ${_COMMON_COMPILE_FLAGS}"
+
+LDFLAGS="${LDFLAGS} -Wl,-O2 -Wl,--as-needed -Wl,-z,relro,-z,now -pie -fuse-ld=lld -unwindlib=libunwind -Wl,--thinlto-jobs=8"
