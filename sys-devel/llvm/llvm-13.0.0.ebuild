@@ -329,6 +329,9 @@ multilib_src_configure() {
 		-DLLVM_APPEND_VC_REV=OFF
 		-DCMAKE_INSTALL_PREFIX="${EPREFIX}/usr/lib/llvm/${SLOT}"
 		-DLLVM_LIBDIR_SUFFIX=${libdir#lib}
+		# Build the library static for musl
+		-DLLVM_BUILD_STATIC=ON
+		-DLLVM_STATIC_LINK_CXX_STDLIB=ON
 
 		-DBUILD_SHARED_LIBS=OFF
 		-DLLVM_BUILD_LLVM_DYLIB=ON
