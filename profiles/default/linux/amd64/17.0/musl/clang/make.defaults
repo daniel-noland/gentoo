@@ -25,7 +25,7 @@ READELF="llvm-readelf"
 STRINGS="llvm-strings"
 STRIP="llvm-strip"
 
-_COMMON_FLAGS="-O2 -march=native -pipe"
+_COMMON_FLAGS="-O2 -march=native -pipe -stdlib=libc++"
 CFLAGS="${CFLAGS} ${_COMMON_FLAGS}"
 CXXFLAGS="${CXXFLAGS} ${_COMMON_FLAGS}"
 FCFLAGS="${FCFLAGS} ${_COMMON_FLAGS}"
