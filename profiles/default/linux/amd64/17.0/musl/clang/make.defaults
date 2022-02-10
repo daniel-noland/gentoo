@@ -1,0 +1,171 @@
+# Disable sandbox for docker build (it is already sandboxed anyway and the second sandbox attempt fails)
+FEATURES="${FEATURES} -ipc-sandbox"
+FEATURES="${FEATURES} -network-sandbox"
+FEATURES="${FEATURES} -pid-sandbox"
+FEATURES="${FEATURES} -sandbox"
+FEATURES="${FEATURES} -usersandbox"
+
+# We don't need to spend time building and running tests.  They frequently fail in unprivileged container builds anyway.
+FEATURES="${FEATURES} -test"
+
+BINPKG_COMPRESS="zstd"
+
+# use LLVM-provided binutils
+ADDR2LINE="llvm-addr2line"
+AR="llvm-ar"
+AS="llvm-as"
+CC="clang"
+CXX="clang++"
+LD="ld.lld"
+NM="llvm-nm"
+OBJCOPY="llvm-objcopy"
+OBJDUMP="llvm-objdump"
+RANLIB="llvm-ranlib"
+READELF="llvm-readelf"
+STRINGS="llvm-strings"
+STRIP="llvm-strip"
+
+_COMMON_FLAGS="-O2 -march=native -pipe"
+CFLAGS="${CFLAGS} ${_COMMON_FLAGS}"
+CXXFLAGS="${CXXFLAGS} ${_COMMON_FLAGS}"
+FCFLAGS="${FCFLAGS} ${_COMMON_FLAGS}"
+FFLAGS="${FFLAGS} ${_COMMON_FLAGS}"
+
+LDFLAGS="-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
+
+# Nobody logs in to this phase so building brail support, X, command completion, and so on seems like a waste
+USE="${USE} -X"
+USE="${USE} -accessibility"
+USE="${USE} -bash-completion"
+USE="${USE} -bluetooth"
+USE="${USE} -branding"
+USE="${USE} -debug"
+USE="${USE} -doc"
+USE="${USE} -examples"
+USE="${USE} -man"
+USE="${USE} -ncurses"
+USE="${USE} -sqlite"
+USE="${USE} -systemd"
+USE="${USE} -test"
+
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -X"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -accessibility"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -bash-completion"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -bluetooth"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -branding"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -debug"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -doc"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -examples"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -man"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -ncurses"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -sqlite"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -systemd"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -test"
+
+# The bootstrap phase has nothing to do with portability and I only care about this proc,
+# so we can skip targets/ABIs which don't apply.
+ABI_X86="64"
+USE="${USE} -abi_x86_32"
+USE="${USE} -abi_x86_x32"
+USE="${USE} abi_x86_64"
+
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -abi_x86_32"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -abi_x86_x32"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} abi_x86_64"
+
+USE="${USE} -fortran" # fortran support does not apply here.  Should maybe mask this use flag.
+USE="${USE} -gold" # gold is basically a dead project as I understand things.  We want to use lld anyway.
+USE="${USE} -openmp" # this project seems cool but has nothing at all to do with bootstrapping my goal system.
+USE="${USE} -z3"
+
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -fortran" # fortran support does not apply here.  Should maybe mask this use flag.
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -gold" # gold is basically a dead project as I understand things.  We want to use lld anyway.
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -openmp" # this project seems cool but has nothing at all to do with bootstrapping my goal system.
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -z3"
+
+LLVM_TARGETS="X86"
+
+USE="${USE} -llvm_targets_AArch64"
+USE="${USE} -llvm_targets_AMDGPU"
+USE="${USE} -llvm_targets_ARM"
+USE="${USE} -llvm_targets_AVR"
+USE="${USE} -llvm_targets_BPF"
+USE="${USE} -llvm_targets_Hexagon"
+USE="${USE} -llvm_targets_Lanai"
+USE="${USE} -llvm_targets_MSP430"
+USE="${USE} -llvm_targets_Mips"
+USE="${USE} -llvm_targets_NVPTX"
+USE="${USE} -llvm_targets_PowerPC"
+USE="${USE} -llvm_targets_RISCV"
+USE="${USE} -llvm_targets_Sparc"
+USE="${USE} -llvm_targets_SystemZ"
+USE="${USE} -llvm_targets_VE"
+USE="${USE} -llvm_targets_WebAssembly"
+USE="${USE} -llvm_targets_XCore"
+
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_AArch64"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_AMDGPU"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_ARM"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_AVR"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_BPF"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_Hexagon"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_Lanai"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_MSP430"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_Mips"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_NVPTX"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_PowerPC"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_RISCV"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_Sparc"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_SystemZ"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_VE"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_WebAssembly"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} -llvm_targets_XCore"
+
+# Turn off iso to prevent catalyst from pulling in a bunch of stuff we don't need or want here.
+USE="${USE} -iso"
+
+# Turn on our desired LLVM toolchain features
+USE="${USE} binutils-plugin"
+USE="${USE} compiler-rt"
+USE="${USE} curl_ssl_openssl"
+USE="${USE} default-compiler-rt"
+USE="${USE} default-lld"
+USE="${USE} exec-static-trampoline"
+USE="${USE} exegesis"
+USE="${USE} libcxx"
+USE="${USE} libffi"
+USE="${USE} libunwind"
+USE="${USE} llvm-libunwind"
+USE="${USE} runtime"
+USE="${USE} sanitize"
+USE="${USE} ssl"
+USE="${USE} static-analyzer"
+USE="${USE} static-libs"
+USE="${USE} static-pic"
+USE="${USE} xar"
+
+# Turn on our desired LLVM toolchain features
+USE_BOOTSTRAP="${USE_BOOTSTRAP} binutils-plugin"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} compiler-rt"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} curl_ssl_openssl"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} default-compiler-rt"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} default-lld"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} exec-static-trampoline"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} exegesis"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} libcxx"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} libffi"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} libunwind"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} llvm-libunwind"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} runtime"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} sanitize"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} ssl"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} static-analyzer"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} static-libs"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} static-pic"
+USE_BOOTSTRAP="${USE_BOOTSTRAP} xar"
+
+PORTDIR="/var/db/repos/gentoo"
+DISTDIR="/var/cache/distfiles"
+PKGDIR="/var/cache/binpkgs"
+
+LC_MESSAGES=C
