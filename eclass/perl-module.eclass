@@ -414,7 +414,6 @@ perl-module_src_compile() {
 			|| die "Compilation failed"
 	elif [[ -f Makefile ]] ; then
 		set -- \
-			OTHERLDFLAGS="${LDFLAGS}" \
 			"${mymake_local[@]}"
 		einfo "emake" "$@"
 		emake "$@" \
