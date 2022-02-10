@@ -11,7 +11,7 @@ CXX="clang++"
 LD="ld.lld"
 
 # linker flags
-LDFLAGS="${LDFLAGS} -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed"
+LDFLAGS="${LDFLAGS} -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
 
 ## hardening flags
 #SOME_HARDENING_CFLAGS="-fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2"
