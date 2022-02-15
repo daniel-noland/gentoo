@@ -1,12 +1,1 @@
-# the clang feature thinks these "aren't needed" but I can't seem to bootstrap stage 2 without them
-*sys-devel/gcc
-*sys-devel/gcc-config
-*sys-devel/binutils
-*sys-devel/binutils-config
-
-sys-devel/gcc
-sys-devel/gcc-config
-sys-devel/binutils
-sys-devel/binutils-config
-
 *app-arch/xar
