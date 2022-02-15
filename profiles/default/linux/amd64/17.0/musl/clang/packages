@@ -3,9 +3,10 @@
 *sys-devel/gcc-config
 *sys-devel/binutils
 *sys-devel/binutils-config
-*sys-devel/xar
 
 sys-devel/gcc
 sys-devel/gcc-config
 sys-devel/binutils
 sys-devel/binutils-config
+
+*app-arch/xar
