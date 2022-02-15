@@ -34,21 +34,21 @@ src_prepare() {
 	eapply "${FILESDIR}"/${PN}-6.0-format-security.patch
 	eapply "${FILESDIR}"/${PN}-6.0-fix-false-overlap-detection-on-32bit-systems.patch
 	use natspec && eapply "${FILESDIR}/${PN}-6.0-natspec.patch" #275244
-# 	sed -i -r \
-# 		-e '/^CFLAGS/d' \
-# 		-e '/CFLAGS/s:-O[0-9]?:$(CFLAGS) $(CPPFLAGS):' \
-# 		-e '/^STRIP/s:=.*:=true:' \
-# 		-e "s:\<CC *= *\"?g?cc2?\"?\>:CC=\"$(tc-getCC)\":" \
-# 		-e "s:\<LD *= *\"?(g?cc2?|ld)\"?\>:LD=\"$(tc-getCC)\":" \
-# 		-e "s:\<AS *= *\"?(g?cc2?|as)\"?\>:AS=\"$(tc-getCC)\":" \
-# 		-e 's:LF2 = -s:LF2 = :' \
-# 		-e 's:LF = :LF = $(LDFLAGS) :' \
-# 		-e 's:SL = :SL = $(LDFLAGS) :' \
-# 		-e 's:FL = :FL = $(LDFLAGS) :' \
-# 		-e "/^#L_BZ2/s:^$(use bzip2 && echo .)::" \
-# 		-e 's:$(AS) :$(AS) $(ASFLAGS) :g' \
-# 		unix/Makefile \
-# 		|| die "sed unix/Makefile failed"
+	sed -i -r \
+		-e '/^CFLAGS/d' \
+		-e '/CFLAGS/s:-O[0-9]?:$(CFLAGS) $(CPPFLAGS) -stdlib=libc++:' \
+		-e '/^STRIP/s:=.*:=true:' \
+		-e "s:\<CC *= *\"?g?cc2?\"?\>:CC=\"$(tc-getCC)\":" \
+		-e "s:\<LD *= *\"?(g?cc2?|ld)\"?\>:LD=\"$(tc-getCC)\":" \
+		-e "s:\<AS *= *\"?(g?cc2?|as)\"?\>:AS=\"$(tc-getCC)\":" \
+		-e 's:LF2 = -s:LF2 = :' \
+		-e 's:LF = :LF = $(LDFLAGS) :' \
+		-e 's:SL = :SL = $(LDFLAGS) :' \
+		-e 's:FL = :FL = $(LDFLAGS) :' \
+		-e "/^#L_BZ2/s:^$(use bzip2 && echo .)::" \
+		-e 's:$(AS) :$(AS) $(ASFLAGS) :g' \
+		unix/Makefile \
+		|| die "sed unix/Makefile failed"
 
 	# Delete bundled code to make sure we don't use it.
 	rm -r bzip2 || die
