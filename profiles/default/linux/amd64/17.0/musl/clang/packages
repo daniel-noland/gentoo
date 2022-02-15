@@ -3,3 +3,8 @@
 *sys-devel/gcc-config
 *sys-devel/binutils
 *sys-devel/binutils-config
+
+sys-devel/gcc
+sys-devel/gcc-config
+sys-devel/binutils
+sys-devel/binutils-config
