@@ -1,1 +1,15 @@
+# LLVM toolchain is for sure part of @system here.  Mark it as such.
+*sys-libs/compiler-rt
+*sys-libs/libcxxabi
+*sys-libs/libcxx
+*sys-devel/llvm
+*sys-devel/lld
+*sys-devel/clang
+*sys-libs/llvm-libunwind
 *app-arch/xar
+
+# In theory we don't need these but in practice some packages still require gcc.
+*sys-devel/gcc
+*sys-devel/gcc-config
+*sys-devel/binutils
+*sys-devel/binutils-config

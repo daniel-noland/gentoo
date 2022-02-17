@@ -8,6 +8,7 @@ sys-devel/clang
 sys-libs/llvm-libunwind
 app-arch/xar
 
+# You need these in stage 1 for sure
 sys-devel/gcc
 sys-devel/gcc-config
 sys-devel/binutils
