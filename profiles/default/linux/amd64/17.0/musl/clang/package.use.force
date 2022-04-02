@@ -1,0 +1,40 @@
+# This is not a multilib environment and I don't need / want x86_32 abi
+dev-libs/libffi -abi_x86_x32 -abi_x86_32 abi_x86_64
+dev-libs/libxml2 -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-devel/clang -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-devel/clang-runtime -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-devel/llvm -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/compiler-rt -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/libcxx -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/libcxxabi -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/libunwind -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/llvm-libunwind -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/ncurses -abi_x86_x32 -abi_x86_32 abi_x86_64
+sys-libs/zlib -abi_x86_x32 -abi_x86_32 abi_x86_64
+
+# TODO: figure out if this warning still applies
+# Disable pointless LLVM targets.  Unfortunately, disabling
+# targets tend to break reverse dependencies (e.g. Rust) and we are yet
+# to find a clean way of resolving that.  Compared to the damage
+# potential, the increase of build time is a minor problem.  Users who
+# really insist of building a smaller system can un-force the flags
+# at their own responsibility.
+
+>=sys-devel/clang-13.0.1_rc -llvm_targets_AArch64
+>=sys-devel/clang-13.0.1_rc -llvm_targets_AMDGPU
+>=sys-devel/clang-13.0.1_rc -llvm_targets_ARM
+>=sys-devel/clang-13.0.1_rc -llvm_targets_AVR
+>=sys-devel/clang-13.0.1_rc -llvm_targets_BPF
+>=sys-devel/clang-13.0.1_rc -llvm_targets_Hexagon
+>=sys-devel/clang-13.0.1_rc -llvm_targets_Lanai
+>=sys-devel/clang-13.0.1_rc -llvm_targets_MSP430
+>=sys-devel/clang-13.0.1_rc -llvm_targets_Mips
+>=sys-devel/clang-13.0.1_rc -llvm_targets_NVPTX
+>=sys-devel/clang-13.0.1_rc -llvm_targets_PowerPC
+>=sys-devel/clang-13.0.1_rc -llvm_targets_RISCV
+>=sys-devel/clang-13.0.1_rc -llvm_targets_Sparc
+>=sys-devel/clang-13.0.1_rc -llvm_targets_SystemZ
+>=sys-devel/clang-13.0.1_rc -llvm_targets_WebAssembly
+>=sys-devel/clang-13.0.1_rc -llvm_targets_XCore
+>=sys-devel/clang-13.0.1_rc llvm_targets_X86
+>=sys-devel/clang-14 -llvm_targets_VE

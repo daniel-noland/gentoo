@@ -1,15 +1,25 @@
 # LLVM toolchain is for sure part of @system here.  Mark it as such.
-*sys-libs/compiler-rt
-*sys-libs/libcxxabi
-*sys-libs/libcxx
-*sys-devel/llvm
-*sys-devel/lld
-*sys-devel/clang
-*sys-libs/llvm-libunwind
 *app-arch/xar
+*sys-devel/clang
+*sys-devel/lld
+*sys-devel/llvm
+*sys-libs/compiler-rt
+*sys-libs/libcxx
+*sys-libs/libcxxabi
+*sys-libs/llvm-libunwind
 
 # In theory we don't need these but in practice some packages still require gcc.
-*sys-devel/gcc
-*sys-devel/gcc-config
-*sys-devel/binutils
-*sys-devel/binutils-config
+-*sys-devel/binutils
+-*sys-devel/binutils-config
+-*sys-devel/gcc
+-*sys-devel/gcc-config
+
+# Random stuff i'm zapping for container env
+-*sys-apps/kbd
+-*sys-apps/kmod
+-*sys-process/procps
+-*sys-fs/e2fsprogs
+-*virtual/dev-manager
+-*virtual/man
+-*virtual/os-headers
+-*virtual/ssh

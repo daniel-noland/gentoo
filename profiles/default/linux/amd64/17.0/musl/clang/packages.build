@@ -1,15 +1,15 @@
 # will be pulled by stage1
-sys-libs/compiler-rt
-sys-libs/libcxxabi
-sys-libs/libcxx
-sys-devel/llvm
-sys-devel/lld
-sys-devel/clang
-sys-libs/llvm-libunwind
 app-arch/xar
+sys-devel/clang
+sys-devel/lld
+sys-devel/llvm
+sys-libs/compiler-rt
+sys-libs/libcxx
+sys-libs/libcxxabi
+sys-libs/llvm-libunwind
 
-# You need these in stage 1 for sure
-sys-devel/gcc
-sys-devel/gcc-config
-sys-devel/binutils
-sys-devel/binutils-config
+# In theory you don't need these in stage 1
+-sys-devel/gcc
+-sys-devel/gcc-config
+-sys-devel/binutils
+-sys-devel/binutils-config
