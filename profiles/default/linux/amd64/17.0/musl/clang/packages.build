@@ -9,7 +9,7 @@ sys-libs/libcxxabi
 sys-libs/llvm-libunwind
 
 # In theory you don't need these in stage 1
--sys-devel/gcc
--sys-devel/gcc-config
--sys-devel/binutils
--sys-devel/binutils-config
+sys-devel/gcc
+sys-devel/gcc-config
+sys-devel/binutils
+sys-devel/binutils-config
