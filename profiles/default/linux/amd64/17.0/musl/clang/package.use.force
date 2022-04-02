@@ -1,5 +1,4 @@
 # This is not a multilib environment and I don't need / want x86_32 abi
-* -abi_x86_x32 -abi_x86_32 abi_x86_64
 dev-libs/libffi -abi_x86_x32 -abi_x86_32 abi_x86_64
 dev-libs/libxml2 -abi_x86_x32 -abi_x86_32 abi_x86_64
 sys-devel/clang -abi_x86_x32 -abi_x86_32 abi_x86_64

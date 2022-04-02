@@ -31,7 +31,7 @@ READELF="llvm-readelf"
 STRINGS="llvm-strings"
 STRIP="llvm-strip"
 
-_COMMON_FLAGS="-fPIC -O2 -march=native -pipe"
+_COMMON_FLAGS="-fPIC -O3 -march=native -pipe -flto=thin"
 CFLAGS="${CFLAGS} ${_COMMON_FLAGS}"
 CXXFLAGS="${CXXFLAGS} ${_COMMON_FLAGS}"
 FCFLAGS="${FCFLAGS} ${_COMMON_FLAGS}"
