@@ -98,6 +98,7 @@ _GENERAL_USE="${_GENERAL_USE} default-libcxx"
 _GENERAL_USE="${_GENERAL_USE} default-lld"
 _GENERAL_USE="${_GENERAL_USE} exegesis"
 _GENERAL_USE="${_GENERAL_USE} libcxx"
+_GENERAL_USE="${_GENERAL_USE} libcxxabi"
 _GENERAL_USE="${_GENERAL_USE} libffi"
 _GENERAL_USE="${_GENERAL_USE} libunwind"
 _GENERAL_USE="${_GENERAL_USE} llvm-libunwind"
@@ -110,4 +111,20 @@ _GENERAL_USE="${_GENERAL_USE} static-pic"
 _GENERAL_USE="${_GENERAL_USE} xar"
 
 USE="${USE} ${_GENERAL_USE}"
-USE_BOOTSTRAP="${USE_BOOTSTRAP} ${_GENERAL_USE}"
+BOOTSTRAP_USE="${BOOTSTRAP_USE} ${_GENERAL_USE}"
+
+# sys-devel/llvm
+BOOTSTRAP_USE="${BOOTSTRAP_USE} -gold"
+
+# sys-devel/clang, sys-devel/clang-runtime, sys-libs/llvm-libunwind, sys-libs/libcxx, sys-libs/libcxxabi
+BOOTSTRAP_USE="${BOOTSTRAP_USE} compiler-rt clang libunwind"
+
+# sys-devel/clang
+BOOTSTRAP_USE="${BOOTSTRAP_USE} default-compiler-rt default-lld default-libcxx llvm-libunwind"
+
+# sys-devel/clang-runtime
+# sanitizers are disabled for now
+BOOTSTRAP_USE="${BOOTSTRAP_USE} libcxx -sanitize"
+
+# sys-libs/libcxxabi
+BOOTSTRAP_USE="${BOOTSTRAP_USE} libcxxabi"
