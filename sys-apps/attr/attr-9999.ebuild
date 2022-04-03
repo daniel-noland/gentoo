@@ -22,6 +22,7 @@ SLOT="0"
 IUSE="debug nls static-libs"
 
 BDEPEND="
+  sys-devel/gcc
 	sys-devel/binutils
 	nls? ( sys-devel/gettext )
 "
@@ -41,6 +42,7 @@ src_prepare() {
 src_configure() {
 	# Remove -flto* from flags as this breaks binaries (bug #644048)
 	filter-flags -flto*
+	export CC="gcc"
 	append-ldflags "-Wl,--no-gc-sections" #700116
 	tc-ld-force-bfd #644048
 	append-lfs-flags #760857
