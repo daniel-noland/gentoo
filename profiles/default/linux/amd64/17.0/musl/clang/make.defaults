@@ -129,3 +129,6 @@ BOOTSTRAP_USE="${BOOTSTRAP_USE} -static-analyzer"
 
 # Not really helpful during bootstrap
 BOOTSTRAP_USE="${BOOTSTRAP_USE} -sanitize"
+
+# Not available or useful during bootstrap
+BOOTSTRAP_USE="${BOOTSTRAP_USE} -binutils-plugin"
