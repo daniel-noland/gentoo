@@ -14,6 +14,19 @@ SLOT="0/20" # subslot = soname major version
 KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="doc o-flag-munging static-libs"
 
+export CC="gcc"
+export CC="gcc"
+export CXX="g++"
+export AR="gcc-ar"
+export NM="gcc-nm"
+export LD="ld"
+export RANLIB="gcc-ranlib"
+
+_HARDENING_FLAGS="-fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2"
+export CFLAGS="-O3 -march=native -pipe ${_HARDENING_FLAGS} -fno-lto"
+
+export LDFLAGS="-Wl,-O2 -Wl,--as-needed -Wl,-z,relro,-z,now -pie"
+
 RDEPEND=">=dev-libs/libgpg-error-1.25[${MULTILIB_USEDEP}]"
 DEPEND="${RDEPEND}"
 BDEPEND="doc? ( virtual/texi2dvi )"
