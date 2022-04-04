@@ -69,6 +69,7 @@ _GENERAL_USE="${_GENERAL_USE} -abi_x86_32"
 _GENERAL_USE="${_GENERAL_USE} -abi_x86_x32"
 _GENERAL_USE="${_GENERAL_USE} abi_x86_64"
 
+_GENERAL_USE="${_GENERAL_USE} -binutils-plugin" # trying to avoid gcc stuff in this build
 _GENERAL_USE="${_GENERAL_USE} -fortran" # fortran support does not apply here.  Should maybe mask this use flag.
 _GENERAL_USE="${_GENERAL_USE} -gold" # gold is basically a dead project as I understand things.  We want to use lld anyway.
 _GENERAL_USE="${_GENERAL_USE} -openmp" # this project seems cool but has nothing at all to do with bootstrapping my goal system.
@@ -95,7 +96,6 @@ _GENERAL_USE="${_GENERAL_USE} -llvm_targets_WebAssembly"
 _GENERAL_USE="${_GENERAL_USE} -llvm_targets_XCore"
 
 # Turn on our desired LLVM toolchain features
-_GENERAL_USE="${_GENERAL_USE} binutils-plugin"
 _GENERAL_USE="${_GENERAL_USE} compiler-rt"
 _GENERAL_USE="${_GENERAL_USE} curl_ssl_openssl"
 _GENERAL_USE="${_GENERAL_USE} default-compiler-rt"
@@ -132,3 +132,6 @@ BOOTSTRAP_USE="${BOOTSTRAP_USE} -sanitize"
 
 # Not available or useful during bootstrap
 BOOTSTRAP_USE="${BOOTSTRAP_USE} -binutils-plugin"
+
+# Not useful during bootstrap
+BOOTSTRAP_USE="${BOOTSTRAP_USE} -lto"
