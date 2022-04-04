@@ -16,19 +16,6 @@ SLOT="0/20" # subslot = soname major version
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="+asm cpu_flags_arm_neon cpu_flags_arm_aes cpu_flags_arm_sha1 cpu_flags_arm_sha2 cpu_flags_ppc_altivec cpu_flags_ppc_vsx2 cpu_flags_ppc_vsx3 cpu_flags_x86_aes cpu_flags_x86_avx cpu_flags_x86_avx2 cpu_flags_x86_padlock cpu_flags_x86_sha cpu_flags_x86_sse4_1 doc +o-flag-munging static-libs"
 
-export CC="gcc"
-export CC="gcc"
-export CXX="g++"
-export AR="gcc-ar"
-export NM="gcc-nm"
-export LD="ld"
-export RANLIB="gcc-ranlib"
-
-_HARDENING_FLAGS="-fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2"
-export CFLAGS="-O3 -march=native -pipe ${_HARDENING_FLAGS} -fno-lto"
-
-export LDFLAGS="-Wl,-O2 -Wl,--as-needed -Wl,-z,relro,-z,now -pie"
-
 # Build system only has --disable-arm-crypto-support right now
 # If changing this, update src_configure logic too.
 # ARM CPUs seem to, right now, support all-or-nothing for crypto extensions,
