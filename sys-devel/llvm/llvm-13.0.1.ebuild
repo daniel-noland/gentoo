@@ -390,7 +390,6 @@ multilib_src_configure() {
 # 	use static && mycmakeargs+=(
 	mycmakeargs+=(
     -DLLVM_ENABLE_LIBCXX=ON
-  	-DLLVM_BUILD_STATIC=ON
     -DLLVM_STATIC_LINK_CXX_STDLIB=ON
   )
 
