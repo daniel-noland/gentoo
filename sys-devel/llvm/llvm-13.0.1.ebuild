@@ -373,9 +373,6 @@ multilib_src_configure() {
 			-DLLVM_ENABLE_LIBCXX=ON
 		)
 
-    use static && mycmakeargs+=(
-      -DLLVM_STATIC_LINK_CXX_STDLIB=ON
-    )
 	fi
 
 #	Note: go bindings have no CMake rules at the moment
@@ -392,6 +389,7 @@ multilib_src_configure() {
 
 	use static && mycmakeargs+=(
   	-DLLVM_BUILD_STATIC=ON
+    -DLLVM_STATIC_LINK_CXX_STDLIB=ON
   )
 
 	if multilib_is_native_abi; then
