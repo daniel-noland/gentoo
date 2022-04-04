@@ -96,6 +96,7 @@ _GENERAL_USE="${_GENERAL_USE} -llvm_targets_WebAssembly"
 _GENERAL_USE="${_GENERAL_USE} -llvm_targets_XCore"
 
 # Turn on our desired LLVM toolchain features
+_GENERAL_USE="${_GENERAL_USE} clang"
 _GENERAL_USE="${_GENERAL_USE} compiler-rt"
 _GENERAL_USE="${_GENERAL_USE} curl_ssl_openssl"
 _GENERAL_USE="${_GENERAL_USE} default-compiler-rt"
