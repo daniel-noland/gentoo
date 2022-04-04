@@ -38,6 +38,7 @@ BDEPEND="
 	dev-lang/perl
 	>=dev-util/cmake-3.16
 	sys-devel/gnuconfig
+	sys-libs/libcxx
 	kernel_Darwin? (
 		<sys-libs/libcxx-$(ver_cut 1-3).9999
 		>=sys-devel/binutils-apple-5.1
