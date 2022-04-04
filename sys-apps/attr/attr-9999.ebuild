@@ -22,8 +22,6 @@ SLOT="0"
 IUSE="debug nls static-libs"
 
 BDEPEND="
-  sys-devel/gcc
-	sys-devel/binutils
 	nls? ( sys-devel/gettext )
 "
 
