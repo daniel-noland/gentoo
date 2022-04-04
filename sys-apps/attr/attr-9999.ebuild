@@ -27,19 +27,6 @@ BDEPEND="
 	nls? ( sys-devel/gettext )
 "
 
-export CC="gcc"
-export CC="gcc"
-export CXX="g++"
-export AR="gcc-ar"
-export NM="gcc-nm"
-export LD="ld"
-export RANLIB="gcc-ranlib"
-
-_HARDENING_FLAGS="-fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2"
-export CFLAGS="-O3 -march=native -pipe ${_HARDENING_FLAGS} -fno-lto"
-
-export LDFLAGS="-Wl,-O2 -Wl,--as-needed -Wl,-z,relro,-z,now -pie"
-
 src_prepare() {
 	default
 
@@ -53,10 +40,7 @@ src_prepare() {
 }
 
 src_configure() {
-	# Remove -flto* from flags as this breaks binaries (bug #644048)
-	filter-flags -flto*
 	append-ldflags "-Wl,--no-gc-sections" #700116
-	tc-ld-force-bfd #644048
 	append-lfs-flags #760857
 	multilib-minimal_src_configure
 }
