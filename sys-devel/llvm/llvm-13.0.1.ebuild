@@ -388,12 +388,6 @@ multilib_src_configure() {
 		-DLLVM_LIT_ARGS="$(get_lit_flags)"
 	)
 
-# 	use static && mycmakeargs+=(
-	mycmakeargs+=(
-    -DLLVM_ENABLE_LIBCXX=ON
-    -DLLVM_STATIC_LINK_CXX_STDLIB=ON
-  )
-
 	if multilib_is_native_abi; then
 		local build_docs=OFF
 		if llvm_are_manpages_built; then
