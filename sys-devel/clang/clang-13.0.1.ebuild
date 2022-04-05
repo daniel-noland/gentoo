@@ -41,8 +41,8 @@ PDEPEND="
 		llvm-libunwind? ( sys-libs/llvm-libunwind )
 		!llvm-libunwind? ( sys-libs/libunwind )
 	)
-	default-libcxx? ( >=sys-libs/libcxx-${PV} )
-	default-lld? ( sys-devel/lld )"
+	>=sys-libs/libcxx-${PV}
+	sys-devel/lld"
 
 LLVM_COMPONENTS=( clang clang-tools-extra )
 LLVM_MANPAGES=pregenerated
@@ -250,10 +250,10 @@ multilib_src_configure() {
 		-DCMAKE_DISABLE_FIND_PACKAGE_CUDA=ON
 
 		# override default stdlib and rtlib
-		-DCLANG_DEFAULT_CXX_STDLIB=$(usex default-libcxx libc++ "")
-		-DCLANG_DEFAULT_RTLIB=$(usex default-compiler-rt compiler-rt "")
-		-DCLANG_DEFAULT_LINKER=$(usex default-lld lld "")
-		-DCLANG_DEFAULT_UNWINDLIB=$(usex default-compiler-rt libunwind "")
+		-DCLANG_DEFAULT_CXX_STDLIB=libc++
+		-DCLANG_DEFAULT_RTLIB=compiler-rt
+		-DCLANG_DEFAULT_LINKER=lld
+		-DCLANG_DEFAULT_UNWINDLIB=libunwind
 
 		-DCLANG_ENABLE_ARCMT=$(usex static-analyzer)
 		-DCLANG_ENABLE_STATIC_ANALYZER=$(usex static-analyzer)
