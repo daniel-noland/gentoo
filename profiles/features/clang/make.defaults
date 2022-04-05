@@ -19,7 +19,7 @@ SOME_HARDENING_LDFLAGS="-Wl,-z,relro,-z,now -pie"
 
 # enable hardening by default, cf. gcc[pie,ssp]
 CFLAGS="${CFLAGS} ${SOME_HARDENING_FLAGS}"
-CXXFLAGS="${CXXFLAGS} -stdlib=libc++ ${SOME_HARDENING_FLAGS}"
+CXXFLAGS="${CXXFLAGS} ${SOME_HARDENING_FLAGS}"
 LDFLAGS="${LDFLAGS} ${SOME_HARDENING_LDFLAGS}"
 
 # use LLVM-provided binutils

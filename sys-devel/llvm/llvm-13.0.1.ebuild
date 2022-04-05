@@ -19,7 +19,7 @@ HOMEPAGE="https://llvm.org/"
 LICENSE="Apache-2.0-with-LLVM-exceptions UoI-NCSA BSD public-domain rc"
 SLOT="$(ver_cut 1)"
 KEYWORDS="amd64 arm arm64 ~ppc ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~ppc-macos ~x64-macos"
-IUSE="+binutils-plugin debug doc exegesis libedit +libffi ncurses static test xar xml z3"
+IUSE="+binutils-plugin debug doc exegesis libedit +libffi ncurses test xar xml z3"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -38,7 +38,6 @@ BDEPEND="
 	dev-lang/perl
 	>=dev-util/cmake-3.16
 	sys-devel/gnuconfig
-	sys-libs/libcxx
 	kernel_Darwin? (
 		<sys-libs/libcxx-$(ver_cut 1-3).9999
 		>=sys-devel/binutils-apple-5.1
@@ -373,7 +372,6 @@ multilib_src_configure() {
 			-DLLVM_VERSION_SUFFIX="libcxx"
 			-DLLVM_ENABLE_LIBCXX=ON
 		)
-
 	fi
 
 #	Note: go bindings have no CMake rules at the moment

@@ -36,7 +36,7 @@ src_prepare() {
 	use natspec && eapply "${FILESDIR}/${PN}-6.0-natspec.patch" #275244
 	sed -i -r \
 		-e '/^CFLAGS/d' \
-		-e '/CFLAGS/s:-O[0-9]?:$(CFLAGS) $(CPPFLAGS) -stdlib=libc++:' \
+		-e '/CFLAGS/s:-O[0-9]?:$(CFLAGS) $(CPPFLAGS):' \
 		-e '/^STRIP/s:=.*:=true:' \
 		-e "s:\<CC *= *\"?g?cc2?\"?\>:CC=\"$(tc-getCC)\":" \
 		-e "s:\<LD *= *\"?(g?cc2?|ld)\"?\>:LD=\"$(tc-getCC)\":" \
