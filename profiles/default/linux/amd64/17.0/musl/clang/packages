@@ -9,10 +9,10 @@
 *sys-libs/llvm-libunwind
 
 # In theory we don't need these but in practice some packages still require gcc.
-*sys-devel/binutils
-*sys-devel/binutils-config
-*sys-devel/gcc
-*sys-devel/gcc-config
+#*sys-devel/binutils
+#*sys-devel/binutils-config
+#*sys-devel/gcc
+#*sys-devel/gcc-config
 
 # Random stuff i'm zapping for container env
 # -*net-misc/iputils

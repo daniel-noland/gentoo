@@ -1,11 +1,10 @@
 # will be pulled by stage1
-app-arch/xar
-sys-devel/clang
-sys-devel/lld
-sys-devel/llvm
 sys-libs/compiler-rt
-sys-libs/libcxx
 sys-libs/libcxxabi
+sys-libs/libcxx
+sys-devel/llvm
+sys-devel/lld
+sys-devel/clang
 sys-libs/llvm-libunwind
 
 # In theory you don't need these in stage 1 but you really do
