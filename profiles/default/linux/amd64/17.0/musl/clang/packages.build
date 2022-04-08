@@ -1,4 +1,5 @@
 # will be pulled by stage1
+app-arch/xar
 sys-libs/compiler-rt
 sys-libs/libcxxabi
 sys-libs/libcxx
