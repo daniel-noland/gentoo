@@ -1,0 +1,14 @@
+# LLVM toolchain is for sure part of @system here.  Mark it as such.
+app-arch/xar
+sys-devel/clang
+sys-devel/lld
+sys-devel/llvm
+sys-libs/compiler-rt
+sys-libs/libcxx
+sys-libs/libcxxabi
+sys-libs/llvm-libunwind
+
+-sys-devel/binutils
+-sys-devel/binutils-config
+-sys-devel/gcc
+-sys-devel/gcc-config
