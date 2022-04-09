@@ -1,0 +1,14 @@
+_ENABLE_THIN_LTO="-flto=thin"
+
+CFLAGS="${CFLAGS} ${_COMMON_FLAGS}"
+CXXFLAGS="${CXXFLAGS} ${_COMMON_FLAGS}"
+FCFLAGS="${FCFLAGS} ${_COMMON_FLAGS}"
+FFLAGS="${FFLAGS} ${_COMMON_FLAGS}"
+
+LDFLAGS="${LDFLAGS} -Wl,-O2"
+LDFLAGS="${LDFLAGS} -Wl,--as-needed"
+LDFLAGS="${LDFLAGS} -Wl,-z,relro,-z,now"
+LDFLAGS="${LDFLAGS} -pie"
+LDFLAGS="${LDFLAGS} -fuse-ld=lld"
+LDFLAGS="${LDFLAGS} -unwindlib=libunwind"
+LDFLAGS="${LDFLAGS} -Wl,--thinlto-jobs=64"
