@@ -71,6 +71,17 @@ src_unpack() {
 	cp "${DISTDIR}"/iconv.c misc/iconv.c || die
 }
 
+src_prepare() {
+	default
+
+	# Hack Makefile to allow for lto
+	cat >> Makefile <<EOF
+
+obj/ldso/%.lo: CFLAGS_ALL += -fno-lto
+
+EOF
+}
+
 src_configure() {
 	tc-getCC ${CTARGET}
 	just_headers && export CC=true
