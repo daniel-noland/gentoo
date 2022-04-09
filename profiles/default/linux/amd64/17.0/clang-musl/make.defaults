@@ -1,0 +1,1 @@
+EMERGE_DEFAULT_OPTS="--jobs 64 --load-average 80.0"
