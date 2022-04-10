@@ -84,11 +84,6 @@ obj/ldso/%.lo: CFLAGS_ALL += -fno-lto
 EOF
 }
 
-src_prepare() {
-	default
-
-}
-
 src_configure() {
 	tc-getCC ${CTARGET}
 	just_headers && export CC=true
