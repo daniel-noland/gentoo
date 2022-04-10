@@ -77,11 +77,7 @@ src_prepare() {
 	# Expand gethostid instead of being just a stub
 	eapply "${FILESDIR}/${PN}-1.2.2-gethostid.patch"
 	# Hack Makefile to allow for lto
-	cat >> Makefile <<EOF
-
-obj/ldso/%.lo: CFLAGS_ALL += -fno-lto
-
-EOF
+	patch < "${FILESDIR}/lto.patch"
 }
 
 src_prepare() {
