@@ -35,7 +35,7 @@ CXXFLAGS="${CXXFLAGS} ${_COMMON_FLAGS}"
 FCFLAGS="${FCFLAGS} ${_COMMON_FLAGS}"
 FFLAGS="${FFLAGS} ${_COMMON_FLAGS}"
 
-LDFLAGS="-Wl,-O2 -Wl,--as-needed -Wl,-z,relro,-z,now -pie -fuse-ld=lld -unwindlib=libunwind -Wl,--thinlto-jobs=64"
+LDFLAGS="-Wl,-O2 -Wl,--as-needed -Wl,-z,relro,-z,now -pie -fuse-ld=lld -unwindlib=libunwind -Wl,--thinlto-jobs=0"
 
 # Nobody logs in to this phase so building brail support, X, command completion, and so on seems like a waste
 USE="${USE} -X"
@@ -47,6 +47,7 @@ USE="${USE} -doc"
 USE="${USE} -examples"
 USE="${USE} -man"
 USE="${USE} -ncurses"
+USE="${USE} -nls"
 USE="${USE} -sqlite"
 USE="${USE} -systemd"
 USE="${USE} -test"
