@@ -1,3 +1,5 @@
+<dev-libs/opencl-clang-15.0.0 ~amd64
+<dev-python/clang-python-15.0.0 ~amd64
 <dev-util/lldb-15.0.0 ~amd64
 <sys-devel/clang-15.0.0 ~amd64
 <sys-devel/clang-common-15.0.0 ~amd64
