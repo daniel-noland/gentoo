@@ -76,6 +76,8 @@ src_prepare() {
 
 	# Expand gethostid instead of being just a stub
 	eapply "${FILESDIR}/${PN}-1.2.2-gethostid.patch"
+	# Make LTO functional if the C/LDFLAGS dictate it
+	eapply "${FILESDIR}/${PN}-Makefile.patch"
 }
 
 src_configure() {

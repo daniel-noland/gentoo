@@ -1,0 +1,13 @@
+Allow musl to build with Link time optimization by disabling it
+in the ldso (where LTO makes no sense anyway).
+<+>UTF-8
+===================================================================
+diff --git a/Makefile b/Makefile
+--- a/Makefile	(revision HEAD)
++++ b/Makefile	(revision Staged)
+@@ -235,3 +235,5 @@
+ 	rm -f config.mak
+
+ .PHONY: all clean install install-libs install-headers install-tools
++
++obj/ldso/%.lo: CFLAGS_ALL += -fno-lto
