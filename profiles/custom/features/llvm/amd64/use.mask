@@ -16,10 +16,5 @@ llvm_targets_VE
 llvm_targets_WebAssembly
 llvm_targets_XCore
 
--llvm_targets_X86
-
--abi_x86_64
-
 abi_x86_32
 abi_x86_x32
-
