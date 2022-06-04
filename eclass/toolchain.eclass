@@ -19,14 +19,14 @@ _TOOLCHAIN_ECLASS=1
 DESCRIPTION="The GNU Compiler Collection"
 HOMEPAGE="https://gcc.gnu.org/"
 
-inherit flag-o-matic gnuconfig libtool multilib pax-utils toolchain-funcs prefix
+inherit edo flag-o-matic gnuconfig libtool multilib pax-utils toolchain-funcs prefix
 
 tc_is_live() {
 	[[ ${PV} == *9999* ]]
 }
 
 if tc_is_live ; then
-	EGIT_REPO_URI="https://gcc.gnu.org/git/gcc.git"
+	EGIT_REPO_URI="https://gcc.gnu.org/git/gcc.git https://github.com/gcc-mirror/gcc"
 	# Naming style:
 	# gcc-10.1.0_pre9999 -> gcc-10-branch
 	#  Note that the micro version is required or lots of stuff will break.
@@ -34,6 +34,8 @@ if tc_is_live ; then
 	#  inheriting this eclass.
 	EGIT_BRANCH="releases/${PN}-${PV%.?.?_pre9999}"
 	EGIT_BRANCH=${EGIT_BRANCH//./_}
+	inherit git-r3
+elif [[ -n ${TOOLCHAIN_USE_GIT_PATCHES} ]] ; then
 	inherit git-r3
 fi
 
@@ -78,6 +80,20 @@ tc_version_is_between() {
 # @DESCRIPTION:
 # Used to override GCC version. Useful for e.g. live ebuilds or snapshots.
 # Defaults to ${PV}.
+
+# @ECLASS_VARIABLE: TOOLCHAIN_USE_GIT_PATCHES
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Used to force fetching patches from git. Useful for non-released versions
+# of GCC where we don't want to keep creating patchset tarballs for a new
+# release series (e.g. suppose 12.0 just got released, then adding snapshots
+# for 13.0, we don't want to create new patchsets for every single 13.0 snapshot,
+# so just grab patches from git each time if this variable is set).
+
+# @ECLASS_VARIABLE: TOOLCHAIN_PATCH_DEV
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Indicate the developer who hosts the patchset for an ebuild.
 
 # @ECLASS_VARIABLE: GCC_PV
 # @INTERNAL
@@ -275,6 +291,9 @@ DEPEND="${RDEPEND}"
 if tc_has_feature gcj ; then
 	DEPEND+="
 		gcj? (
+			app-arch/zip
+			app-arch/unzip
+			>=media-libs/libart_lgpl-2.1
 			awt? (
 				x11-base/xorg-proto
 				x11-libs/libXt
@@ -284,9 +303,6 @@ if tc_has_feature gcj ; then
 				x11-libs/pango
 				virtual/pkgconfig
 			)
-			>=media-libs/libart_lgpl-2.1
-			app-arch/zip
-			app-arch/unzip
 		)
 	"
 fi
@@ -348,6 +364,31 @@ if [[ ${TOOLCHAIN_SET_S} == yes ]] ; then
 fi
 
 gentoo_urls() {
+	# slyfox's distfiles are mirrored to sam's devspace
+	declare -A devspace_urls=(
+		[soap]=HTTP~soap/distfiles/URI
+		[sam]=HTTP~sam/distfiles/sys-devel/gcc/URI
+		[slyfox]=HTTP~sam/distfiles/URI
+		[tamiko]=HTTP~tamiko/distfiles/URI
+		[zorry]=HTTP~zorry/patches/gcc/URI
+		[vapier]=HTTP~vapier/dist/URI
+		[blueness]=HTTP~blueness/dist/URI
+	)
+
+	# Newer ebuilds should set TOOLCHAIN_PATCH_DEV and we'll just
+	# return the full URL from the array.
+	if [[ -n ${TOOLCHAIN_PATCH_DEV} ]] ; then
+		local devspace_url=${devspace_urls[${TOOLCHAIN_PATCH_DEV}]}
+		if [[ -n ${devspace_url} ]] ; then
+			local devspace_url_exp=${devspace_url//HTTP/https:\/\/dev.gentoo.org\/}
+			devspace_url_exp=${devspace_url_exp//URI/$1}
+			echo ${devspace_url_exp}
+			return
+		fi
+	fi
+
+	# But we keep the old fallback list for compatibility with
+	# older ebuilds (overlays etc).
 	local devspace="
 		HTTP~soap/distfiles/URI
 		HTTP~sam/distfiles/URI
@@ -493,16 +534,49 @@ toolchain_pkg_setup() {
 
 	# bug #265283
 	unset LANGUAGES
+
+	# See https://www.gnu.org/software/make/manual/html_node/Parallel-Output.html
+	# Avoid really confusing logs from subconfigure spam, makes logs far
+	# more legible.
+	MAKEOPTS="--output-sync=line ${MAKEOPTS}"
 }
 
 #---->> src_unpack <<----
 
+# @FUNCTION: toolchain_fetch_git_patches
+# @INTERNAL
+# @DESCRIPTION:
+# Fetch patches from Gentoo's gcc-patches repository.
+toolchain_fetch_git_patches() {
+	local gcc_patches_repo="https://anongit.gentoo.org/git/proj/gcc-patches.git https://github.com/gentoo/gcc-patches"
+
+	# If we weren't given a patchset number, pull it from git too.
+	einfo "Fetching patchset from git as PATCH_VER is unset"
+	EGIT_REPO_URI=${gcc_patches_repo} EGIT_BRANCH="master" \
+		EGIT_CHECKOUT_DIR="${WORKDIR}"/patch.tmp \
+		git-r3_src_unpack
+
+	mkdir "${WORKDIR}"/patch || die
+	mv "${WORKDIR}"/patch.tmp/${PATCH_GCC_VER}/gentoo/* "${WORKDIR}"/patch || die
+
+	if [[ -n ${MUSL_VER} || -d "${WORKDIR}"/musl ]] && [[ ${CTARGET} == *musl* ]] ; then
+		mkdir "${WORKDIR}"/musl || die
+		mv "${WORKDIR}"/patch.tmp/${PATCH_GCC_VER}/musl/* "${WORKDIR}"/musl || die
+	fi
+}
+
 toolchain_src_unpack() {
 	if tc_is_live ; then
 		git-r3_src_unpack
+
+		if [[ -z ${PATCH_VER} ]] && ! use vanilla ; then
+			toolchain_fetch_git_patches
+		fi
+	elif [[ -z ${PATCH_VER} && -n ${TOOLCHAIN_USE_GIT_PATCHES} ]] ; then
+		toolchain_fetch_git_patches
 	fi
 
-	default_src_unpack
+	default
 }
 
 #---->> src_prepare <<----
@@ -591,13 +665,13 @@ toolchain_src_prepare() {
 
 do_gcc_gentoo_patches() {
 	if ! use vanilla ; then
-		if [[ -n ${PATCH_VER} ]] ; then
+		if [[ -n ${PATCH_VER} || -d "${WORKDIR}"/patch ]] ; then
 			einfo "Applying Gentoo patches ..."
 			eapply "${WORKDIR}"/patch/*.patch
 			BRANDING_GCC_PKGVERSION="${BRANDING_GCC_PKGVERSION} p${PATCH_VER}"
 		fi
 
-		if [[ -n ${MUSL_VER} ]] && [[ ${CTARGET} == *musl* ]] ; then
+		if [[ -n ${MUSL_VER} || -d "${WORKDIR}"/musl ]] && [[ ${CTARGET} == *musl* ]] ; then
 			if [[ ${CATEGORY} == cross-* ]] ; then
 				# We don't want to apply some patches when cross-compiling.
 				if [[ -d "${WORKDIR}"/musl/nocross ]] ; then
@@ -812,6 +886,8 @@ toolchain_src_configure() {
 
 	local confgcc=( --host=${CHOST} )
 
+	local build_config_targets=()
+
 	if is_crosscompile || tc-is-cross-compiler ; then
 		# Straight from the GCC install doc:
 		# "GCC has code to correctly determine the correct value for target
@@ -851,7 +927,6 @@ toolchain_src_configure() {
 	is_d   && GCC_LANG+=",d"
 	is_gcj && GCC_LANG+=",java"
 	is_go  && GCC_LANG+=",go"
-	is_jit && GCC_LANG+=",jit"
 	if is_objc || is_objcxx ; then
 		GCC_LANG+=",objc"
 		use objc-gc && confgcc+=( --enable-objc-gc )
@@ -914,17 +989,17 @@ toolchain_src_configure() {
 
 	# Build compiler itself using LTO
 	if tc_version_is_at_least 9.1 && _tc_use_if_iuse lto ; then
-		confgcc+=( --with-build-config=bootstrap-lto )
+		build_config_targets+=( bootstrap-lto )
+	fi
+
+	if tc_version_is_at_least 12 && _tc_use_if_iuse cet ; then
+		build_config_targets+=( bootstrap-cet )
 	fi
 
 	# Support to disable PCH when building libstdcxx
 	if tc_version_is_at_least 6.0 && ! _tc_use_if_iuse pch ; then
 		confgcc+=( --disable-libstdcxx-pch )
 	fi
-
-	# The JIT support requires this.
-	# But see bug #843341.
-	is_jit && confgcc+=( --enable-host-shared )
 
 	# build-id was disabled for file collisions: bug #526144
 	#
@@ -1079,7 +1154,7 @@ toolchain_src_configure() {
 			case ${CTARGET//_/-} in
 				*-hardfloat-*|*eabihf)
 					confgcc+=( --with-float=hard )
-					;;
+				;;
 			esac
 	esac
 
@@ -1096,6 +1171,8 @@ toolchain_src_configure() {
 				fi
 			done
 
+			# Convert armv6m to armv6-m
+			[[ ${arm_arch} == armv6m ]] && arm_arch=armv6-m
 			# Convert armv7{a,r,m} to armv7-{a,r,m}
 			[[ ${arm_arch} == armv7? ]] && arm_arch=${arm_arch/7/7-}
 			# See if this is a valid --with-arch flag
@@ -1272,6 +1349,8 @@ toolchain_src_configure() {
 		confgcc+=( $(use_with zstd) )
 	fi
 
+	# This only controls whether the compiler *supports* LTO, not whether
+	# it's *built using* LTO. Hence we do it without a USE flag.
 	if tc_version_is_at_least 4.6 ; then
 		confgcc+=( --enable-lto )
 	elif tc_version_is_at_least 4.5 ; then
@@ -1323,6 +1402,11 @@ toolchain_src_configure() {
 
 	confgcc+=( "$@" ${EXTRA_ECONF} )
 
+	if [[ -n ${build_config_targets} ]] ; then
+		# ./configure --with-build-config='bootstrap-lto bootstrap-cet'
+		confgcc+=( --with-build-config="${build_config_targets[*]}" )
+	fi
+
 	# Nothing wrong with a good dose of verbosity
 	echo
 	einfo "PREFIX:          ${PREFIX}"
@@ -1333,24 +1417,45 @@ toolchain_src_configure() {
 	echo
 	einfo "Languages:       ${GCC_LANG}"
 	echo
-	einfo "Configuring GCC with: ${confgcc[@]//--/\n\t--}"
-	echo
 
 	# Build in a separate build tree
-	mkdir -p "${WORKDIR}"/build
+	mkdir -p "${WORKDIR}"/build || die
 	pushd "${WORKDIR}"/build > /dev/null
 
 	# ...and now to do the actual configuration
 	addwrite /dev/zero
 
-	echo "${S}"/configure "${confgcc[@]}"
+	local gcc_shell="${BROOT}"/bin/bash
 	# Older gcc versions did not detect bash and re-exec itself, so force the
-	# use of bash. Newer ones will auto-detect, but this is not harmful.
-	CONFIG_SHELL="${BROOT}/bin/bash" \
-		"${BROOT}"/bin/bash "${S}"/configure "${confgcc[@]}" || die "failed to run configure"
+	# use of bash for them.
+	if tc_version_is_at_least 11.2 ; then
+		gcc_shell="${BROOT}"/bin/sh
+	fi
+
+	if is_jit ; then
+		einfo "Configuring JIT gcc"
+
+		mkdir -p "${WORKDIR}"/build-jit || die
+		pushd "${WORKDIR}"/build-jit > /dev/null || die
+		CONFIG_SHELL="${gcc_shell}" edo "${gcc_shell}" "${S}"/configure \
+				"${confgcc[@]}" \
+				--disable-libada \
+				--disable-libsanitizer \
+				--disable-libvtv \
+				--disable-libgomp \
+				--disable-libquadmath \
+				--disable-libatomic \
+				--disable-lto \
+				--disable-bootstrap \
+				--enable-host-shared \
+				--enable-languages=jit
+		popd > /dev/null || die
+	fi
+
+	CONFIG_SHELL="${gcc_shell}" edo "${gcc_shell}" "${S}"/configure "${confgcc[@]}"
 
 	# Return to whatever directory we were in before
-	popd > /dev/null
+	popd > /dev/null || die
 }
 
 # Replace -m flags unsupported by the version being built with the best
@@ -1624,7 +1729,7 @@ toolchain_src_compile() {
 	# use of bash.  Newer ones will auto-detect, but this is not harmful.
 	# This needs to be set for compile as well, as it's used in libtool
 	# generation, which will break install otherwise (at least in 3.3.6): bug #664486
-	CONFIG_SHELL="${EPREFIX}/bin/bash" \
+	CONFIG_SHELL="${BROOT}/bin/bash" \
 		gcc_do_make ${GCC_MAKE_TARGET}
 }
 
@@ -1640,8 +1745,8 @@ gcc_do_make() {
 
 	# default target
 	if is_crosscompile || tc-is-cross-compiler ; then
-		# 3 stage bootstrapping doesnt quite work when you cant run the
-		# resulting binaries natively ^^;
+		# 3 stage bootstrapping doesn't quite work when you can't run the
+		# resulting binaries natively
 		GCC_MAKE_TARGET=${GCC_MAKE_TARGET-all}
 	else
 		if _tc_use_if_iuse pgo; then
@@ -1674,6 +1779,19 @@ gcc_do_make() {
 		# cross-compiler.
 		BOOT_CFLAGS=${BOOT_CFLAGS-"$(get_abi_CFLAGS ${TARGET_DEFAULT_ABI}) ${CFLAGS}"}
 	fi
+
+	if is_jit ; then
+		# TODO: docs for jit?
+		pushd "${WORKDIR}"/build-jit > /dev/null || die
+
+		einfo "Building JIT"
+		emake \
+			LDFLAGS="${LDFLAGS}" \
+			STAGE1_CFLAGS="${STAGE1_CFLAGS}" \
+			LIBPATH="${LIBPATH}" \
+			BOOT_CFLAGS="${BOOT_CFLAGS}"
+		popd > /dev/null || die
+        fi
 
 	einfo "Compiling ${PN} (${GCC_MAKE_TARGET})..."
 
@@ -1762,8 +1880,32 @@ toolchain_src_install() {
 			&& rm -f "${x}"
 	done < <(find gcc/include*/ -name '*.h')
 
+	if is_jit ; then
+		# See https://gcc.gnu.org/onlinedocs/gcc-11.3.0/jit/internals/index.html#packaging-notes
+		# and bug #843341.
+		#
+		# Both of the non-JIT and JIT builds  are configured to install to $(DESTDIR)
+		# Install the configuration with --enable-host-shared first
+		# *then* the one without, so that the faster build
+		# of "cc1" et al overwrites the slower build.
+		#
+		# Do the 'make install' from the build directory
+		pushd "${WORKDIR}"/build-jit > /dev/null || die
+		S="${WORKDIR}"/build-jit emake DESTDIR="${D}" install
+
+		# Punt some tools which are really only useful while building gcc
+		find "${ED}" -name install-tools -prune -type d -exec rm -rf "{}" \;
+		# This one comes with binutils
+		find "${ED}" -name libiberty.a -delete
+
+		# Move the libraries to the proper location
+		gcc_movelibs
+
+		popd > /dev/null || die
+	fi
+
 	# Do the 'make install' from the build directory
-	S="${WORKDIR}"/build emake -j1 DESTDIR="${D}" install || die
+	S="${WORKDIR}"/build emake DESTDIR="${D}" install
 
 	# Punt some tools which are really only useful while building gcc
 	find "${ED}" -name install-tools -prune -type d -exec rm -rf "{}" \;
@@ -1956,9 +2098,10 @@ gcc_movelibs() {
 		dodir "${HOSTLIBPATH#${EPREFIX}}"
 		mv "${ED}"/usr/$(get_libdir)/libcc1* "${D}${HOSTLIBPATH}" || die
 	fi
+
 	# libgccjit gets installed to /usr/lib, not /usr/$(get_libdir). Probably
 	# due to a bug in gcc build system.
-	if is_jit ; then
+	if [[ ${PWD} == "${WORKDIR}"/build-jit ]] && is_jit ; then
 		dodir "${LIBPATH#${EPREFIX}}"
 		mv "${ED}"/usr/lib/libgccjit* "${D}${LIBPATH}" || die
 	fi

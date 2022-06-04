@@ -22,7 +22,7 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="PSF-2"
 SLOT="${PYVER}"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 IUSE="berkdb bluetooth build examples gdbm hardened +ncurses +readline +sqlite +ssl tk wininst +xml"
 
 # Do not add a dependency on dev-lang/python to this ebuild.
@@ -310,8 +310,13 @@ src_install() {
 	local -x EPYTHON=python${PYVER}
 	# if not using a cross-compiler, use the fresh binary
 	if ! tc-is-cross-compiler; then
-		local -x PYTHON=./python
-		local -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH+${LD_LIBRARY_PATH}:}${PWD}
+		cat > python.wrap <<-EOF || die
+			#!/bin/sh
+			export LD_LIBRARY_PATH=\${PWD}\${LD_LIBRARY_PATH+:\${LD_LIBRARY_PATH}}
+			exec ./python "\${@}"
+		EOF
+		chmod +x python.wrap || die
+		local -x PYTHON=./python.wrap
 	else
 		local -x PYTHON=${EPREFIX}/usr/bin/${EPYTHON}
 	fi

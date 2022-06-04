@@ -148,6 +148,11 @@ toolchain-binutils_pkgversion() {
 }
 
 src_configure() {
+	# See https://www.gnu.org/software/make/manual/html_node/Parallel-Output.html
+	# Avoid really confusing logs from subconfigure spam, makes logs far
+	# more legible.
+	MAKEOPTS="--output-sync=line ${MAKEOPTS}"
+
 	# Setup some paths
 	LIBPATH=/usr/$(get_libdir)/binutils/${CTARGET}/${PV}
 	INCPATH=${LIBPATH}/include
@@ -175,7 +180,7 @@ src_configure() {
 	done
 	echo
 
-	cd "${MY_BUILDDIR}"
+	cd "${MY_BUILDDIR}" || die
 	local myconf=()
 
 	if use plugins ; then
@@ -242,13 +247,26 @@ src_configure() {
 		--enable-install-libiberty
 		# Available from 2.35 on
 		--enable-textrel-check=warning
+
+		# Available from 2.39 on
+		--enable-warn-execstack
+		--enable-warn-rwx-segments
+		# TODO: Available from 2.39+ on but let's try the warning on for a bit
+		# first... (--enable-warn-execstack)
+		# Could put it under USE=hardened?
+		#--enable-default-execstack
+
+		# Things to think about
+		#--enable-deterministic-archives
+
 		# Works better than vapier's patch, bug #808787
 		--enable-new-dtags
+
+		--disable-jansson
 		--disable-werror
 		--with-bugurl="$(toolchain-binutils_bugurl)"
 		--with-pkgversion="$(toolchain-binutils_pkgversion)"
 		$(use_enable static-libs static)
-		${EXTRA_ECONF}
 		# Disable modules that are in a combined binutils/gdb tree, bug #490566
 		--disable-{gdb,libdecnumber,readline,sim}
 		# Strip out broken static link flags.
@@ -276,8 +294,7 @@ src_configure() {
 		fi
 	fi
 
-	echo ./configure "${myconf[@]}"
-	"${S}"/configure "${myconf[@]}" || die
+	ECONF_SOURCE="${S}" econf "${myconf[@]}" || die
 
 	# Prevent makeinfo from running if doc is unset.
 	if ! use doc ; then
@@ -291,11 +308,11 @@ src_compile() {
 	cd "${MY_BUILDDIR}" || die
 
 	# see Note [tooldir hack for ldscripts]
-	emake tooldir="${EPREFIX}${TOOLPATH}" all
+	emake V=1 tooldir="${EPREFIX}${TOOLPATH}" all
 
 	# only build info pages if the user wants them
 	if use doc ; then
-		emake info
+		emake V=1 info
 	fi
 
 	# we nuke the manpages when we're left with junk
@@ -309,7 +326,7 @@ src_test() {
 	# bug #637066
 	filter-flags -Wall -Wreturn-type
 
-	emake -k check
+	emake -k V=1 check
 }
 
 src_install() {
@@ -318,7 +335,7 @@ src_install() {
 	cd "${MY_BUILDDIR}" || die
 
 	# see Note [tooldir hack for ldscripts]
-	emake DESTDIR="${D}" tooldir="${EPREFIX}${LIBPATH}" install
+	emake V=1 DESTDIR="${D}" tooldir="${EPREFIX}${LIBPATH}" install
 	rm -rf "${ED}"/${LIBPATH}/bin || die
 	use static-libs || find "${ED}" -name '*.la' -delete
 
