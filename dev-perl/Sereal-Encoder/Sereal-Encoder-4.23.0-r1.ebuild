@@ -9,7 +9,7 @@ inherit edo perl-module toolchain-funcs
 
 DESCRIPTION="Fast, compact, powerful binary serialization"
 SLOT="0"
-KEYWORDS="~amd64 ~ppc64 ~x86"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
 
 # Note: bundled zstd fails compile
 RDEPEND="
@@ -27,6 +27,7 @@ DEPEND="
 # as well, but we can't depend on it because it forms
 # a tight cycle if we do
 BDEPEND="${RDEPEND}
+	dev-perl/Devel-CheckLib
 	>=virtual/perl-ExtUtils-MakeMaker-7.0.0
 	>=virtual/perl-ExtUtils-ParseXS-2.210.0
 	virtual/perl-File-Path

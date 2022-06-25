@@ -6,6 +6,7 @@ PYTHON_COMPAT=( python3_{8..10} )
 
 # Avoid QA warnings
 TMPFILES_OPTIONAL=1
+UDEV_OPTIONAL=1
 
 if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/systemd/systemd.git"
@@ -122,7 +123,10 @@ RDEPEND="${COMMON_DEPEND}
 		acct-group/systemd-hostname
 		sys-apps/dbus-broker
 	)
-	selinux? ( sec-policy/selinux-base-policy[systemd] )
+	selinux? (
+		sec-policy/selinux-base-policy[systemd]
+		sec-policy/selinux-ntp
+	)
 	sysv-utils? (
 		!sys-apps/openrc[sysv-utils(-)]
 		!sys-apps/sysvinit

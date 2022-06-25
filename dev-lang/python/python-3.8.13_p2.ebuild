@@ -24,7 +24,7 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="PSF-2"
 SLOT="${PYVER}"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86"
 IUSE="bluetooth build examples gdbm hardened +ncurses +readline +sqlite +ssl test tk wininst +xml"
 RESTRICT="!test? ( test )"
 
@@ -133,12 +133,6 @@ src_configure() {
 	append-flags -fwrapv
 
 	filter-flags -malign-double
-
-	# https://bugs.gentoo.org/show_bug.cgi?id=50309
-	if is-flagq -O3; then
-		is-flagq -fstack-protector-all && replace-flags -O3 -O2
-		use hardened && replace-flags -O3 -O2
-	fi
 
 	# https://bugs.gentoo.org/700012
 	if is-flagq -flto || is-flagq '-flto=*'; then

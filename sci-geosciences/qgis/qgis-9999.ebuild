@@ -28,6 +28,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE} mapserver? ( python )"
 # Disabling test suite because upstream disallow running from install path
 RESTRICT="!test? ( test )"
 
+# See bug #850787 re sip-6.6.
 COMMON_DEPEND="
 	app-crypt/qca:2[qt5(+),ssl]
 	>=dev-db/spatialite-4.2.0
@@ -71,6 +72,7 @@ COMMON_DEPEND="
 	postgres? ( dev-db/postgresql:= )
 	python? (
 		${PYTHON_DEPS}
+		>=sci-libs/gdal-2.2.3[python,${PYTHON_SINGLE_USEDEP}]
 		$(python_gen_cond_dep '
 			dev-python/future[${PYTHON_USEDEP}]
 			dev-python/httplib2[${PYTHON_USEDEP}]
@@ -85,9 +87,8 @@ COMMON_DEPEND="
 			dev-python/pyyaml[${PYTHON_USEDEP}]
 			>=dev-python/qscintilla-python-2.10.1[qt5(+),${PYTHON_USEDEP}]
 			dev-python/requests[${PYTHON_USEDEP}]
-			<dev-python/sip-5:=[${PYTHON_USEDEP}]
+			<dev-python/sip-6.6:=[${PYTHON_USEDEP}]
 			dev-python/six[${PYTHON_USEDEP}]
-			>=sci-libs/gdal-2.2.3[python,${PYTHON_USEDEP}]
 			postgres? ( dev-python/psycopg:2[${PYTHON_USEDEP}] )
 		')
 	)

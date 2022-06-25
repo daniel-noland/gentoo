@@ -7,7 +7,7 @@ inherit toolchain-funcs
 
 MY_COMMIT="6c10c305e8dde193546e6b33cf8a785d5dc123e2"
 
-DESCRIPTION="Google snappy in C for Linux Kernel"
+DESCRIPTION="Google's snappy compression library for the Linux Kernel"
 HOMEPAGE="https://github.com/zeevt/csnappy"
 SRC_URI="https://github.com/zeevt/csnappy/archive/${MY_COMMIT}.tar.gz -> ${P}.tar.gz"
 S="${WORKDIR}"/${PN}-${MY_COMMIT}
@@ -16,7 +16,7 @@ S="${WORKDIR}"/${PN}-${MY_COMMIT}
 LICENSE="BSD"
 # 0/${PV} b/c of the SONAME situation (see below).
 SLOT="0/${PV}"
-KEYWORDS="~amd64 ~ppc64 ~x86"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
 
 # https://github.com/zeevt/csnappy/issues/33
 # No SONAME yet.

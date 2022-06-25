@@ -9,7 +9,7 @@ inherit edo perl-module toolchain-funcs
 
 DESCRIPTION="Fast, compact, powerful binary deserialization"
 SLOT="0"
-KEYWORDS="~amd64 ~ppc64 ~x86"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="test"
 RESTRICT="!test? ( test )"
 
@@ -25,6 +25,7 @@ DEPEND="
 	>=dev-libs/miniz-2.2.0-r1:=
 "
 BDEPEND="${RDEPEND}
+	dev-perl/Devel-CheckLib
 	>=virtual/perl-ExtUtils-MakeMaker-7.0
 	>=virtual/perl-ExtUtils-ParseXS-2.210.0
 	virtual/perl-File-Path
