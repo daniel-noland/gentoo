@@ -25,9 +25,10 @@ DESCRIPTION="PlayStation 2 emulator"
 HOMEPAGE="https://pcsx2.net/"
 
 LICENSE="
-	GPL-3+ Apache-2.0 BSD BSD-2 BSD-4 Boost-1.0 GPL-2+ LGPL-2.1+
+	GPL-3+ Apache-2.0 BSD BSD-2 BSD-4 Boost-1.0 GPL-2+ ISC LGPL-2.1+
 	LGPL-3+ MIT OFL-1.1 ZLIB public-domain"
 SLOT="0"
+# TODO: proper IUSE to handle cubeb backends with the now-required bundled copy
 IUSE="cpu_flags_x86_sse4_1 pulseaudio qt6 test vulkan wayland"
 REQUIRED_USE="cpu_flags_x86_sse4_1" # dies at runtime if no support
 RESTRICT="!test? ( test )"
@@ -40,7 +41,6 @@ RDEPEND="
 	dev-libs/libchdr
 	>=dev-libs/libfmt-7.1.3:=
 	dev-libs/libzip:=[zstd]
-	media-libs/cubeb
 	media-libs/harfbuzz
 	media-libs/libglvnd
 	media-libs/libpng:=
@@ -81,12 +81,11 @@ FILECAPS=(
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-1.7.0-crcs.patch
-	"${FILESDIR}"/${PN}-1.7.3329-clang16.patch
 	"${FILESDIR}"/${PN}-1.7.3329-lto.patch
 	"${FILESDIR}"/${PN}-1.7.3329-musl.patch
 	"${FILESDIR}"/${PN}-1.7.3329-qt6.patch
-	"${FILESDIR}"/${PN}-1.7.3329-unbundle.patch
 	"${FILESDIR}"/${PN}-1.7.3329-wx-vs-sdl.patch
+	"${FILESDIR}"/${PN}-1.7.3351-unbundle.patch
 )
 
 src_unpack() {
@@ -96,6 +95,17 @@ src_unpack() {
 			EGIT_SUBMODULES+=(
 				3rdparty/glslang/glslang # needs StandAlone/ResourceLimits.h
 				3rdparty/vulkan-headers # to keep in sync with glslang
+
+				# system rapidyaml is still used, but this uses another part
+				# of the source and so allow submodule for now
+				# https://github.com/PCSX2/pcsx2/commit/af646e449
+				3rdparty/rapidyaml/rapidyaml
+				3rdparty/rapidyaml/rapidyaml/extern/c4core
+				3rdparty/rapidyaml/rapidyaml/ext/c4core/src/c4/ext/fast_float
+
+				# TODO?: check if easy to unbundle when look at next nightly bump
+				# (there is a -DUSE_ACHIVEMENTS to be optional too)
+				3rdparty/rcheevos/rcheevos
 			)
 		fi
 		git-r3_src_unpack
