@@ -12,7 +12,7 @@ S="${WORKDIR}"/${P}
 
 LICENSE="CC-BY-3.0 GPL-3+"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64"
 IUSE="gstreamer spell"
 
 RDEPEND="
@@ -43,6 +43,13 @@ BDEPEND="
 
 src_prepare() {
 	default
+
+	# Remove tests that require the network.
+	for test in avatardownload filters inlinemediadownloader \
+							   texttransform tweetparsing; do
+		sed -i "/${test}/d" tests/meson.build || die
+	done
+
 	vala_setup
 }
 

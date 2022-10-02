@@ -35,12 +35,28 @@ fi
 
 DESCRIPTION="Light, fast and simple C library focused on standards-conformance and safety"
 HOMEPAGE="https://musl.libc.org"
+
 LICENSE="MIT LGPL-2 GPL-2"
 SLOT="0"
-IUSE="headers-only"
+IUSE="crypt headers-only"
 
-QA_SONAME="/usr/lib/libc.so"
-QA_DT_NEEDED="/usr/lib/libc.so"
+QA_SONAME="usr/lib/libc.so"
+QA_DT_NEEDED="usr/lib/libc.so"
+# bug #830213
+QA_PRESTRIPPED="usr/lib/crtn.o"
+
+# We want crypt on by default for this as sys-libs/libxcrypt isn't (yet?)
+# built as part as crossdev. Also, elide the blockers when in cross-*,
+# as it doesn't make sense to block the normal CBUILD libxcrypt at all
+# there when we're installing into /usr/${CHOST} anyway.
+if [[ ${CATEGORY} == cross-* ]] ; then
+	IUSE="${IUSE/crypt/+crypt}"
+else
+	RDEPEND="
+		crypt? ( !sys-libs/libxcrypt[system] )
+		!crypt? ( sys-libs/libxcrypt[system] )
+	"
+fi
 
 is_crosscompile() {
 	[[ ${CHOST} != ${CTARGET} ]]
@@ -132,6 +148,12 @@ src_install() {
 	is_crosscompile && sysroot=/usr/${CTARGET}
 	local ldso=$(basename "${ED}"${sysroot}/lib/ld-musl-*)
 	dosym ${EPREFIX}${sysroot}/lib/${ldso} ${sysroot}/usr/bin/ldd
+
+	if ! use crypt ; then
+		# Allow sys-libs/libxcrypt[system] to provide it instead
+		rm "${ED}/usr/include/crypt.h" || die
+		rm "${ED}/usr/$(get_libdir)/libcrypt.a" || die
+	fi
 
 	if [[ ${CATEGORY} != cross-* ]] ; then
 		# Fish out of config:

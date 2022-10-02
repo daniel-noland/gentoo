@@ -10,10 +10,10 @@ HOMEPAGE="https://www.rsyslog.com/tag/libfastjson/"
 SRC_URI="http://download.rsyslog.com/${PN}/${P}.tar.gz"
 LICENSE="MIT"
 SLOT="0/4.3.0"
-KEYWORDS="amd64 arm arm64 ~hppa sparc x86"
+KEYWORDS="amd64 arm arm64 ~hppa ~ia64 ~ppc64 ~riscv sparc x86"
 IUSE="static-libs"
 
-BEPEND=">=sys-devel/autoconf-archive-2015.02.04"
+BDEPEND=">=sys-devel/autoconf-archive-2015.02.04"
 
 DOCS=( AUTHORS ChangeLog )
 

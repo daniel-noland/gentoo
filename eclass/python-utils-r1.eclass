@@ -35,6 +35,7 @@ fi
 if [[ ! ${_PYTHON_UTILS_R1} ]]; then
 
 [[ ${EAPI} == [67] ]] && inherit eapi8-dosym
+[[ ${EAPI} == 6 ]] && inherit eqawarn
 inherit multiprocessing toolchain-funcs
 
 # @ECLASS_VARIABLE: _PYTHON_ALL_IMPLS
@@ -454,21 +455,21 @@ _python_export() {
 				local d
 				case ${impl} in
 					python2.7)
-						PYTHON_PKG_DEP='>=dev-lang/python-2.7.5-r2:2.7';;
+						PYTHON_PKG_DEP='>=dev-lang/python-2.7.10_p15:2.7';;
 					python3.8)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.8.12_p1-r1:3.8";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.8.13:3.8";;
 					python3.9)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.9.9-r1:3.9";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.9.12:3.9";;
 					python3.10)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.10.0_p1-r1:3.10";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.10.4:3.10";;
 					python3.11)
-						PYTHON_PKG_DEP=">=dev-lang/python-3.11.0_beta1-r1:3.11";;
+						PYTHON_PKG_DEP=">=dev-lang/python-3.11.0_beta4:3.11";;
 					python*)
 						PYTHON_PKG_DEP="dev-lang/python:${impl#python}";;
 					pypy)
-						PYTHON_PKG_DEP='>=dev-python/pypy-7.3.0:0=';;
+						PYTHON_PKG_DEP='>=dev-python/pypy-7.3.9:0=';;
 					pypy3)
-						PYTHON_PKG_DEP='>=dev-python/pypy3-7.3.7-r1:0=';;
+						PYTHON_PKG_DEP='>=dev-python/pypy3-7.3.9_p1:0=';;
 					*)
 						die "Invalid implementation: ${impl}"
 				esac
@@ -1330,6 +1331,14 @@ epytest() {
 		# sterilize pytest-markdown as it runs code snippets from all
 		# *.md files found without any warning
 		-p no:markdown
+		# pytest-sugar undoes everything that's good about pytest output
+		# and makes it hard to read logs
+		-p no:sugar
+		# pytest-xvfb automatically spawns Xvfb for every test suite,
+		# effectively forcing it even when we'd prefer the tests
+		# not to have DISPLAY at all, causing crashes sometimes
+		# and causing us to miss missing virtualx usage
+		-p no:xvfb
 	)
 	local x
 	for x in "${EPYTEST_DESELECT[@]}"; do

@@ -13,7 +13,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 SLOT="2"
-KEYWORDS="~alpha amd64 ~arm ~arm64 ~ia64 ~riscv ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~riscv ~x86 ~amd64-linux ~x86-linux"
 IUSE="calendar collab cups debug eds +goffice grammar +introspection latex map math ots +plugins readline redland spell wordperfect wmf thesaurus"
 # You need 'plugins' enabled if want to enable the extra plugins
 REQUIRED_USE="
@@ -84,6 +84,7 @@ PATCHES=(
 	"${WORKDIR}"/patches/${PN}-3.0.4-pygobject.patch
 	"${WORKDIR}"/patches/${PN}-3.0.4-asio-standalone-placeholders.patch
 	"${WORKDIR}"/patches/${PN}-3.0.4-c++17-dynamic-exception-specifications.patch
+	"${FILESDIR}"/${PN}-3.0.5-musl-lose-precision-fix.patch
 )
 
 src_prepare() {

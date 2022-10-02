@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{8..11} )
 
 inherit meson python-any-r1
 
@@ -13,7 +13,7 @@ SRC_URI="https://github.com/hughsie/libxmlb/archive/${PV}.tar.gz -> ${P}.tar.gz"
 LICENSE="LGPL-2.1+"
 SLOT="0/2" # libxmlb.so version
 
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv x86"
 IUSE="doc introspection stemmer test"
 
 RESTRICT="!test? ( test )"
@@ -39,6 +39,10 @@ BDEPEND="
 		$(python_gen_any_dep 'dev-python/setuptools[${PYTHON_USEDEP}]')
 	)
 "
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-0.3.9-no_installed_tests.patch
+)
 
 python_check_deps() {
 	has_version -b "dev-python/setuptools[${PYTHON_USEDEP}]"

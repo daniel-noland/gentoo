@@ -4,7 +4,7 @@
 # @ECLASS: toolchain-funcs.eclass
 # @MAINTAINER:
 # Toolchain Ninjas <toolchain@gentoo.org>
-# @SUPPORTED_EAPIS: 5 6 7 8
+# @SUPPORTED_EAPIS: 6 7 8
 # @BLURB: functions to query common info about the toolchain
 # @DESCRIPTION:
 # The toolchain-funcs aims to provide a complete suite of functions
@@ -13,9 +13,8 @@
 # in such a way that you can rely on the function always returning
 # something sane.
 
-case ${EAPI:-0} in
-	# EAPI=0 is still used by crossdev, bug #797367
-	0|5|6|7|8) ;;
+case ${EAPI} in
+	6|7|8) ;;
 	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
 
@@ -601,8 +600,8 @@ _tc-has-openmp() {
 }
 
 # @FUNCTION: tc-has-openmp
-# @DEPRECATED: tc-check-openmp
 # @USAGE: [toolchain prefix]
+# @DEPRECATED: tc-check-openmp
 # @DESCRIPTION:
 # See if the toolchain supports OpenMP.  This function is deprecated and will be
 # removed on 2023-01-01.

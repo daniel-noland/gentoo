@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -14,7 +14,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris"
+KEYWORDS="amd64 arm arm64 ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris"
 IUSE="examples ssl"
 
 RDEPEND="
@@ -37,7 +37,7 @@ python_test() {
 	# so we need to run them separately and not pass any args to pytest
 	pytest ${PN}/test/test_misc.py || die "Tests failed with ${EPYTHON}"
 	# Some of these tests tend to fail
-	local skipped_tests=(
+	local EPYTEST_DESELECT=(
 		# Those tests are run separately
 		pyftpdlib/test/test_misc.py
 		# https://github.com/giampaolo/pyftpdlib/issues/471
@@ -70,7 +70,7 @@ python_test() {
 	local -x TZ=UTC+1
 	# Skips some shoddy tests plus increases timeouts
 	local -x TRAVIS=1
-	epytest -p no:xvfb ${skipped_tests[@]/#/--deselect }
+	epytest
 }
 
 python_install_all() {

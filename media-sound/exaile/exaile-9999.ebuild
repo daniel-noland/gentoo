@@ -48,10 +48,6 @@ RDEPEND="${PYTHON_DEPS}
 
 RESTRICT="test" #315589
 
-PATCHES=(
-	"${FILESDIR}/${PN}-4.1.1-metainfo.patch"
-)
-
 pkg_setup() {
 	python-single-r1_pkg_setup
 }

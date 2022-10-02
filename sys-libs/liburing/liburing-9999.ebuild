@@ -21,6 +21,10 @@ IUSE="static-libs"
 # fsync test hangs forever
 RESTRICT="test"
 
+# At least installed headers need <linux/*>, bug #802516
+DEPEND=">=sys-kernel/linux-headers-5.1"
+RDEPEND="${DEPEND}"
+
 src_prepare() {
 	default
 
@@ -43,7 +47,7 @@ multilib_src_configure() {
 		--cxx="$(tc-getCXX)"
 	)
 	# No autotools configure! "econf" will fail.
-	TMPDIR="${T}" ./configure "${myconf[@]}"
+	TMPDIR="${T}" ./configure "${myconf[@]}" || die
 }
 
 multilib_src_compile() {

@@ -52,6 +52,7 @@ DOC_CONTENTS="
 
 PATCHES=(
 	"${FILESDIR}"/0.9.3-glibc-sysmacros.patch
+	"${FILESDIR}"/${P}-glibc-2.36.patch
 )
 
 src_prepare() {
@@ -105,8 +106,8 @@ src_install() {
 
 pkg_postinst() {
 	readme.gentoo_print_elog
-	if ! has_version "sys-kernel/dracut" && ! has_version "sys-kernel/genkernel-next[plymouth]"; then
+	if ! has_version "sys-kernel/dracut"; then
 		ewarn "If you want initramfs builder with plymouth support, please emerge"
-		ewarn "sys-kernel/dracut or sys-kernel/genkernel-next[plymouth]."
+		ewarn "sys-kernel/dracut."
 	fi
 }

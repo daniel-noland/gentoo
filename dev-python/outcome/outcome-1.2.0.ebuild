@@ -20,7 +20,7 @@ SRC_URI="
 
 LICENSE="|| ( Apache-2.0 MIT )"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	dev-python/attrs[${PYTHON_USEDEP}]
@@ -34,4 +34,4 @@ BDEPEND="
 "
 
 distutils_enable_tests pytest
-distutils_enable_sphinx docs/source dev-python/sphinxcontrib-trio
+distutils_enable_sphinx docs/source dev-python/sphinxcontrib-trio dev-python/sphinx_rtd_theme

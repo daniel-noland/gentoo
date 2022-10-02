@@ -14,7 +14,7 @@ SLOT="0/${PV}"
 IUSE="curl doc fftw +glpk gnuplot gui hdf5 java opengl
 	portaudio postscript +qhull +qrupdate readline sndfile +sparse
 	ssl static-libs sundials X zlib"
-KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ppc ~ppc64 ~riscv ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm arm64 ~hppa ~ppc ~ppc64 ~riscv x86 ~amd64-linux ~x86-linux"
 
 # Although it is listed in INSTALL.OCTAVE as a build tool, Octave runs
 # "makeinfo" from sys-apps/texinfo at runtime to convert its texinfo
@@ -83,18 +83,19 @@ RDEPEND="
 # bug #846968 for sundials < dep
 DEPEND="${RDEPEND}
 	dev-util/gperf
-	virtual/pkgconfig
 	doc? (
 		dev-texlive/texlive-fontsrecommended
 		dev-texlive/texlive-plaingeneric
 		dev-texlive/texlive-metapost
 		virtual/latex-base
 	)
-	gui? ( dev-qt/linguist-tools:5 )
 	java? ( >=virtual/jdk-1.6.0 )
 	qrupdate? ( app-misc/pax-utils )
 	sparse? ( app-misc/pax-utils )
 	|| ( media-gfx/imagemagick media-gfx/graphicsmagick[imagemagick] )"
+BDEPEND="
+	virtual/pkgconfig
+	gui? ( dev-qt/linguist-tools:5 )"
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-5.1.0-pkgbuilddir.patch

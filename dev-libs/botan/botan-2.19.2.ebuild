@@ -16,7 +16,7 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="BSD-2"
 SLOT="2/$(ver_cut 1-2)" # soname version
-KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86 ~ppc-macos"
+KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ia64 ppc ppc64 ~riscv ~sparc x86 ~ppc-macos"
 IUSE="doc boost bzip2 lzma python static-libs sqlite test tools zlib"
 RESTRICT="!test? ( test )"
 
@@ -32,7 +32,7 @@ REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
 # NOTE: Boost is needed at runtime too for the CLI tool.
 DEPEND="
-	boost? ( >=dev-libs/boost-1.48:= )
+	boost? ( dev-libs/boost:= )
 	bzip2? ( >=app-arch/bzip2-1.0.5:= )
 	lzma? ( app-arch/xz-utils:= )
 	python? ( ${PYTHON_DEPS} )

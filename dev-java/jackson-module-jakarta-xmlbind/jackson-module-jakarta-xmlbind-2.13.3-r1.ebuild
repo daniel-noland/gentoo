@@ -18,7 +18,7 @@ SRC_URI="https://github.com/FasterXML/jackson-modules-base/archive/jackson-modul
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm arm64 ppc64 x86"
 
 # Common dependencies
 # POM: pom.xml
@@ -62,7 +62,7 @@ JAVA_TEST_GENTOO_CLASSPATH="jaxb-runtime-4,junit-4"
 JAVA_TEST_SRC_DIR="src/test/java"
 
 JAVA_TEST_EXCLUDES=(
-	# Upstream does not run these 
+	# Upstream does not run these
 	com.fasterxml.jackson.module.jakarta.xmlbind.failing.TestUnwrapping
 	com.fasterxml.jackson.module.jakarta.xmlbind.failing.TestXmlID3
 )

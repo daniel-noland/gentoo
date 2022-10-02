@@ -4,7 +4,7 @@
 EAPI=7
 
 LUA_COMPAT=( lua5-{1..2} luajit )
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{8..11} )
 PYTHON_REQ_USE='threads(+)'
 
 WAF_PV=2.0.22
@@ -16,7 +16,7 @@ HOMEPAGE="https://mpv.io/ https://github.com/mpv-player/mpv"
 
 if [[ ${PV} != *9999* ]]; then
 	SRC_URI="https://github.com/mpv-player/mpv/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ppc ppc64 ~riscv x86 ~amd64-linux"
+	KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~loong ppc ppc64 ~riscv x86 ~amd64-linux"
 	DOCS=( RELEASE_NOTES )
 else
 	EGIT_REPO_URI="https://github.com/mpv-player/mpv.git"

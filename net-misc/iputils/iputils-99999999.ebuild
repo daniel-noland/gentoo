@@ -12,7 +12,7 @@ EAPI="7"
 
 PLOCALES="de fr ja pt_BR tr uk zh_CN"
 
-inherit fcaps flag-o-matic meson plocale systemd toolchain-funcs
+inherit fcaps meson plocale systemd toolchain-funcs
 
 if [[ ${PV} == 99999999 ]] ; then
 	EGIT_REPO_URI="https://github.com/iputils/iputils.git"
@@ -110,6 +110,10 @@ src_test() {
 src_install() {
 	meson_src_install
 
+	FILECAPS=( cap_net_raw usr/bin/ping )
+	use arping && FILECAPS+=( usr/bin/arping )
+	use clockdiff && FILECAPS+=( usr/bin/clockdiff )
+
 	dosym ping /usr/bin/ping4
 	dosym ping /usr/bin/ping6
 
@@ -159,15 +163,12 @@ pkg_preinst() {
 }
 
 pkg_postinst() {
+	fcaps_pkg_postinst
+
 	if [[ ${HAD_TFTPD_VERSION} -eq 1 ]] ; then
 		ewarn "This upstream version (>= 20211215) drops two tools:"
 		ewarn "1. tftpd (alternatives: net-ftp/tftp-hpa, net-dns/dnsmasq)"
 		ewarn "2. traceroute6 (alternatives: net-analyzer/mtr, net-analyzer/traceroute)"
 		ewarn "Please install one of the listed alternatives if needed!"
 	fi
-
-	fcaps cap_net_raw \
-		bin/ping \
-		$(usex arping 'bin/arping' '') \
-		$(usex clockdiff 'usr/bin/clockdiff' '')
 }

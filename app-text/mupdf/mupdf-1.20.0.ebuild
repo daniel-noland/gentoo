@@ -15,7 +15,7 @@ S="${WORKDIR}"/${P}-source
 
 LICENSE="AGPL-3"
 SLOT="0/${PV}"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~s390 ~x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ppc ppc64 ~riscv ~s390 x86"
 IUSE="+javascript opengl ssl X"
 REQUIRED_USE="opengl? ( javascript )"
 
@@ -51,6 +51,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-1.15-openssl-x11.patch
 	# General cross fixes from Debian (refreshed)
 	"${FILESDIR}"/${PN}-1.19.0-cross-fixes.patch
+	"${FILESDIR}"/${P}-lcms2.patch
 )
 
 src_prepare() {
@@ -68,6 +69,11 @@ src_prepare() {
 		-e "1iverbose = yes" \
 		-e "1ibuild = debug" \
 		-i Makerules || die "Failed adding build variables to Makerules in src_prepare()"
+
+	# Adjust MuPDF version in .pc file created by the
+	# mupdf-1.10a-add-desktop-pc-xpm-files.patch file
+	sed -e "s/Version: \(.*\)/Version: ${PV}/" \
+		-i platform/debian/${PN}.pc || die "Failed substituting version in ${PN}.pc"
 }
 
 _emake() {

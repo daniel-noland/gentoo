@@ -35,6 +35,7 @@ DEPEND="
 	dev-libs/libinput:=
 	dev-libs/libsigc++:2
 	>=dev-libs/libfmt-7.0.0:=
+	<dev-libs/libfmt-9.0.0:=
 	>=dev-libs/spdlog-1.8.5:=
 	dev-libs/date:=
 	dev-libs/wayland
@@ -55,6 +56,10 @@ DEPEND="
 	wifi? ( || ( sys-apps/util-linux net-wireless/rfkill ) )
 "
 RDEPEND="${DEPEND}"
+
+PATCHES=(
+	"${FILESDIR}"/${P}-libcxx-build.patch
+)
 
 src_configure() {
 	local emesonargs=(

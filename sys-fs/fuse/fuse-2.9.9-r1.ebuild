@@ -28,9 +28,6 @@ PATCHES=(
 
 pkg_setup() {
 	if use kernel_linux ; then
-		if kernel_is lt 2 6 9 ; then
-			die "Your kernel is too old."
-		fi
 		CONFIG_CHECK="~FUSE_FS"
 		WARNING_FUSE_FS="You need to have FUSE module built to use user-mode utils"
 		linux-info_pkg_setup
@@ -47,9 +44,9 @@ src_prepare() {
 
 src_configure() {
 	# lto not supported yet -- https://github.com/libfuse/libfuse/issues/198
-	# gcc-9 with -flto leads to link failures: #663518,
+	# gcc-9 with -flto leads to link failures: #663518 (see also #863899)
 	# https://gcc.gnu.org/PR91186
-	filter-flags -flto*
+	filter-lto
 
 	econf \
 		INIT_D_PATH="${EPREFIX}/etc/init.d" \

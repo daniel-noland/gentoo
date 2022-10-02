@@ -3,9 +3,11 @@
 
 EAPI=8
 
+DISTUTILS_SINGLE_IMPL=1
+DISTUTILS_USE_PEP517=no
 PYTHON_COMPAT=( python3_{8..11} )
 
-inherit autotools gnome2-utils linux-info python-single-r1 systemd xdg-utils
+inherit autotools distutils-r1 gnome2-utils linux-info systemd xdg-utils
 
 DESCRIPTION="Simple and intuitive GTK+ Bluetooth Manager"
 HOMEPAGE="https://github.com/blueman-project/blueman/"
@@ -25,22 +27,23 @@ fi
 # source files are mixed GPL-3+ and GPL-2+
 LICENSE="GPL-3+ GPL-2"
 SLOT="0"
-IUSE="appindicator network nls policykit pulseaudio"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+IUSE="network nls policykit pulseaudio"
 
 DEPEND="
 	$(python_gen_cond_dep '
 		dev-python/pygobject:3[${PYTHON_USEDEP}]
 	')
 	>=net-wireless/bluez-5:=
-	${PYTHON_DEPS}"
+"
 BDEPEND="
 	$(python_gen_cond_dep '
 		dev-python/cython[${PYTHON_USEDEP}]
 	')
 	virtual/pkgconfig
-	nls? ( sys-devel/gettext )"
-RDEPEND="${DEPEND}
+	nls? ( sys-devel/gettext )
+"
+RDEPEND="
+	${DEPEND}
 	$(python_gen_cond_dep '
 		dev-python/pycairo[${PYTHON_USEDEP}]
 	')
@@ -52,9 +55,6 @@ RDEPEND="${DEPEND}
 		x11-themes/faenza-icon-theme
 		x11-themes/mate-icon-theme
 	)
-	appindicator? (
-		dev-libs/libappindicator:3[introspection]
-	)
 	network? (
 		net-firewall/iptables
 		|| (
@@ -64,7 +64,7 @@ RDEPEND="${DEPEND}
 		|| (
 			net-dns/dnsmasq
 			net-misc/dhcp
-			>=net-misc/networkmanager-0.8
+			>=net-misc/networkmanager-0.8[introspection]
 		)
 	)
 	policykit? (
@@ -97,18 +97,22 @@ pkg_setup() {
 }
 
 src_prepare() {
-	default
-	[[ ${PV} == 9999 ]] && eautoreconf
+	if [[ ${PV} == 9999 ]]; then
+		eautoreconf
+	else
+		# remove this when upstream switches to automake with .pyc fix
+		eautomake
+	fi
+	distutils-r1_src_prepare
 }
 
-src_configure() {
+python_configure() {
 	local myconf=(
 		--disable-runtime-deps-check
 		--disable-static
 		--with-systemdsystemunitdir="$(systemd_get_systemunitdir)"
 		--with-systemduserunitdir="$(systemd_get_userunitdir)"
 		--with-dhcp-config="/etc/dhcp/dhcpd.conf"
-		$(use_enable appindicator)
 		$(use_enable policykit polkit)
 		$(use_enable nls)
 		$(use_enable pulseaudio)
@@ -119,7 +123,17 @@ src_configure() {
 	econf "${myconf[@]}"
 }
 
-src_install() {
+python_compile() {
+	default
+}
+
+python_test() {
+	# import tests are not very valuable and fail if /dev/rfkill
+	# does not exist
+	"${EPYTHON}" -m unittest -v test/test_gobject.py || die
+}
+
+python_install() {
 	default
 
 	if use policykit; then

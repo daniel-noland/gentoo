@@ -1,6 +1,10 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-08-15)
+# deps not keyworded
+dev-util/pkgcheck emacs
+
 # Matt Turner <mattst88@gentoo.org> (2022-06-25)
 # net-libs/libqrtr-glib not keyworded
 net-misc/modemmanager qrtr
@@ -213,10 +217,6 @@ app-admin/syslog-ng test
 # app-emulation/xen-tools is not keyworded on ia64.
 sys-boot/grub grub_platforms_xen grub_platforms_xen-32 grub_platforms_xen-pvh
 
-# Thomas Deutschmann <whissi@gentoo.org> (2019-11-11)
-# dev-util/google-perftools is not keyworded yet
-sys-block/fio tcmalloc
-
 # Mart Raudsepp <leio@gentoo.org> (2019-08-18)
 # media-video/pipewire is not keyworded yet
 x11-wm/mutter screencast
@@ -280,10 +280,6 @@ media-video/mplayer dvdnav
 # Requires USE=v4l that is masked in this profile.
 media-video/ffmpeg libv4l
 
-# Michał Górny <mgorny@gentoo.org> (2017-08-07)
-# Requires USE=bluetooth that is masked in this profile.
-media-sound/pulseaudio native-headset
-
 # Sergei Trofimovich <slyfox@gentoo.org> (2017-07-20)
 # pulls in unkeyworded java
 sci-libs/gdal mdb
@@ -334,7 +330,7 @@ gnome-extra/nm-applet teamd
 # Opt-out of ofono support until there is a user request,
 # see also pulseaudio/connman
 net-misc/networkmanager ofono
- 
+
 # Thomas Deutschmann <whissi@gentoo.org> (2016-08-26)
 # Enable numa support on supported architectures
 dev-db/mysql -numa
@@ -434,10 +430,6 @@ media-libs/libgphoto2 serial
 # Missing keywords, bug #492820
 net-im/telepathy-connection-managers sipe
 
-# Mark Wright <gienah@gentoo.org> (2013-10-26)
-# template-haskell not yet available
-dev-haskell/dataenc test
-
 # Pacho Ramos <pacho@gentoo.org> (2013-07-20)
 # Keywords pending, bug #476710
 >=gnome-base/gnome-extra-apps-3.8 games
@@ -462,12 +454,6 @@ gnome-extra/sushi office
 # Agostino Sarubbo <ago@gentoo.org> (2012-12-18)
 # kde is not stable, then no needs phonon backends
 media-libs/phonon gstreamer vlc
-
-# Robin H Johnson <robbat2@gentoo.org> (2012-11-01)
-# MySQL 5.5 wants systemtap, tcmalloc & jemalloc
->=dev-db/mysql-5.5 tcmalloc
->=dev-db/mariadb-5.5 tcmalloc
->=dev-db/percona-server-5.5 tcmalloc
 
 # Raúl Porcel <armin76@gentoo.org> (2012-05-28)
 # Needs x11-misc/lightdm(which also requires some other deps)

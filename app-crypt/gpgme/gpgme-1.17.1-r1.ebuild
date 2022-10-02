@@ -3,14 +3,14 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{8..11} )
 DISTUTILS_OPTIONAL=1
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/gnupg.asc
 
 inherit distutils-r1 libtool flag-o-matic qmake-utils toolchain-funcs verify-sig
 
 DESCRIPTION="GnuPG Made Easy is a library for making GnuPG easier to use"
-HOMEPAGE="http://www.gnupg.org/related_software/gpgme"
+HOMEPAGE="https://www.gnupg.org/related_software/gpgme"
 SRC_URI="mirror://gnupg/gpgme/${P}.tar.bz2
 	verify-sig? ( mirror://gnupg/gpgme/${P}.tar.bz2.sig )"
 

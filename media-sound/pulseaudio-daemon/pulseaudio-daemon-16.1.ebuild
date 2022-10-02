@@ -16,7 +16,7 @@ if [[ ${PV} = 9999 ]]; then
 	EGIT_REPO_URI="https://gitlab.freedesktop.org/pulseaudio/pulseaudio"
 else
 	SRC_URI="https://freedesktop.org/software/pulseaudio/releases/${MY_P}.tar.xz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
 fi
 
 S="${WORKDIR}/${MY_P}"
@@ -61,7 +61,7 @@ gstreamer_deps="
 	>=media-libs/gstreamer-1.14
 "
 COMMON_DEPEND="
-	>=media-libs/libpulse-${PV}[dbus?,glib?,systemd?,valgrind?,X?]
+	~media-libs/libpulse-${PV}[dbus?,glib?,systemd?,valgrind?,X?]
 	dev-libs/libatomic_ops
 	>=media-libs/libsndfile-1.0.20
 	>=media-libs/speexdsp-1.2
@@ -138,6 +138,7 @@ RDEPEND="
 		ldac? ( media-plugins/gst-plugins-ldac )
 		aptx? ( media-plugins/gst-plugins-openaptx )
 	)
+	!media-video/pipewire[sound-server(+)]
 "
 unset gstreamer_deps
 

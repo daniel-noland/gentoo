@@ -38,8 +38,13 @@ pkg_setup() {
 mingw-foreach_tool() {
 	use !tools || use headers-only && return
 
-	local tool
-	for tool in gendef genidl widl; do
+	local tool=widl
+	if use !amd64 && use !x86 && use !arm64 && use !arm; then
+		einfo "Skipping widl due to unsupported platform" #853250
+		tool=
+	fi
+
+	for tool in gendef genidl ${tool}; do
 		# not using top-level --with-tools given it skips widl
 		pushd mingw-w64-tools/${tool} >/dev/null || die
 		"${@}"
@@ -49,9 +54,7 @@ mingw-foreach_tool() {
 
 src_configure() {
 	# native tools, see #644556
-	local toolsconf=(
-		--prefix="${EPREFIX}"/usr
-	)
+	local toolsconf=()
 	# normally only widl is prefixed, but avoids clash with other targets
 	${MW_CROSS} && toolsconf+=( --program-prefix=${CTARGET}- )
 
@@ -60,8 +63,11 @@ src_configure() {
 	MW_LDFLAGS=${LDFLAGS} # keep non-stripped for gendef not respecting it
 
 	# likely cross-compiling from here, update toolchain variables
-	${MW_CROSS} && [[ ! -v MINGW_BYPASS ]] &&
+	if ${MW_CROSS} && [[ ! -v MINGW_BYPASS ]]; then
 		unset AR AS CC CPP CXX LD NM OBJCOPY OBJDUMP RANLIB RC STRIP
+		filter-flags '-fstack-protector*' #870136
+		filter-flags '-fuse-ld=*'
+	fi
 	local CHOST=${CTARGET}
 	strip-unsupported-flags
 

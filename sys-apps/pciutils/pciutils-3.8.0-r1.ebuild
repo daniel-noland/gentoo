@@ -11,7 +11,7 @@ SRC_URI="https://mj.ucw.cz/download/linux/pci/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
 IUSE="dns +kmod static-libs +udev zlib"
 REQUIRED_USE="static-libs? ( !udev )"
 
@@ -85,7 +85,7 @@ check_binutils_version() {
 			eerror "2. Run: . /etc/profile"
 			eerror "3. Try emerging again with: emerge -v1 ${CATEGORY}/${P}"
 			eerror "4. Complete your world upgrade if you were performing one."
-			eerror "4. Perform a depclean (emerge -acv)"
+			eerror "5. Perform a depclean (emerge -acv)"
 			eerror "\tYou MUST depclean after every world upgrade in future!"
 			die "Old binutils found! Change to a newer ld using binutils-config (bug #847133)."
 		fi
@@ -112,6 +112,9 @@ src_prepare() {
 }
 
 multilib_src_configure() {
+	# bug #640836, bug #852929
+	filter-lto
+
 	# bug #471102
 	append-lfs-flags
 }

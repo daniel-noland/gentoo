@@ -4,7 +4,7 @@
 EAPI=8
 
 PYTHON_COMPAT=( python3_{8,9,10} )
-PYTHON_REQ_USE="threads(+),xml"
+PYTHON_REQ_USE="threads(+),xml(+)"
 
 inherit autotools linux-info python-single-r1 readme.gentoo-r1 udev
 
@@ -15,7 +15,7 @@ SRC_URI="mirror://sourceforge/hplip/${P}.tar.gz
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86"
+KEYWORDS="amd64 arm arm64 ppc ppc64 x86"
 
 IUSE="doc fax +hpcups hpijs kde libnotify libusb0 minimal parport policykit qt5 scanner +snmp static-ppds X"
 
@@ -283,4 +283,8 @@ src_install() {
 pkg_postinst() {
 	udev_reload
 	readme.gentoo_print_elog
+}
+
+pkg_postrm() {
+	udev_reload
 }

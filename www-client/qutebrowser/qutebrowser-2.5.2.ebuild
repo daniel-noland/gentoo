@@ -5,8 +5,7 @@ EAPI=8
 
 DISTUTILS_SINGLE_IMPL=1
 DISTUTILS_USE_PEP517=setuptools
-# py3.11: wait for https://github.com/python/cpython/issues/93252
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{8..11} )
 inherit distutils-r1 optfeature xdg
 
 if [[ ${PV} == 9999 ]]; then
@@ -14,7 +13,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/qutebrowser/qutebrowser.git"
 else
 	SRC_URI="https://github.com/qutebrowser/qutebrowser/releases/download/v${PV}/${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm64 ~x86"
+	KEYWORDS="amd64 ~arm64 ~x86"
 fi
 
 DESCRIPTION="Keyboard-driven, vim-like browser based on PyQt5 and QtWebEngine"
@@ -80,6 +79,8 @@ src_prepare() {
 }
 
 python_test() {
+	local -x PYTEST_QT_API=pyqt5
+
 	local EPYTEST_DESELECT=(
 		# end2end and other IPC tests are broken with "Name error" if
 		# socket path is over 104 characters (=124 in /var/tmp/portage)
@@ -99,7 +100,7 @@ python_test() {
 	use widevine && EPYTEST_DESELECT+=( tests/unit/config/test_qtargs.py )
 
 	# skip benchmarks (incl. _tree), and warning tests broken by -Wdefault
-	epytest -k 'not _bench and not _matches_tree and not _warning'
+	epytest -p xvfb -k 'not _bench and not _matches_tree and not _warning'
 }
 
 python_install_all() {

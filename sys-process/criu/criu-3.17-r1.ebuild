@@ -60,6 +60,8 @@ PATCHES=(
 	"${FILESDIR}/criu-3.16.1-buildsystem.patch"
 
 	"${FILESDIR}/${P}-amdgpu-build-fixes.patch"
+	"${FILESDIR}/${PN}-3.17-glibc-2.36.patch"
+	"${FILESDIR}/${PN}-3.17-glibc-2.36-deux.patch"
 )
 
 criu_arch() {

@@ -11,11 +11,11 @@ SRC_URI="https://github.com/openSUSE/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm64 ~riscv x86"
 IUSE="doc lvm pam test systemd xattr"
 RESTRICT="test"
 
-RDEPEND="dev-libs/boost:=[threads(+)]
+RDEPEND="dev-libs/boost:=
 	dev-libs/json-c:=
 	dev-libs/libxml2
 	dev-libs/icu:=
@@ -38,6 +38,7 @@ DEPEND="${RDEPEND}
 PATCHES=(
 	"${FILESDIR}"/cron-confd.patch
 	"${FILESDIR}"/${PN}-0.10.1-testsuite.patch
+	"${FILESDIR}"/${PN}-0.10.2-gcc12-time.patch
 )
 
 src_prepare() {

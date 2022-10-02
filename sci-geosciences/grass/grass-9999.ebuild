@@ -7,13 +7,12 @@ PYTHON_COMPAT=( python3_{8..10} )
 PYTHON_REQ_USE="sqlite"  # bug 572440
 WX_GTK_VER="3.0-gtk3"
 
-inherit autotools desktop python-single-r1 toolchain-funcs wxwidgets xdg
+inherit desktop python-single-r1 toolchain-funcs wxwidgets xdg
 
 DESCRIPTION="A free GIS with raster and vector functionality, as well as 3D vizualization"
 HOMEPAGE="https://grass.osgeo.org/"
 
 LICENSE="GPL-2"
-SLOT="0/8.3"
 
 GVERSION=${SLOT#*/}
 MY_PM="${PN}${GVERSION}"
@@ -22,8 +21,10 @@ MY_PM="${MY_PM/.}"
 if [[ ${PV} =~ "9999" ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/OSGeo/grass.git"
+	SLOT="0/8.3"
 else
 	MY_P="${P/_rc/RC}"
+	SLOT="0/$(ver_cut 1-2 ${PV})"
 	SRC_URI="https://grass.osgeo.org/${MY_PM}/source/${MY_P}.tar.gz"
 	if [[ ${PV} != *_rc* ]] ; then
 		KEYWORDS="~amd64 ~ppc ~x86"
@@ -32,7 +33,7 @@ else
 	S="${WORKDIR}/${MY_P}"
 fi
 
-IUSE="blas cxx fftw geos lapack las mysql netcdf nls odbc opencl opengl openmp png postgres readline sqlite threads tiff truetype X zstd"
+IUSE="blas cxx fftw geos lapack las mysql netcdf nls odbc opencl opengl openmp pdal png postgres readline sqlite threads tiff truetype X zstd"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	opengl? ( X )"
@@ -65,6 +66,7 @@ RDEPEND="
 	odbc? ( dev-db/unixODBC )
 	opencl? ( virtual/opencl )
 	opengl? ( virtual/opengl )
+	pdal? ( >=sci-libs/pdal-2.0.0:0= )
 	png? ( media-libs/libpng:0= )
 	postgres? ( >=dev-db/postgresql-8.4:= )
 	readline? ( sys-libs/readline:0= )
@@ -122,7 +124,11 @@ src_prepare() {
 	sed -e "s:= python3:= ${EPYTHON}:" -i "${S}/include/Make/Platform.make.in" || die
 
 	default
-	eautoreconf
+
+	# When patching the build system, avoid running autoheader here. The file
+	# config.in.h is maintained manually upstream. Changes to it may lead to
+	# undefined behavior. See bug #866554.
+	# AT_NOEAUTOHEADER=1 eautoreconf
 
 	ebegin "Fixing python shebangs"
 	python_fix_shebang -q "${S}"
@@ -179,6 +185,7 @@ src_configure() {
 		$(use_with threads pthread)
 		$(use_with openmp)
 		$(use_with opencl)
+		$(use_with pdal pdal "${EPREFIX}"/usr/bin/pdal-config)
 		$(use_with las liblas "${EPREFIX}"/usr/bin/liblas-config)
 		$(use_with X wxwidgets "${WX_CONFIG}")
 		$(use_with netcdf netcdf "${EPREFIX}"/usr/bin/nc-config)

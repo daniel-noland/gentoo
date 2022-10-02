@@ -6,6 +6,89 @@
 # This file is only for generic masks. For arch-specific masks (i.e.
 # mask everywhere, unmask on arch/*) use arch/base.
 
+# Pascal Jaeger <pascal.jaeger@leimstift.de> (2022-09-21)
+# Versions >=43.0 of evince only work with <gnome-base/nautilus-42.2.
+# Allowing that use flag for >=43.0 would stop users from updating nautilus
+>=app-text/evince-43.0 nautilus
+
+# Yiyang Wu <xgreenlandforwyy@gmail.com> (2022-09-21)
+# Intolerable mathematical errors found on AMD Radeon VII GPU during src_test,
+# may lead to incorrect results in computation.
+# https://github.com/ROCmSoftwarePlatform/rocFFT/issues/369
+=sci-libs/rocFFT-5.1.3 amdgpu_targets_gfx906
+=sci-libs/hipFFT-5.1.3 amdgpu_targets_gfx906
+
+# Georgy Yakovlev <gyakovlev@gentoo.org> (2022-09-17)
+# po4a crashes while translating
+# mask for now
+=dev-util/schroot-1.6.13_p2 nls
+
+# Sam James <sam@gentoo.org> (2022-09-15)
+# Doesn't work on e.g. glibc systems. Unmasked on the LLVM profiles.
+# It doesn't matter much as llvm-libunwind has different semantics
+# to other packages, i.e. -llvm-libunwind doesn't force use of sys-libs/libunwind
+# on glibc, so it doesn't prevent usage of llvm-libunwind for other packages.
+# bug #870211.
+dev-lang/rust llvm-libunwind
+
+# Matt Jolly <Matt.Jolly@footclan.ninja> (2022-09-09)
+# app-antivirus/clamav JIT support requires LLVM <=13
+# ebuild support is there but currently failing to link
+app-antivirus/clamav jit
+
+# Sam James <sam@gentoo.org> (2022-09-06)
+# Incompatible with merged-usr and is a fundamentally flaky approach.
+# - app-arch/lbzip2: bug #868318 (possible solution in bug #868651)
+# - app-arch/pigz: bug #868312 (possible solution in bug #868648)
+# It's suggested that users who want this feature use a wrapper
+# script in /usr/local (or otherwise on PATH), or configure tools
+# like tar to use lbzip2 & pigz respectively using EXTRA_ECONF.
+app-arch/lbzip2 symlink
+app-arch/pbzip2 symlink
+app-arch/pigz symlink
+
+# Sam James <sam@gentoo.org> (2022-08-26)
+# Broken at runtime for now (bug #865113).
+sys-devel/binutils gprofng
+
+# Matthew Smith <matthew@gentoo.org> (2022-08-19)
+# Upstream recommends that tbb be built with a patch to avoid bugs.
+# https://github.com/rui314/mold/releases/tag/v1.4.1
+sys-devel/mold system-tbb
+
+# John Helmert III <ajak@gentoo.org> (2022-08-14)
+# libaacplus is last rited
+media-sound/darkice aacplus
+
+# John Helmert III <ajak@gentoo.org> (2022-08-14)
+# slurm is last rited
+app-metrics/collectd collectd_plugins_slurm
+sys-cluster/openmpi openmpi_rm_slurm
+
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2022-08-13)
+# PyQt6/PySide6 are masked for testing
+dev-python/QtPy pyqt6 pyside6
+
+# Joonas Niilola <juippis@gentoo.org> (2022-08-02)
+# Doesn't compile with 'Xaw3d' use flag, #849947.
+app-text/xdvik Xaw3d
+
+# Joonas Niilola <juippis@gentoo.org> (2022-07-13)
+# Depends on an older enigmail that only supports python2, which is
+# being removed soon. #758344
+www-client/seamonkey crypt
+
+# Sam James <sam@gentoo.org> (2022-07-10)
+# TBB support is deprecated/broken upstream, needs older version,
+# and upstream are inclined to remove it entirely. bug #820827.
+sci-physics/bullet tbb
+
+# Georgy Yakovlev <gyakovlev@gentoo.org> (2022-07-03)
+# miri is known to be broken on release builds from time to time
+# most of the time it requires nightly (real nightly) compiler.
+# please unmask as needed, may require patching
+>=dev-lang/rust-1.62.0 miri
+
 # James Le Cuirot <chewi@gentoo.org> (2022-06-25)
 # This flag concerns an x86-specific problem.
 sys-libs/glibc stack-realign
@@ -15,17 +98,6 @@ sys-libs/ncurses stack-realign
 # Depends on old spidermonkey:68. Upstream recommends using Duktape or Webkit
 # for PAC parsing. See https://github.com/libproxy/libproxy/pull/139
 >=net-libs/libproxy-0.4.18 spidermonkey
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-02)
-# dev-python/jaraco-packaging is masked for removal.  Bug #834534.
-dev-python/jaraco-classes doc
-dev-python/jaraco-collections doc
-dev-python/jaraco-functools doc
-dev-python/jaraco-logging doc
-dev-python/jaraco-stream doc
-dev-python/jaraco-text doc
-dev-python/jsonpickle doc
-dev-python/keyring doc
 
 # Maciej Barć <xgqt@gentoo.org> (2022-05-31)
 # "doc" require old version of dev-python/antlr4-python3-runtime (4.9.3)
@@ -44,6 +116,7 @@ dev-python/jupyter_server doc
 # Joonas Niilola <juippis@gentoo.org> (2022-05-03)
 # system-python-libs is HIGHLY EXPERIMENTAL according to upstream, and
 # still being worked on in Gentoo.
+>=mail-client/thunderbird-100.0 system-python-libs
 >=www-client/firefox-100.0 system-python-libs
 
 # Piotr Karbowski <slashbeast@gentoo.org> (2022-04-29)
@@ -86,7 +159,6 @@ sys-devel/gcc custom-cflags
 # Sam James <sam@gentoo.org> (2022-01-12)
 # Unmask PCH for now for GCC to avoid unnecessary rebuilds
 # (USE=pch is now use.mask-ed globally)
-<sys-devel/gcc-11.2.1_p20220115:11 -pch
 <sys-devel/gcc-10.4:10 -pch
 =sys-devel/gcc-9* -pch
 =sys-devel/gcc-8* -pch
@@ -278,19 +350,22 @@ x11-libs/colord-gtk doc
 <dev-ml/llvm-ocaml-14 llvm_targets_VE
 <sys-devel/clang-14 llvm_targets_VE
 <sys-devel/llvm-14 llvm_targets_VE
-<dev-ml/llvm-ocaml-15 llvm_targets_ARC
-<sys-devel/clang-15 llvm_targets_ARC
-<sys-devel/llvm-15 llvm_targets_ARC
-<dev-ml/llvm-ocaml-15 llvm_targets_CSKY llvm_targets_M68k
-<sys-devel/clang-15 llvm_targets_CSKY llvm_targets_M68k
-<sys-devel/llvm-15 llvm_targets_CSKY llvm_targets_M68k
+<dev-ml/llvm-ocaml-16 llvm_targets_ARC llvm_targets_CSKY
+<sys-devel/clang-16 llvm_targets_ARC llvm_targets_CSKY
+<sys-devel/llvm-16 llvm_targets_ARC llvm_targets_CSKY
+<dev-ml/llvm-ocaml-16 llvm_targets_DirectX llvm_targets_LoongArch
+<sys-devel/clang-16 llvm_targets_DirectX llvm_targets_LoongArch
+<sys-devel/llvm-16 llvm_targets_DirectX llvm_targets_LoongArch
+<dev-ml/llvm-ocaml-16 llvm_targets_M68k llvm_targets_SPIRV
+<sys-devel/clang-16 llvm_targets_M68k llvm_targets_SPIRV
+<sys-devel/llvm-16 llvm_targets_M68k llvm_targets_SPIRV
 
 # Marek Szuba <marecki@gentoo.org> (2020-11-30)
 # Vendored therecipe/qt violates network sandbox + uses external binary
 # Qt libraries; see https://github.com/ProtonMail/proton-bridge/issues/16
 # The qt module itself apparently can be made to build against system Qt5
 # but making it do so while vendored is a non-trivial task.
-mail-mta/protonmail-bridge gui
+mail-mta/proton-mail-bridge gui
 
 # Michał Górny <mgorny@gentoo.org> (2020-09-27)
 # The respective dependencies are masked for removal.
@@ -308,12 +383,6 @@ app-metrics/collectd collectd_plugins_onewire
 # Thomas Deutschmann <whissi@gentoo.org> (2020-08-17)
 # Only supported on 64bit systems, see storage/columnstore/CMakeLists.txt
 dev-db/mariadb columnstore
-
-# Michał Górny <mgorny@gentoo.org> (2020-07-27)
-# These packages require Python 2 support in dev-python/sphinx.
-# They are generally fixable by adding py3 support and using
-# distutils_enable_sphinx to build docs.
-<=dev-python/lockfile-0.12.2-r2 doc
 
 # Brian Dolbec <dolsen@gentoo.org> (2020-07-20)
 # Required dependencies are not yet in the Gentoo ebuild tree
@@ -705,7 +774,6 @@ dev-lisp/clisp svm
 # Diego E. Pettenò <flameeyes@gentoo.org> (2010-01-18)
 # Don't use system-wide mode unless you *really* know what you're doing.
 # Keep it masked here so that I don't need to manage two versions every time.
-media-sound/pulseaudio system-wide
 media-sound/pulseaudio-daemon system-wide
 
 # Alexis Ballier <aballier@gentoo.org> (2011-02-16)

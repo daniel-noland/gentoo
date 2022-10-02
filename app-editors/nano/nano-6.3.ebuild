@@ -10,7 +10,7 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_P="${PN}-${PV/_}"
 	SRC_URI="https://www.nano-editor.org/dist/v${PV:0:1}/${MY_P}.tar.xz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 fi
 
 DESCRIPTION="GNU GPL'd Pico clone with more functionality"
@@ -90,4 +90,14 @@ src_install() {
 	fi
 
 	use split-usr && dosym ../../bin/nano /usr/bin/nano
+}
+
+pkg_postrm() {
+	local e
+	[[ -n ${REPLACED_BY_VERSION} ]] && return
+	e=$(unset EDITOR; . "${EROOT}"/etc/profile &>/dev/null; echo "${EDITOR}")
+	if [[ ${e##*/} == nano ]]; then
+		ewarn "The EDITOR variable is still set to ${e}."
+		ewarn "You can update it with \"eselect editor\"."
+	fi
 }

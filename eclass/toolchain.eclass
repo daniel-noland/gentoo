@@ -288,6 +288,13 @@ BDEPEND="
 	)"
 DEPEND="${RDEPEND}"
 
+if [[ ${PN} == gcc && ${PV} == *_p* ]] ; then
+	# Snapshots don't contain info pages.
+	# If they start to, adjust gcc_cv_prog_makeinfo_modern logic in toolchain_src_configure.
+	# Needed unless/until https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106899 is fixed
+	BDEPEND+=" sys-apps/texinfo"
+fi
+
 if tc_has_feature gcj ; then
 	DEPEND+="
 		gcj? (
@@ -324,11 +331,19 @@ if tc_has_feature zstd ; then
 	RDEPEND+=" zstd? ( app-arch/zstd:= )"
 fi
 
-if tc_has_feature valgrind; then
+if tc_has_feature valgrind ; then
 	BDEPEND+=" valgrind? ( dev-util/valgrind )"
 fi
 
-if tc_version_is_at_least 12.0 ; then
+# TODO: Add a pkg_setup & pkg_pretend check for whether the active compiler
+# supports Ada.
+if tc_has_feature ada ; then
+	BDEPEND+=" ada? ( || ( sys-devel/gcc[ada] dev-lang/gnat-gpl[ada] ) )"
+fi
+
+# TODO: Add a pkg_setup & pkg_pretend check for whether the active compiler
+# supports D.
+if tc_has_feature d && tc_version_is_at_least 12.0 ; then
 	# D in 12+ is self-hosting and needs D to bootstrap.
 	# TODO: package some binary we can use, like for Ada
 	# bug #840182
@@ -371,11 +386,14 @@ if [[ ${TOOLCHAIN_SET_S} == yes ]] ; then
 fi
 
 gentoo_urls() {
+	# the list is sorted by likelihood of getting the patches tarball from
+	# respective devspace
 	# slyfox's distfiles are mirrored to sam's devspace
 	declare -A devspace_urls=(
 		[soap]=HTTP~soap/distfiles/URI
 		[sam]=HTTP~sam/distfiles/sys-devel/gcc/URI
 		[slyfox]=HTTP~sam/distfiles/URI
+		[xen0n]=HTTP~xen0n/distfiles/sys-devel/gcc/URI
 		[tamiko]=HTTP~tamiko/distfiles/URI
 		[zorry]=HTTP~zorry/patches/gcc/URI
 		[vapier]=HTTP~vapier/dist/URI
@@ -877,7 +895,7 @@ toolchain_src_configure() {
 	downgrade_arch_flags
 	gcc_do_filter_flags
 
-	if tc_version_is_between 10 11 && [[ $(gcc-major-version) -ge 12 ]] ; then
+	if ! tc_version_is_at_least 11 && [[ $(gcc-major-version) -ge 12 ]] ; then
 		# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105695
 		# bug #849359
 		export ac_cv_std_swap_in_utility=no
@@ -1184,8 +1202,6 @@ toolchain_src_configure() {
 				fi
 			done
 
-			# Convert armv6m to armv6-m
-			[[ ${arm_arch} == armv6m ]] && arm_arch=armv6-m
 			# Convert armv7{a,r,m} to armv7-{a,r,m}
 			[[ ${arm_arch} == armv7? ]] && arm_arch=${arm_arch/7/7-}
 			# See if this is a valid --with-arch flag
@@ -1209,6 +1225,17 @@ toolchain_src_configure() {
 					armv6*) confgcc+=( --with-fpu=vfp ) ;;
 					armv7*) confgcc+=( --with-fpu=vfpv3-d16 ) ;;
 				esac
+			fi
+
+			# If multilib is used, make the compiler build multilibs
+			# for A or R and M architecture profiles. Do this only
+			# when no specific arch/mode/float is specified, e.g.
+			# for target arm-none-eabi, since doing this is
+			# incompatible with --with-arch/cpu/float/fpu.
+			if is_multilib && [[ ${arm_arch} == arm ]] && \
+			   tc_version_is_at_least 7.1
+			then
+				confgcc+=( --with-multilib-list=aprofile,rmprofile  )
 			fi
 			;;
 		mips)
@@ -1405,9 +1432,22 @@ toolchain_src_configure() {
 		)
 	fi
 
-	# Disable gcc info regeneration -- it ships with generated info pages
-	# already.  Our custom version/urls/etc... trigger it. bug #464008
-	export gcc_cv_prog_makeinfo_modern=no
+	if [[ ${PV} != *_p* && -f "${S}"/gcc/doc/gcc.info ]] ; then
+		# Disable gcc info regeneration -- it ships with generated info pages
+		# already.  Our custom version/urls/etc... trigger it. bug #464008
+		export gcc_cv_prog_makeinfo_modern=no
+	else
+		# Allow a fallback so we don't accidentally install no docs
+		# bug #834845
+		ewarn "No pre-generated info pages in tarball. Allowing regeneration with texinfo..."
+
+		if [[ ${PV} == *_p* && -f "${S}"/gcc/doc/gcc.info ]] ; then
+			# Safeguard against https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106899 being fixed
+			# without corresponding ebuild changes.
+			eqawarn "Snapshot release with pre-generated info pages found!"
+			eqawarn "The BDEPEND in the ebuild should be updated to drop texinfo."
+		fi
+	fi
 
 	# Do not let the X detection get in our way.  We know things can be found
 	# via system paths, so no need to hardcode things that'll break multilib.
@@ -1882,12 +1922,39 @@ toolchain_src_test() {
 	# 'asan' wants to be preloaded first, so does 'sandbox'.
 	# To make asan tests work disable sandbox for all of test suite.
 	# 'backtrace' tests also does not like 'libsandbox.so' presence.
-	SANDBOX_ON=0 LD_PRELOAD= emake -k check
+	#
+	# Nonfatal here as we die if compare_tests failed
+	SANDBOX_ON=0 LD_PRELOAD= nonfatal emake -k check
+	local success_tests=$?
 
-	einfo "Testing complete."
+	if [[ ! -d "${BROOT}"/var/cache/gcc/${SLOT} ]] && ! [[ ${success_tests} -eq 0 ]] ; then
+		# We have no reference data saved from a previous run to know if
+		# the failures are tolerable or not, so we bail out.
+		eerror "Reference test data does NOT exist at ${BROOT}/var/cache/gcc/${SLOT}"
+		eerror "Tests failed and nothing to compare with, so this is a fatal error."
+		eerror "(Set GCC_TESTS_IGNORE_NO_BASELINE=1 to make this non-fatal for initial run.)"
+
+		if [[ -z ${GCC_TESTS_IGNORE_NO_BASELINE} ]] ; then
+			die "Tests failed (failures occurred with no reference data)"
+		fi
+	fi
+
+	einfo "Testing complete! Review the following output to check for success or failure."
 	einfo "Please ignore any 'mail' lines in the summary output below (no mail is sent)."
 	einfo "Summary:"
 	"${S}"/contrib/test_summary
+
+	# If previous results exist on the system, compare with it
+	# TODO: Distribute some baseline results in e.g. gcc-patches.git?
+	if [[ -d "${BROOT}"/var/cache/gcc/${SLOT} ]] ; then
+		einfo "Comparing with previous cached results at ${BROOT}/var/cache/gcc/${SLOT}"
+
+		# Exit with the following values:
+		# 0 if there is nothing of interest
+		# 1 if there are errors when comparing single test case files
+		# N for the number of errors found when comparing directories
+		"${S}"/contrib/compare_tests "${BROOT}"/var/cache/gcc/${SLOT}/ . || die "Comparison for tests results failed, error code: $?"
+	fi
 }
 
 #---->> src_install <<----
@@ -2122,6 +2189,19 @@ toolchain_src_install() {
 	if is_gcj ; then
 		pax-mark -m "${ED}/libexec/gcc/${CTARGET}/${GCC_CONFIG_VER}/ecj1"
 		pax-mark -m "${ED}/${CTARGET}/gcc-bin/${GCC_CONFIG_VER}/gij"
+	fi
+
+	if use test ; then
+		# TODO: In future, install orphaned to allow comparison across
+		# more versions even after unmerged? Also would be useful for
+		# historical records and tracking down regressions a while
+		# after they first appeared, but were only just reported.
+		einfo "Copying test results to ${EPREFIX}/var/cache/gcc/${SLOT} for future comparison"
+		(
+			dodir /var/cache/gcc/${SLOT}
+			cd "${WORKDIR}"/build || die
+			find . -name \*.sum -exec cp --parents -v {} "${ED}"/var/cache/gcc/${SLOT} \;
+		)
 	fi
 }
 

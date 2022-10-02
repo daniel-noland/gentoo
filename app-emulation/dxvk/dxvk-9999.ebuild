@@ -64,7 +64,11 @@ src_configure() {
 	append-flags -mno-avx
 
 	if [[ ${CHOST} != *-mingw* ]]; then
-		[[ ! -v MINGW_BYPASS ]] && unset AR CC CXX RC STRIP
+		if [[ ! -v MINGW_BYPASS ]]; then
+			unset AR CC CXX RC STRIP
+			filter-flags '-fstack-protector*' #870136
+			filter-flags '-fuse-ld=*'
+		fi
 
 		CHOST_amd64=x86_64-w64-mingw32
 		CHOST_x86=i686-w64-mingw32
@@ -89,7 +93,6 @@ multilib_src_configure() {
 		$(meson_use {,enable_}d3d11)
 		$(meson_use {,enable_}dxgi)
 		$(usev !debug --strip) # portage won't strip .dll, so allow it here
-		-Denable_tests=false # needs wine/vulkan and is intended for manual use
 	)
 
 	meson_src_configure
@@ -103,7 +106,7 @@ multilib_src_install_all() {
 }
 
 pkg_preinst() {
-	[[ -e /usr/$(get_libdir)/dxvk/d3d11.dll ]] && DXVK_HAD_OVERLAY=
+	[[ -e ${EROOT}/usr/$(get_libdir)/dxvk/d3d11.dll ]] && DXVK_HAD_OVERLAY=
 }
 
 pkg_postinst() {

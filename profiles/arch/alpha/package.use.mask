@@ -1,6 +1,14 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
+# matoro <matoro_gentoo@matoro.tk> (2022-09-22)
+# Unable to test due to mask, bug #763963
+net-misc/openntpd constraints
+
+# Matthew Smith <matthew@gentoo.org> (2022-07-10)
+# Needs unkeyworded app-doc/halibut
+>=net-misc/putty-0.77 doc
+
 # Sergey Torokhov <torokhov-s-a@yandex.ru> (2022-06-22)
 # media-libs/libjxl is not keyworded
 # bug https://bugs.gentoo.org/853628
@@ -305,10 +313,6 @@ dev-db/mariadb numa
 # Requires USE=seccomp that is masked in this profile.
 net-libs/gnutls test-full
 
-# Michał Górny <mgorny@gentoo.org> (2017-08-08)
-# Requires USE=bluetooth that is masked in this profile.
-media-sound/pulseaudio native-headset
-
 # Tobias Klausmann <klausman@gentoo.org> (2017-05-18)
 # Stack protector code is not ported to alpha (and may not ever be)
 >=sys-devel/gcc-6 ssp
@@ -439,10 +443,6 @@ net-im/telepathy-connection-managers sipe
 # Missing keywords, bug #478254
 >=gnome-base/gnome-3.8 classic
 
-# Mark Wright <gienah@gentoo.org> (2013-10-26)
-# template-haskell not yet available
-dev-haskell/dataenc test
-
 # Pacho Ramos <pacho@gentoo.org> (2013-07-20)
 # Keywords pending, bug #476710
 >=gnome-base/gnome-extra-apps-3.8 games
@@ -475,12 +475,6 @@ gnome-extra/sushi office
 # Raúl Porcel <armin76@gentoo.org> (2012-12-30)
 # Needs testing
 media-libs/phonon gstreamer vlc
-
-# Robin H Johnson <robbat2@gentoo.org> (2012-11-01)
-# MySQL 5.5 wants systemtap, tcmalloc & jemalloc
->=dev-db/mysql-5.5 tcmalloc
->=dev-db/mariadb-5.5 tcmalloc
->=dev-db/percona-server-5.5 tcmalloc
 
 # Raúl Porcel <armin76@gentoo.org> (2012-05-28)
 # Needs x11-misc/lightdm(which also requires some other deps)

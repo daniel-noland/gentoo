@@ -14,7 +14,7 @@ if [[ ${PV} == *9999 ]]; then
 	EGIT_REPO_URI="https://github.com/${PN}/qBittorrent.git"
 else
 	SRC_URI="https://github.com/qbittorrent/qBittorrent/archive/release-${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~x86"
+	KEYWORDS="amd64 ~arm ~arm64 ~ppc64 x86"
 	S="${WORKDIR}/qBittorrent-release-${PV}"
 fi
 
@@ -25,7 +25,7 @@ REQUIRED_USE="dbus? ( gui )
 	|| ( gui webui )"
 
 RDEPEND="
-	>=dev-libs/boost-1.65.0-r1:=
+	dev-libs/boost:=
 	dev-libs/openssl:=
 	dev-qt/qtcore:5
 	dev-qt/qtnetwork:5[ssl]

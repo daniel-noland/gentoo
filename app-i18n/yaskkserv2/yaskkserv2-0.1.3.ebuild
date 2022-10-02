@@ -169,7 +169,7 @@ RESTRICT="!test? ( test )"
 
 LICENSE="|| ( Apache-2.0 MIT )"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="test"
 
 DEPEND="dev-libs/openssl:0="
@@ -187,6 +187,8 @@ src_prepare() {
 
 	sed -i "/^dictionary =/s|= .*|= ${EPREFIX}/usr/lib/${PN}/default.euc|" etc/${PN}.conf
 	export OPENSSL_NO_VENDOR=true
+	# skip network tests
+	sed -i "s/^fn ${PN}.*_google_/#[ignore]\n&/" src/skk/test_unix/${PN}.rs
 }
 
 src_test() {

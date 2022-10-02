@@ -56,19 +56,13 @@ multilib_src_configure() {
 	use doc || export ac_cv_prog_HAVE_DOXYGEN=false
 
 	local myconf=(
+		# --disable-spec because LaTeX documentation has been prebuilt
 		--disable-spec
 		$(use_enable encode)
+		$(multilib_native_use_enable examples)
 		$(use_enable static-libs static)
 	)
 
-	if [[ "${ABI}" = "${DEFAULT_ABI}" ]] ; then
-		myconf+=( $(use_enable examples) )
-	else
-		# those will be overwritten anyway
-		myconf+=( --disable-examples )
-	fi
-
-	# --disable-spec because LaTeX documentation has been prebuilt
 	ECONF_SOURCE="${S}" econf "${myconf[@]}"
 }
 
@@ -78,8 +72,10 @@ multilib_src_install() {
 		docdir="${EPREFIX}"/usr/share/doc/${PF} \
 		install
 
-	if use examples && [[ "${ABI}" = "${DEFAULT_ABI}" ]]; then
+	if multilib_is_native_abi && use examples ; then
 		dobin examples/.libs/png2theora
+
+		local bin
 		for bin in dump_{psnr,video} {encoder,player}_example; do
 			newbin examples/.libs/${bin} theora_${bin}
 		done
@@ -87,10 +83,11 @@ multilib_src_install() {
 }
 
 multilib_src_install_all() {
-	find "${D}" -name '*.la' -delete || die
+	find "${ED}" -name '*.la' -delete || die
+
 	einstalldocs
 
-	if use examples && use doc; then
+	if use examples ; then
 		docinto examples
 		dodoc examples/*.[ch]
 		docompress -x /usr/share/doc/${PF}/examples

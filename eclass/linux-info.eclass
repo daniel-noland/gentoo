@@ -29,6 +29,15 @@
 # A Couple of env vars are available to effect usage of this eclass
 # These are as follows:
 
+
+# @ECLASS_VARIABLE: CHECKCONFIG_DONOTHING
+# @USER_VARIABLE
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Do not error out in check_extra_config if CONFIG settings are not met.
+# This is a user flag and should under _no circumstances_ be set in the ebuild.
+: ${CHECKCONFIG_DONOTHING:=""}
+
 # @ECLASS_VARIABLE: KERNEL_DIR
 # @DESCRIPTION:
 # A string containing the directory of the target kernel sources. The default value is
@@ -131,6 +140,16 @@ KERNEL_DIR="${KERNEL_DIR:-${ROOT%/}/usr/src/linux}"
 # A read-only variable. It's a string containing the kernel object directory, will be KV_DIR unless
 # KBUILD_OUTPUT is used. This should be used for referencing .config.
 
+
+# @ECLASS_VARIABLE: SKIP_KERNEL_CHECK
+# @USER_VARIABLE
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Do not check for kernel sources or a running kernel version 
+# Main use-case is for chroots
+# This is a user flag and should under _no circumstances_ be set in the ebuild.
+: ${SKIP_KERNEL_CHECK:=""}
+
 # And to ensure all the weirdness with crosscompile
 inherit toolchain-funcs
 [[ ${EAPI:-0} == [0123456] ]] && inherit eapi7-ver
@@ -148,21 +167,6 @@ esac
 # @DESCRIPTION:
 # Set the env ARCH to match what the kernel expects.
 set_arch_to_kernel() { export ARCH=$(tc-arch-kernel); }
-
-# @FUNCTION: set_arch_to_portage
-# @DESCRIPTION:
-# Set the env ARCH to match what portage expects.
-set_arch_to_portage() { 
-
-	ewarn "The function name: set_arch_to_portage is being deprecated and"
-	ewarn "being changed to:  set_arch_to_pkgmgr to comply with pms policy."
-	ewarn "See bug #843686"
-	ewarn "The old function name will be removed on or about July 1st, 2022."
-	ewarn "Please update your ebuild or eclass before this date."
-	ewarn ""
-
-	export ARCH=$(tc-arch); 
-}
 
 # @FUNCTION: set_arch_to_pkgmgr
 # @DESCRIPTION:
@@ -345,6 +349,9 @@ linux_config_path() {
 # This function verifies that the current kernel is configured (it checks against the existence of .config)
 # otherwise it dies.
 require_configured_kernel() {
+
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
+
 	if ! use kernel_linux; then
 		die "${FUNCNAME}() called on non-Linux system, please fix the ebuild"
 	fi
@@ -367,6 +374,7 @@ require_configured_kernel() {
 # If linux_config_exists returns false, the results of this are UNDEFINED. You
 # MUST call linux_config_exists first.
 linux_chkconfig_present() {
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
 	linux_config_qa_check linux_chkconfig_present
 	[[ $(getfilevar_noexec "CONFIG_$1" "$(linux_config_path)") == [my] ]]
 }
@@ -379,6 +387,7 @@ linux_chkconfig_present() {
 # If linux_config_exists returns false, the results of this are UNDEFINED. You
 # MUST call linux_config_exists first.
 linux_chkconfig_module() {
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
 	linux_config_qa_check linux_chkconfig_module
 	[[ $(getfilevar_noexec "CONFIG_$1" "$(linux_config_path)") == m ]]
 }
@@ -391,6 +400,7 @@ linux_chkconfig_module() {
 # If linux_config_exists returns false, the results of this are UNDEFINED. You
 # MUST call linux_config_exists first.
 linux_chkconfig_builtin() {
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
 	linux_config_qa_check linux_chkconfig_builtin
 	[[ $(getfilevar_noexec "CONFIG_$1" "$(linux_config_path)") == y ]]
 }
@@ -403,6 +413,7 @@ linux_chkconfig_builtin() {
 # If linux_config_exists returns false, the results of this are UNDEFINED. You
 # MUST call linux_config_exists first.
 linux_chkconfig_string() {
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
 	linux_config_qa_check linux_chkconfig_string
 	getfilevar_noexec "CONFIG_$1" "$(linux_config_path)"
 }
@@ -465,6 +476,7 @@ kernel_is() {
 # - make is not present
 # - corruption exists in the kernel makefile
 get_makefile_extract_function() {
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
 	local a='' b='' mkfunc='getfilevar'
 	a="$(getfilevar VERSION ${KERNEL_MAKEFILE})"
 	b="$(getfilevar_noexec VERSION ${KERNEL_MAKEFILE})"
@@ -494,6 +506,8 @@ get_version() {
 	fi
 
 	local tmplocal
+
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
 
 	# no need to execute this twice assuming KV_FULL is populated.
 	# we can force by unsetting KV_FULL
@@ -703,6 +717,9 @@ check_kernel_built() {
 	fi
 
 	# if we haven't determined the version yet, we need to
+
+	[[ -n ${SKIP_KERNEL_CHECK} ]] && return
+
 	require_configured_kernel
 
 	local versionh_path
@@ -978,7 +995,7 @@ linux-info_pkg_setup() {
 
 	linux-info_get_any_version
 
-	[ -n "${CONFIG_CHECK}" ] && check_extra_config;
+	[[ -n "${CONFIG_CHECK}" && -z ${CHECKCONFIG_DONOTHING} ]] && check_extra_config;
 }
 
 # @FUNCTION: kernel_get_makefile

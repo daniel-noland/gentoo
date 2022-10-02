@@ -8,7 +8,7 @@ PYTHON_COMPAT=( python3_{8..10} )
 inherit cmake python-any-r1 readme.gentoo-r1
 
 DESCRIPTION="Friendly Interactive SHell"
-HOMEPAGE="http://fishshell.com/"
+HOMEPAGE="https://fishshell.com/"
 
 MY_PV="${PV/_beta/b}"
 MY_P="${PN}-${MY_PV}"
@@ -51,7 +51,7 @@ S="${WORKDIR}/${MY_P}"
 
 python_check_deps() {
 	use test || return 0
-	has_version -d "dev-python/pexpect[${PYTHON_USEDEP}]"
+	python_has_version "dev-python/pexpect[${PYTHON_USEDEP}]"
 }
 
 src_prepare() {

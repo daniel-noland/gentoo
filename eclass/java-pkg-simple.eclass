@@ -6,7 +6,7 @@
 # java@gentoo.org
 # @AUTHOR:
 # Java maintainers <java@gentoo.org>
-# @SUPPORTED_EAPIS: 5 6 7 8
+# @SUPPORTED_EAPIS: 6 7 8
 # @BLURB: Eclass for packaging Java software with ease.
 # @DESCRIPTION:
 # This class is intended to build pure Java packages from Java sources
@@ -16,8 +16,8 @@
 # addressed by an ebuild by putting corresponding files into the target
 # directory before calling the src_compile function of this eclass.
 
-case ${EAPI:-0} in
-	5|6) inherit eutils ;; # eutils for eqawarn
+case ${EAPI} in
+	6) inherit eqawarn ;;
 	7|8) ;;
 	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
@@ -133,6 +133,12 @@ fi
 # @CODE
 #	JAVA_MAIN_CLASS="org.gentoo.java.ebuilder.Main"
 # @CODE
+
+# @ECLASS_VARIABLE: JAVA_AUTOMATIC_MODULE_NAME
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# The value of the Automatic-Module-Name entry, which is going to be added to
+# MANIFEST.MF.
 
 # @ECLASS_VARIABLE: JAVADOC_ARGS
 # @DEFAULT_UNSET
@@ -338,9 +344,6 @@ java-pkg-simple_prepend_resources() {
 java-pkg-simple_src_compile() {
 	local sources=sources.lst classes=target/classes apidoc=target/api moduleinfo
 
-	# auto generate classpath
-	java-pkg_gen-cp JAVA_GENTOO_CLASSPATH
-
 	# do not compile if we decide to install binary jar
 	if has binary ${JAVA_PKG_IUSE} && use binary; then
 		# register the runtime dependencies
@@ -351,6 +354,9 @@ java-pkg-simple_src_compile() {
 		cp "${DISTDIR}"/${JAVA_BINJAR_FILENAME} ${JAVA_JAR_FILENAME}\
 			|| die "Could not copy the binary jar file to ${S}"
 		return 0
+	else
+		# auto generate classpath
+		java-pkg_gen-cp JAVA_GENTOO_CLASSPATH
 	fi
 
 	# gather sources
@@ -418,13 +424,19 @@ java-pkg-simple_src_compile() {
 		jar_args="cf ${JAVA_JAR_FILENAME}"
 	fi
 	jar ${jar_args} -C ${classes} . || die "jar failed"
+	if  [[ -v JAVA_AUTOMATIC_MODULE_NAME ]]; then
+		cat > "${T}/add-to-MANIFEST.MF" <<< "Automatic-Module-Name: ${JAVA_AUTOMATIC_MODULE_NAME}" \
+			|| die "add-to-MANIFEST.MF failed"
+		jar ufmv ${JAVA_JAR_FILENAME} "${T}/add-to-MANIFEST.MF" \
+			|| die "updating MANIFEST.MF failed"
+	fi
 }
 
 # @FUNCTION: java-pkg-simple_src_install
 # @DESCRIPTION:
 # src_install for simple single jar java packages. Simply installs
 # ${JAVA_JAR_FILENAME}. It will also install a launcher if
-# ${JAVA_MAIN_CLASS} is set.
+# ${JAVA_MAIN_CLASS} is set. Also invokes einstalldocs.
 java-pkg-simple_src_install() {
 	local sources=sources.lst classes=target/classes apidoc=target/api
 
@@ -455,6 +467,8 @@ java-pkg-simple_src_install() {
 		fi
 		java-pkg_dosrc ${srcdirs}
 	fi
+
+	einstalldocs
 }
 
 # @FUNCTION: java-pkg-simple_src_test

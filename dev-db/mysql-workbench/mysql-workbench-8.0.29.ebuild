@@ -20,7 +20,7 @@ SRC_URI="https://cdn.mysql.com/Downloads/MySQLGUITools/${MY_P}.tar.gz
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~x86 ~amd64-linux ~x86-linux"
 IUSE="debug doc"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
@@ -41,7 +41,7 @@ CDEPEND="${PYTHON_DEPS}
 		>=x11-libs/cairo-1.5.12[glib,svg]
 		>=dev-libs/rapidjson-1.1.0
 		dev-libs/libsigc++:2
-		>=dev-libs/boost-1.55.0[nls]
+		dev-libs/boost[nls]
 		>=dev-cpp/ctemplate-0.95
 		>=dev-libs/libxml2-2.6.2:2
 		dev-libs/libzip

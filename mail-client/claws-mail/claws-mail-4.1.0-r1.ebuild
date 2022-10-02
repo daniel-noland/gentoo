@@ -15,10 +15,11 @@ if [[ "${PV}" == *9999 ]] ; then
 	EGIT_REPO_URI="https://git.claws-mail.org/readonly/claws.git"
 else
 	SRC_URI="https://www.claws-mail.org/download.php?file=releases/${P}.tar.xz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ppc ~ppc64 ~riscv ~sparc ~x86"
+	KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ppc ppc64 ~riscv ~sparc x86"
 fi
 
 SLOT="0"
+QA_PKGCONFIG_VERSION="${PV}.0"
 LICENSE="GPL-3"
 
 IUSE="+appindicator archive bogofilter calendar clamav dbus debug dillo doc gdata +gnutls +imap ipv6 ldap +libcanberra +libnotify litehtml networkmanager nls nntp +notification pdf perl +pgp rss session sieve smime spamassassin spam-report spell startup-notification svg valgrind webkit xface"
@@ -110,6 +111,7 @@ RDEPEND="${COMMONDEPEND}
 PATCHES=(
 	"${FILESDIR}/${PN}-3.17.5-enchant-2_default.patch"
 	"${FILESDIR}/${PN}-4.1.0-perl-5.36.patch"
+	"${FILESDIR}/${PN}-4.1.0-disable_gnutls.patch"
 )
 
 src_prepare() {

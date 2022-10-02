@@ -17,6 +17,14 @@
 
 #--- END OF EXAMPLES ---
 
+# Alfredo Tupone <tupone@gentoo.org> (2022-08-30)
+# ada bootstrap currently only available on amd64/x86
+sys-devel/gcc -ada
+
+# Conrad Kostecki <conikost@gentoo.org> (2022-07-19)
+# www-servers/nginx currently only available on amd64/x86
+www-servers/nginx -nginx_modules_http_security
+
 # James Le Cuirot <chewi@gentoo.org> (2022-06-25)
 # Allow stack to be realigned for compatibility with older 32-bit binaries.
 sys-libs/glibc -stack-realign
@@ -28,10 +36,6 @@ media-sound/qmmp -xmp
 # Kai-Chun Ning <kaichun.ning@gmail.com> (2022-05-23)
 # Need intel-hybrid-codec-driver, which only works on amd64
 x11-libs/libva-intel-driver -hybrid
-
-# Georgy Yakovlev <gyakovlev@gentoo.org> (2021-11-01)
-# requires sys-apps/dbus-broker, which is keyworded here.
-sys-apps/systemd -hostnamed-fallback
 
 # James Le Cuirot <chewi@gentoo.org> (2021-10-22)
 # The JIT feature only works on amd64 and x86.
@@ -117,10 +121,6 @@ sys-apps/flashrom -atahpt -atapromise -atavia -drkaiser -gfxnvidia -internal -it
 # Mikle Kolyada <zlogene@gentoo.org> (2020-06-08)
 # clisp is keyworded on amd64
 app-text/texlive-core -xindy
-
-# Thomas Deutschmann <whissi@gentoo.org> (2020-04-30)
-# sys-cluster/slurm is keyworded on amd64
-app-metrics/collectd -collectd_plugins_slurm
 
 # Georgy Yakovlev <gyakovlev@gentoo.org (2020-04-26)
 # static-pie works on amd64, #719444
@@ -351,7 +351,6 @@ app-arch/zpaq -jit
 # Arun Raghavan <ford_prefect@gentoo.org> (2012-03-29)
 # webrtc-audio-processing is only supported on x86/amd64. Possibly arm can be
 # added.
-media-sound/pulseaudio -webrtc-aec
 media-sound/pulseaudio-daemon -webrtc-aec
 
 # Bernard Cafarelli <voyageur@gentoo.org> (2012-02-27)

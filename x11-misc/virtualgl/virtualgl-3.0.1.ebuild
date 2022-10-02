@@ -2,7 +2,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-CMAKE_ECLASS=cmake
 
 inherit cmake-multilib flag-o-matic systemd
 
@@ -14,7 +13,7 @@ else
 	MY_P="${MY_PN}-${PV}"
 	S="${WORKDIR}/${MY_P}"
 	SRC_URI="mirror://sourceforge/project/${PN}/${PV}/${MY_P}.tar.gz"
-	KEYWORDS="~amd64 ~x86"
+	KEYWORDS="amd64 x86"
 fi
 
 DESCRIPTION="Run OpenGL applications remotely with full 3D hardware acceleration"
@@ -50,6 +49,11 @@ RDEPEND="
 	) )
 "
 DEPEND="${RDEPEND}"
+
+PATCHES=(
+	# https://github.com/VirtualGL/virtualgl/issues/205 (from 'master')
+	"${FILESDIR}"/${P}-libX11-1.8.patch
+)
 
 src_prepare() {
 	# Use /var/lib, bug #428122

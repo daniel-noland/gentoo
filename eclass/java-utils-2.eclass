@@ -316,7 +316,6 @@ java-pkg_rm_files() {
 		[[ ! -f "${filename}" ]] && die "${filename} is not a regular file. Aborting."
 		einfo "Removing unneeded file ${filename}"
 		rm -f "${S}/${filename}" || die "cannot remove ${filename}"
-		eend $?
 	done
 }
 
@@ -1901,7 +1900,12 @@ etestng() {
 		${JAVA_TEST_RUNNER_EXTRA_ARGS[@]}
 	)
 
-	[[ ! "${JAVA_TEST_RUNNER_EXTRA_ARGS[@]}" =~ "-usedefaultlisteners" ]] && args+=( -usedefaultlisteners false )
+	if [[ ! "${JAVA_TEST_RUNNER_EXTRA_ARGS[@]}" =~ "-usedefaultlisteners" ]]; then
+		args+=(
+			-verbose 3
+			-usedefaultlisteners true
+		)
+	fi
 
 	args+=( -testclass ${tests} )
 

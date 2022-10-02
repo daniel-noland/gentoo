@@ -3,7 +3,6 @@
 
 EAPI=7
 
-CMAKE_ECLASS="cmake"
 PYTHON_COMPAT=( python3_{8..10} )
 inherit cmake-multilib python-any-r1
 
@@ -13,7 +12,7 @@ if [[ ${PV} == *9999* ]]; then
 else
 	SNAPSHOT_COMMIT="sdk-${PV}.0"
 	SRC_URI="https://github.com/KhronosGroup/${PN}/archive/${SNAPSHOT_COMMIT}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
+	KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv x86"
 	S="${WORKDIR}/${PN}-${SNAPSHOT_COMMIT}"
 fi
 

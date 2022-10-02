@@ -12,7 +12,7 @@ SRC_URI="https://github.com/CanonicalLtd/lightdm/releases/download/${PV}/${P}.ta
 
 LICENSE="GPL-3 LGPL-3"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 ppc ppc64 ~riscv x86"
+KEYWORDS="~alpha amd64 arm arm64 ~loong ppc ppc64 ~riscv x86"
 IUSE="audit +gnome +gtk +introspection non-root qt5 vala"
 
 COMMON_DEPEND="
@@ -50,6 +50,11 @@ PDEPEND="gtk? ( x11-misc/lightdm-gtk-greeter )"
 DOCS=( NEWS )
 RESTRICT="test"
 REQUIRED_USE="vala? ( introspection )"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-1.30.0-musl-locale.patch
+	"${FILESDIR}"/${PN}-1.30.0-musl-updwtmpx.patch
+)
 
 pkg_setup() {
 	export LIGHTDM_USER=${LIGHTDM_USER:-lightdm}

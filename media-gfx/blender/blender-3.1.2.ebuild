@@ -43,7 +43,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}
 # Library versions for official builds can be found in the blender source directory in:
 # build_files/build_environment/install_deps.sh
 RDEPEND="${PYTHON_DEPS}
-	dev-libs/boost:=[nls?,threads(+)]
+	dev-libs/boost:=[nls?]
 	dev-libs/lzo:2=
 	$(python_gen_cond_dep '
 		dev-python/cython[${PYTHON_USEDEP}]
@@ -88,7 +88,7 @@ RDEPEND="${PYTHON_DEPS}
 		>=dev-libs/imath-3.1.4-r2:=
 		>=media-libs/openexr-3:0=
 	)
-	opensubdiv? ( >=media-libs/opensubdiv-3.4.0[cuda=] )
+	opensubdiv? ( >=media-libs/opensubdiv-3.4.0 )
 	openvdb? (
 		>=media-gfx/openvdb-9.0.0:=[nanovdb?]
 		dev-libs/c-blosc:=

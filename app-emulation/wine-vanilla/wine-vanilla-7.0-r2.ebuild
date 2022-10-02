@@ -298,8 +298,12 @@ src_configure() {
 
 		# use *FLAGS for mingw, but strip unsupported (e.g. --hash-style=gnu)
 		local mingwcc=${CROSSCC:-$(usex x86 i686 x86_64)-w64-mingw32-gcc}
-		: "${CROSSCFLAGS:=$(CC=${mingwcc} test-flags-CC ${CFLAGS:--O2})}"
-		: "${CROSSLDFLAGS:=$(CC=${mingwcc} test-flags-CCLD ${LDFLAGS})}"
+		: "${CROSSCFLAGS:=$(
+			filter-flags '-fstack-protector*' #870136
+			CC=${mingwcc} test-flags-CC ${CFLAGS:--O2})}"
+		: "${CROSSLDFLAGS:=$(
+			filter-flags '-fuse-ld=*'
+			CC=${mingwcc} test-flags-CCLD ${LDFLAGS})}"
 		export CROSS{C,LD}FLAGS
 	fi
 
@@ -328,7 +332,7 @@ multilib_src_configure() {
 		$(use_with gphoto2 gphoto)
 		$(use_with gssapi)
 		$(use_with gstreamer)
-		--without-hal
+		--enable-hal
 		$(use_with kerberos krb5)
 		$(use_with ldap)
 		# TODO: Will bug 685172 still need special handling?

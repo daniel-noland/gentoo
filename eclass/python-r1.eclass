@@ -49,6 +49,7 @@ elif [[ ${_PYTHON_ANY_R1} ]]; then
 	die 'python-r1.eclass can not be used with python-any-r1.eclass.'
 fi
 
+[[ ${EAPI} == 6 ]] && inherit eqawarn
 inherit multibuild python-utils-r1
 
 fi
@@ -728,7 +729,7 @@ python_setup() {
 	fi
 
 	# (reverse iteration -- newest impl first)
-	local found
+	local found i
 	_python_verify_patterns "${@}"
 	for (( i = ${#_PYTHON_SUPPORTED_IMPLS[@]} - 1; i >= 0; i-- )); do
 		local impl=${_PYTHON_SUPPORTED_IMPLS[i]}

@@ -6,7 +6,7 @@
 # Distribution Kernel Project <dist-kernel@gentoo.org>
 # @AUTHOR:
 # Michał Górny <mgorny@gentoo.org>
-# @SUPPORTED_EAPIS: 7
+# @SUPPORTED_EAPIS: 7 8
 # @PROVIDES: kernel-install
 # @BLURB: Build mechanics for Distribution Kernels
 # @DESCRIPTION:
@@ -22,15 +22,9 @@
 
 if [[ ! ${_KERNEL_BUILD_ECLASS} ]]; then
 
-case "${EAPI:-0}" in
-	0|1|2|3|4|5|6)
-		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
-		;;
-	7)
-		;;
-	*)
-		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
-		;;
+case ${EAPI} in
+	7|8) ;;
+	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
 
 PYTHON_COMPAT=( python3_{8..11} )
@@ -196,15 +190,16 @@ kernel-build_src_install() {
 	local image_path=$(dist-kernel_get_image_path)
 	cp -p "build/${image_path}" "${ED}/usr/src/linux-${ver}/${image_path}" || die
 
-	# Install the unstripped uncompressed vmlinux for use with systemtap
-	# etc.  Use mv rather than doins for the same reason as above --
-	# space and time.
-	if use debug; then
-		mv build/vmlinux "${ED}/usr/src/linux-${ver}/" || die
-	fi
-
 	# building modules fails with 'vmlinux has no symtab?' if stripped
 	use ppc64 && dostrip -x "/usr/src/linux-${ver}/${image_path}"
+
+	# Install vmlinux with debuginfo when requested
+	if use debug; then
+		if [[ "${image_path}" != "vmlinux" ]]; then
+			mv "build/vmlinux" "${ED}/usr/src/linux-${ver}/vmlinux" || die
+		fi
+		dostrip -x "/usr/src/linux-${ver}/vmlinux"
+	fi
 
 	# strip empty directories
 	find "${D}" -type d -empty -exec rmdir {} + || die

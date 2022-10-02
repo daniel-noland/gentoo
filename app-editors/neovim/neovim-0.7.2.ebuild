@@ -15,7 +15,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/neovim/neovim.git"
 else
 	SRC_URI="https://github.com/neovim/neovim/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~riscv ~x86 ~x64-macos"
+	KEYWORDS="amd64 ~arm arm64 ~riscv x86 ~x64-macos"
 fi
 
 LICENSE="Apache-2.0 vim"
@@ -69,6 +69,7 @@ BDEPEND="
 PATCHES=(
 	"${FILESDIR}/${PN}-0.4.4-cmake_lua_version.patch"
 	"${FILESDIR}/${PN}-0.4.4-cmake-release-type.patch"
+	"${FILESDIR}/${PN}-0.7.2-cmake-darwin.patch"
 )
 
 src_prepare() {

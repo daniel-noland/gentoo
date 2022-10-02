@@ -3,25 +3,28 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{8..11} )
 
-inherit autotools fcaps linux-info python-any-r1 xdg-utils
+# We avoid xdg.eclass here because it'll pull in glib, desktop utils on
+# htop which is often used on headless machines. bug #787470
+inherit linux-info optfeature python-any-r1 xdg-utils
 
 DESCRIPTION="interactive process viewer"
 HOMEPAGE="https://htop.dev/ https://github.com/htop-dev/htop"
 if [[ ${PV} == *9999 ]] ; then
-	inherit git-r3
 	EGIT_REPO_URI="https://github.com/htop-dev/htop.git"
+	inherit autotools git-r3
 else
-	SRC_URI="https://github.com/htop-dev/${PN}/archive/${PV/_}.tar.gz -> ${P}.tar.gz"
+	SRC_URI="https://github.com/htop-dev/htop/releases/download/${PV}/${P}.tar.xz"
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos"
 fi
+
+S="${WORKDIR}/${P/_}"
 
 LICENSE="BSD GPL-2+"
 SLOT="0"
 IUSE="caps debug delayacct hwloc lm-sensors llvm-libunwind openvz unicode unwind vserver"
 
-BDEPEND="virtual/pkgconfig"
 RDEPEND="
 	sys-libs/ncurses:=[unicode(+)?]
 	hwloc? ( sys-apps/hwloc:= )
@@ -35,21 +38,15 @@ RDEPEND="
 		lm-sensors? ( sys-apps/lm-sensors )
 	)
 "
-DEPEND="${RDEPEND}
-	${PYTHON_DEPS}"
+DEPEND="${RDEPEND}"
+BDEPEND="${PYTHON_DEPS}
+	virtual/pkgconfig"
 
 DOCS=( ChangeLog README )
 
 CONFIG_CHECK="~TASKSTATS ~TASK_XACCT ~TASK_IO_ACCOUNTING ~CGROUPS"
 
-S="${WORKDIR}/${P/_}"
-
 pkg_setup() {
-	if ! has_version sys-process/lsof ; then
-		ewarn "To use lsof features in htop (what processes are accessing"
-		ewarn "what files), you must have sys-process/lsof installed."
-	fi
-
 	python-any-r1_pkg_setup
 	linux-info_pkg_setup
 }
@@ -57,12 +54,15 @@ pkg_setup() {
 src_prepare() {
 	default
 
-	eautoreconf
+	if [[ ${PV} == 9999 ]] ; then
+		eautoreconf
+	fi
 }
 
 src_configure() {
 	if [[ ${CBUILD} != ${CHOST} ]] ; then
-		export ac_cv_file__proc_{meminfo,stat}=yes #328971
+		# bug #328971
+		export ac_cv_file__proc_{meminfo,stat}=yes
 	fi
 
 	local myeconfargs=(
@@ -97,14 +97,14 @@ src_configure() {
 		)
 	fi
 
-	econf ${myeconfargs[@]}
+	econf "${myeconfargs[@]}"
 }
 
 pkg_postinst() {
 	xdg_desktop_database_update
 	xdg_icon_cache_update
 
-	fcaps cap_sys_ptrace /usr/bin/${PN}
+	optfeature "Viewing processes accessing certain files" sys-process/lsof
 }
 
 pkg_postrm() {

@@ -32,8 +32,14 @@ DEPEND="python? ( ${PYTHON_DEPS} )
 RDEPEND="${DEPEND}
 	python? ( dev-python/pyxdg[${PYTHON_USEDEP}] )"
 BDEPEND="
+	sys-apps/help2man
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-0.11.1-include-pthread_h.patch
+	"${FILESDIR}"/${PN}-0.11.1-remove-unused-variable-musl.patch
+)
 
 src_configure() {
 	# bug 573732

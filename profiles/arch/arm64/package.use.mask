@@ -1,6 +1,13 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
+# Alexey Shvetsov <alexxy@gentoo.org> (2022-09-15)
+# Mask nvml use flag for slurm
+sys-cluster/slurm nvml
+
+# Sam James <sam@gentoo.org> (2022-07-08)
+# Unmask galera for dev-db/mariadb
+>=dev-db/mariadb-10.1.0 -galera
 # Anna Vyalkova <cyber+gentoo@sysrq.in> (2022-06-25)
 # Unkeyworded test dep
 app-vim/jedi test
@@ -47,10 +54,6 @@ sys-cluster/slurm ucx
 # Sam James <sam@gentoo.org> (2022-01-22)
 # Supports 64-bit NEON
 dev-libs/libgcrypt -cpu_flags_arm_neon
-
-# Georgy Yakovlev <gyakovlev@gentoo.org> (2021-11-16)
-# requires sys-apps/dbus-broker, which is keyworded here.
-sys-apps/systemd -hostnamed-fallback
 
 # Sam James <sam@gentoo.org> (2021-10-31)
 # dev-python/pyilmbase isn't keyworded on arm64
@@ -317,7 +320,7 @@ dev-libs/boost -context
 
 # Michał Górny <mgorny@gentoo.org> (2018-03-03)
 # Requires masked dependent flags.
-net-fs/samba addc addns ads cluster python test
+net-fs/samba addns cluster test
 
 # Michał Górny <mgorny@gentoo.org> (2018-03-03)
 # Some more unkeyworded dependencies.
@@ -372,7 +375,7 @@ net-misc/gerbera lastfm
 
 # Roy Bamford <neddysegoon@gentoo.org> (2017-08-24)
 # Support for g15daemon still needs -9999 packages on all arches
-media-sound/mumble g15
+net-voip/mumble g15
 
 # Alexis Ballier <aballier@gentoo.org> (2017-07-20)
 # media-libs/libemf fails with #error unknown CPU.

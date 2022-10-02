@@ -1,10 +1,10 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 ECM_TEST="true"
-PYTHON_COMPAT=( python3_{8..9} )
+PYTHON_COMPAT=( python3_{8..10} )
 
 inherit ecm python-single-r1
 
@@ -24,7 +24,7 @@ BDEPEND="
 COMMON_DEPEND="${PYTHON_DEPS}
 	dev-cpp/yaml-cpp:=
 	$(python_gen_cond_dep '
-		>=dev-libs/boost-1.55:=[python,${PYTHON_USEDEP}]
+		dev-libs/boost:=[python,${PYTHON_USEDEP}]
 		dev-libs/libpwquality[${PYTHON_USEDEP}]
 	')
 	dev-qt/qtconcurrent:5

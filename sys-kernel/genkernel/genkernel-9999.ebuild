@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # genkernel-9999        -> latest Git branch "master"
@@ -6,14 +6,14 @@
 
 EAPI="7"
 
-PYTHON_COMPAT=( python3_{7..10} )
+PYTHON_COMPAT=( python3_{8..10} )
 
 inherit bash-completion-r1 python-single-r1
 
 # Whenever you bump a GKPKG, check if you have to move
 # or add new patches!
 VERSION_BCACHE_TOOLS="1.0.8_p20141204"
-VERSION_BOOST="1.76.0"
+VERSION_BOOST="1.79.0"
 VERSION_BTRFS_PROGS="5.15"
 VERSION_BUSYBOX="1.34.1"
 VERSION_COREUTILS="8.32"
@@ -119,6 +119,9 @@ RDEPEND="${PYTHON_DEPS}
 	sys-devel/autoconf
 	sys-devel/autoconf-archive
 	sys-devel/automake
+	sys-devel/bc
+	sys-devel/bison
+	sys-devel/flex
 	sys-devel/libtool
 	virtual/pkgconfig
 	elibc_glibc? ( sys-libs/glibc[static-libs(+)] )
@@ -127,6 +130,9 @@ RDEPEND="${PYTHON_DEPS}
 if [[ ${PV} == 9999* ]]; then
 	DEPEND="${DEPEND} app-text/asciidoc"
 fi
+
+PATCHES=(
+)
 
 src_unpack() {
 	if [[ ${PV} == 9999* ]]; then

@@ -3,7 +3,7 @@
 
 EAPI="7"
 PYTHON_COMPAT=( python3_{8..11} )
-USE_RUBY="ruby26 ruby27"
+USE_RUBY="ruby27"
 
 # No, I am not calling ruby-ng
 inherit python-r1 toolchain-funcs multilib-minimal
@@ -20,20 +20,19 @@ if [[ ${PV} == 9999 ]]; then
 	S="${WORKDIR}/${P}/${PN}"
 else
 	SRC_URI="https://github.com/SELinuxProject/selinux/releases/download/${MY_PV}/${MY_P}.tar.gz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~mips ~riscv ~x86"
+	KEYWORDS="amd64 arm arm64 ~mips ~riscv x86"
 	S="${WORKDIR}/${MY_P}"
 fi
 
 LICENSE="public-domain"
 SLOT="0"
-IUSE="python ruby static-libs ruby_targets_ruby26 ruby_targets_ruby27"
+IUSE="python ruby static-libs ruby_targets_ruby27"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
 RDEPEND="dev-libs/libpcre2:=[static-libs?,${MULTILIB_USEDEP}]
 	>=sys-libs/libsepol-${PV}:=[${MULTILIB_USEDEP}]
 	python? ( ${PYTHON_DEPS} )
 	ruby? (
-		ruby_targets_ruby26? ( dev-lang/ruby:2.6 )
 		ruby_targets_ruby27? ( dev-lang/ruby:2.7 )
 	)
 	elibc_musl? ( sys-libs/fts-standalone )"

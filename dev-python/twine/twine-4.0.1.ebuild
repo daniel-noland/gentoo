@@ -21,7 +21,7 @@ SRC_URI="
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="amd64 arm arm64 ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	>=dev-python/colorama-0.4.3[${PYTHON_USEDEP}]
@@ -67,11 +67,9 @@ python_test() {
 		tests/test_integration.py
 	)
 	local EPYTEST_DESELECT=(
-		# regression due to deps?
+		# Regression due to deps?
 		tests/test_check.py::test_fails_rst_no_content
-	)
-	[[ ${EPYTHON} == python3.11 ]] && EPYTEST_DESELECT+=(
-		# confused by extra log entries that don't seem relevant
+		# Avoid needing heavy virtualx
 		tests/test_auth.py::test_warns_for_empty_password
 	)
 

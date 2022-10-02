@@ -32,7 +32,7 @@ REQUIRED_USE="jdbc? ( extraengine server !static )
 	?? ( tcmalloc jemalloc )
 	static? ( yassl !pam )"
 
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~mips ppc ppc64 ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris ~x86-solaris"
 
 # Shorten the path because the socket path length must be shorter than 107 chars
 # and we will run a mysql server during test phase
@@ -73,7 +73,10 @@ COMMON_DEPEND="
 		innodb-snappy? ( app-arch/snappy )
 		mroonga? ( app-text/groonga-normalizer-mysql >=app-text/groonga-7.0.4 )
 		numa? ( sys-process/numactl )
-		oqgraph? ( >=dev-libs/boost-1.40.0:0= dev-libs/judy:0= )
+		oqgraph? (
+			dev-libs/boost:=
+			dev-libs/judy:0=
+		)
 		pam? ( sys-libs/pam:0= )
 		systemd? ( sys-apps/systemd:= )
 		tokudb? ( app-arch/snappy )

@@ -33,289 +33,350 @@
 
 #--- END OF EXAMPLES ---
 
-# Sam James <sam@gentoo.org> (2022-06-29)
-# Pre-emptively mask broken upstream versions.
-# 1. openssl 1.1.1o fails tests (https://github.com/openssl/openssl/issues/18619)
-# 2. openssl 3.0.4 has a buffer overflow w/ AVX512 (https://github.com/openssl/openssl/issues/18625)
-# Gentoo isn't vulnerable to the original CVE which caused these releases
-# (CVE-2022-2068) as we have our own rehash script.
-=dev-libs/openssl-1.1.1p
-=dev-libs/openssl-3.0.4
+# Andreas Sturmlechner <asturm@gentoo.org> (2022-09-23)
+# Unmaintained upstream, obsolete after introduction of kde-misc/markdownpart.
+# Removal on 2022-10-23.
+kde-misc/kmarkdownwebview
 
-# Piotr Karbowski <slashbeast@gentoo.org> (2022-06-26)
-# Abandoned upstream, depends on API that no longer exists.
-# Removal on 2022-07-26.
-dev-python/jikanpy
+# Andreas Sturmlechner <asturm@gentoo.org> (2022-09-23)
+# Broken after Google stopped accepting "Less Secure Apps".
+# https://github.com/Intika-KDE-Plasmoids/plasmoid-ultimate-gmail-feed/issues/32
+# Use kde-misc/gmail-feed instead; removal on 2022-10-23.
+kde-misc/ultimate-gmail-feed
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-25)
-# Obsolete slot. Use a newer slot instead.
+# John Helmert III <ajak@gentoo.org> (2022-09-18)
+# Unfixed root privilege escalation, bug #631552
+sys-cluster/slurm
+
+# Michał Górny <mgorny@gentoo.org> (2022-09-18)
+# Obsolete in favor of building via PEP517 mode.  Buggy.  No revdeps
+# left in ::gentoo.
+# Removal on 2022-10-18.  Bug #871522.
+dev-python/pyproject2setuppy
+
+# Pacho Ramos <pacho@gentoo.org> (2022-09-18)
+# ABRT environment keeps breaking more and more on non-Fedora systems.
+# Removal: 2022-10-18.  Bugs #849305, #849092, #849095, #713858.
+app-admin/abrt
+app-admin/gnome-abrt
+dev-libs/libreport
+dev-libs/satyr
+
+# Pacho Ramos <pacho@gentoo.org> (2022-09-18)
+# Unmaintained for a long time and unneeded with current pulseaudio and
+# pipewire versions.
+# Removal: 2022-10-18.
+media-sound/pulseaudio-modules-bt
+
+# Joonas Niilola <juippis@gentoo.org> (2022-09-16)
+# This theme has been incorporated to enlightenment-0.25, and with
+# 0.24 removed from Gentoo's git tree, this ebuild is useless. Removal
+# in 30 days. #870355
+x11-themes/e-flat-theme
+
+# Joonas Niilola <juippis@gentoo.org> (2022-09-15)
+# Upstream split this font into separate packages: media-fonts/
+# source-code-pro, source-sans, source-serif. The current non-split
+# version is broken. Removal in 30 days. #865103
+media-fonts/source-pro
+
+# Mike Gilbert <floppym@gentoo.org> (2022-09-12)
+# repoman is no longer maintained and has been removed from the portage
+# git repository. Please use dev-util/pkgcheck and dev-util/pkgdev instead.
+# Removal on 2022-11-11. Bug #835013.
+app-portage/repoman
+
+# Michał Górny <mgorny@gentoo.org> (2022-09-11)
+# Bad quality package with failing tests.  No revdeps.
+# Removal on 2022-10-11.  Bug #869650.
+dev-python/pytest-pylint
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-10)
+# Python 3.8 only. EAPI=6 ebuild. 5 open bugs. Issues with newer
+# dependencies versions.
+# Removal: 2022-10-10.  Bugs #869524, #684334.
+net-analyzer/flent
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-10)
+# Python 3.8 only package. Tests are disabled. Newer targets fail
+# more tests then 3.8 target.
+# Removal: 2022-10-10.  Bug #869521.
+net-nds/nsscache
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-10)
+# Python 3.8 only package, with inactive since 2017 upstream.
+# Tests fail and doesn't work on newer python targets.
+# Removal: 2022-10-10.  Bug #869512.
+dev-python/python-etcd
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-10)
+# Python 3.8 only package, with capped old dependencies, and open
+# bugs and issues.
+# Removal: 2022-10-10.  Bugs #869506, #695090, #792219, #809272.
+net-misc/electrum-ltc
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-10)
+# Upstream repository archived. Python 3.8 only, with issues for
+# newer targets. No reverse dependencies in tree.
+# Removal: 2022-10-10.  Bugs #869503, #747997, #832242.
+dev-python/SaltTesting
+
+# Matthias Schwarzott <zzam@gentoo.org> (2022-09-08)
+# Breaks kernel builds with BTF enabled.
+# Bug #868762.
+=dev-util/pahole-1.24
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-07)
+# Python 3.8 only package, no maintainer left.
+# Removal: 2022-10-07.  Bug #869107.
+www-apps/blohg
+
+# Arthur Zamarin <arthurzam@gentoo.org> (2022-09-07)
+# Python 3.8 only package, 2 open bugs. Recommended to migrate to borg.
+# No upstream activity since 2015.
+# Bugs #674822, #830291, #832240
+# Removal: 2022-10-07.  Bug #869101.
+app-backup/attic
+
+# Mike Gilbert <floppym@gentoo.org> (2022-09-05)
+# Crash due to double-free.
+# https://bugs.gentoo.org/868567
+=sys-apps/gawk-5.2.0
+
+# Marc Schiffbauer <mschiff@gentoo.org> (2022-09-02)
+# Dead upstream, open bugs, removal in 30 days
+# bugs #829447, #836227, #862504
+mail-filter/sigh
+
+# Michał Górny <mgorny@gentoo.org> (2022-08-30)
+# Flask-Security-Too is a package with high maintenance cost
+# and no revdeps in ::gentoo.  The next version bump (once more)
+# introduces more dependencies.
+#
+# The remaining listed packages are used exclusively by this package
+# (or its tests).  If you find one of them useful, please let us know
+# and we'll keep it.
+#
+# Removal on 2022-09-29.  Bug #867415.
+dev-python/flask-security
+dev-python/flask-babelex
+dev-python/flask-mail
+dev-python/flask-principal
+dev-python/flask-wtf
+dev-python/mongomock
+dev-python/pony
+dev-python/pyqrcode
+dev-python/sentinels
+dev-python/speaklater
+dev-python/zxcvbn
+
+# Matt Turner <mattst88@gentoo.org> (2022-08-29)
+# Unpatched security vulerabilities. Bug #857780.
+# Removal on 2022-09-29.
+=x11-base/xorg-server-1.20*
+=x11-base/xorg-drivers-1.20*
+
+# Matt Turner <mattst88@gentoo.org> (2022-08-29)
+# Fails to build with xorg-server-21. Bug #828426.
+# Removal on 2022-09-29.
+x11-drivers/xf86-video-glint
+
+# Hans de Graaff <graaff@gentoo.org> (2022-08-27)
+# No longer maintained upstream and more modern alternatives such as
+# www-servers/puma are available.
 # Removal in 30 days.
-dev-ruby/hashie:3
+dev-ruby/async_sinatra
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-25)
-# Obsolete slot. Use a newer slot instead.
-# Removal in 30 days.
-dev-ruby/marcel:0
+# Sam James <sam@gentoo.org> (2022-08-27)
+# Stuck on deprecated and removed Ruby 2.6. Removal on 2022-09-27.
+dev-ruby/aws-sdk
+dev-ruby/aws-sdk-core
+dev-ruby/aws-sdk-resources
+dev-ruby/travis
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-25)
-# Obsolete slot. Use a newer slot instead.
-# Removal in 30 days.
-dev-ruby/paramesan:0
+# Jaco Kroon <jaco@uls.co.za> (2022-08-22)
+# Superceded by bgpq4 (already in tree).  Non-co-operative upstream.  Removal
+# in 30 days.  Open bugs, already fixed in bgpq4.  Please convert your usage to
+# bgpq4.  Mostly you just need to drop the -3 argument.
+net-misc/bgpq3
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-25)
-# Obsolete slot. Use a newer slot instead.
-# Removal in 30 days.
-dev-ruby/paramesan:0
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2022-08-22)
+# Java library without consumers. Removal on 2022-09-22
+dev-java/byte-buddy-agent
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-24)
-# Obsolete slot. Use a newer slot instead.
-# Removal in 30 days.
-dev-ruby/rspec-rails:3
+# hololeap <hololeap@protonmail.com> (2022-08-21)
+# Monolithic mask for dev-haskell/* packages which have no reverse dependencies,
+# are broken, or severely out of date. The aim is to have the Haskell overlay
+# (::haskell) be the place for development packages and only have packages
+# needed for end-user applications in ::gentoo, as the status quo has
+# proven to be unsustainable. More up-to-date versions of these packages
+# are available in ::haskell.
+# Removal on 2022-09-19.
+app-portage/fquery
+dev-games/goatee
+dev-haskell/megaparsec
+dev-haskell/parser-combinators
+dev-haskell/megaparsec-tests
+dev-haskell/hspec-megaparsec
+dev-haskell/neat-interpolation
+dev-haskell/stack
+dev-haskell/abstract-deque-tests
+dev-haskell/aeson-diff
+dev-haskell/annotated-wl-pprint
+dev-haskell/authenticate-oauth
+dev-haskell/base-prelude
+dev-haskell/base-unicode-symbols
+dev-haskell/casa-client
+dev-haskell/casa-types
+dev-haskell/cipher-aes128
+dev-haskell/concurrent-extra
+dev-haskell/contravariant-extras
+dev-haskell/cpphs
+dev-haskell/crypto-pubkey-types
+dev-haskell/cryptohash
+dev-haskell/cryptohash-cryptoapi
+dev-haskell/data-default-instances-base
+dev-haskell/drbg
+dev-haskell/edit-distance-vector
+dev-haskell/either
+dev-haskell/filelock
+dev-haskell/filepattern
+dev-haskell/fsnotify
+dev-haskell/genvalidity
+dev-haskell/genvalidity-hspec
+dev-haskell/genvalidity-property
+dev-haskell/ghc-lib-parser
+dev-haskell/ghc-lib-parser-ex
+dev-haskell/githash
+dev-haskell/groupoids
+dev-haskell/groups
+dev-haskell/haddock
+dev-haskell/haddock-api
+dev-haskell/hashable-time
+dev-haskell/hashtables
+dev-haskell/haskell-src-meta
+dev-haskell/hdbc-odbc
+dev-haskell/hi-file-parser
+dev-haskell/hlint
+dev-haskell/hpack
+dev-haskell/hsopenssl
+dev-haskell/hsyaml-aeson
+dev-haskell/http-common
+dev-haskell/http-download
+dev-haskell/http-streams
+dev-haskell/hxt
+dev-haskell/hxt-charproperties
+dev-haskell/hxt-regex-xmlschema
+dev-haskell/hxt-unicode
+dev-haskell/infer-license
+dev-haskell/interpolate
+dev-haskell/io-streams
+dev-haskell/io-streams-haproxy
+dev-haskell/iwlib
+dev-haskell/js-flot
+dev-haskell/js-jquery
+dev-haskell/keys
+dev-haskell/lens-aeson
+dev-haskell/memotrie
+dev-haskell/mintty
+dev-haskell/mustache
+dev-haskell/newtype-generics
+dev-haskell/open-browser
+dev-haskell/openssl-streams
+dev-haskell/optparse-simple
+dev-haskell/pantry
+dev-haskell/path
+dev-haskell/path-io
+dev-haskell/pointed
+dev-haskell/polyparse
+dev-haskell/prettyclass
+dev-haskell/project-template
+dev-haskell/readable
+dev-haskell/rebase
+dev-haskell/refact
+dev-haskell/regex-applicative-text
+dev-haskell/regex-compat-tdfa
+dev-haskell/regex-pcre
+dev-haskell/rerebase
+dev-haskell/rfc5051
+dev-haskell/rio-orphans
+dev-haskell/rio-prettyprint
+dev-haskell/rsa
+dev-haskell/selective
+dev-haskell/snap-core
+dev-haskell/snap-server
+dev-haskell/tar-conduit
+dev-haskell/template-haskell-compat-v0208
+dev-haskell/text-metrics
+dev-haskell/th-expand-syns
+dev-haskell/th-orphans
+dev-haskell/th-reify-many
+dev-haskell/threads
+dev-haskell/validity
+dev-haskell/vector-builder
+dev-haskell/vector-instances
+dev-haskell/weigh
+dev-haskell/wreq
+dev-haskell/xhtml
+dev-haskell/zlib-bindings
+dev-util/bnfc
 
-# Marc Schiffbauer <mschiff@gentoo.org> (2022-06-22)
-# Deprecated package. Removal in 30 days.
-# see bug #843746
-sys-power/tuxedo-cc-wmi
+# hololeap <hololeap@protonmail.com> (2022-08-21)
+# doctest-parallel does not currently work with Setup.hs (used internally by
+# haskell-cabal.eclass)
+# See: <https://github.com/martijnbastiaan/doctest-parallel/issues/45>
+dev-haskell/doctest-parallel
 
-# Matt Turner <mattst88@gentoo.org> (2022-06-21)
-# Dead slot. No reverse dependencies.
-# Removal on 2022-07-21. Bug #846617
-app-misc/tracker:0
-app-misc/tracker-miners:0
+# John Helmert III <ajak@gentoo.org> (2022-08-14)
+# Vulnerable, unmaintained in Gentoo, EAPI6. Removal in 30 days,
+# bug #772209
+app-crypt/keybase
 
-# Sam James <sam@gentoo.org> (2022-06-21)
-# Fails to build with GCC 12, upstream location is gone, no sign of activity,
-# and very few other distributions packaging this. Bug #841824.
-# Removal on 2022-07-21.
-app-backup/kfoldersync
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2022-08-12)
+# Masked for testing, depends on dev-qt/qt*:6
+# Pyside6 is stuck on python3_10 for the moment being
+dev-python/shiboken6
+dev-python/pyside6
+dev-python/pyside6-tools
 
-# Sam James <sam@gentoo.org> (2022-06-21)
-# Obsolete, no reverse dependencies, does not run test suite, and doesn't
-# support Python 3.10+. Use app-crypt/gpgme[python] instead.
-# Bugs #845807, #798372, #748531. Removal on 2022-07-21.
-dev-python/pygpgme
+# Jimi Huotari <chiitoo@gentoo.org> (2022-08-02)
+# Masked for testing. The split of some packages may still
+# change. bug #838970.
+dev-python/PyQt6
+dev-python/PyQt6-WebEngine
+dev-qt/qt5compat:6
+dev-qt/qtbase:6
+dev-qt/qtdeclarative:6
+dev-qt/qtimageformats:6
+dev-qt/qtlocation:6
+dev-qt/qtmultimedia:6
+dev-qt/qtnetworkauth:6
+dev-qt/qtpositioning:6
+dev-qt/qtquick3d:6
+dev-qt/qtquicktimeline:6
+dev-qt/qtserialport:6
+dev-qt/qtshadertools:6
+dev-qt/qtsvg:6
+dev-qt/qttools:6
+dev-qt/qtwayland:6
+dev-qt/qtwebchannel:6
+dev-qt/qtwebengine:6
+dev-qt/qtwebsockets:6
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# Obsolete slot. Use a newer slot instead.
-# Removal in 30 days.
-dev-ruby/tomlrb:1
+# Sam James <sam@gentoo.org> (2022-08-02)
+# Multiple rendering/font issues reported: bug #844115, bug #851141.
+>=app-text/ghostscript-gpl-9.56.1
 
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# Obsolete slot. Use a newer slot instead.
-# Removal in 30 days.
-dev-ruby/ttfunk:1.6
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# Obsolete slot. Use the "3" slot instead which provides a single slot
-# for all compatible versions. Removal in 30 days.
-dev-ruby/xdr:3.0.1
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# Obsolete slot. Slot 2 provides support for all rails versions
-# currently available. Removal in 30 days.
-dev-util/cucumber-rails:1
-
-# Sam James <sam@gentoo.org> (2022-06-19)
-# Unsupported by upstream, no updates in a long time,
-# vulnerable to issues fixed in the main firejail package.
-# bug #834601.
-# Please migrate to sys-apps/firejail. Removal on 2022-07-19.
-sys-apps/firejail-lts
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# ruby26-only, fails tests, no longer maintained upstream,
-# no reverse dependencies. Removal in 30 days.
-dev-ruby/best_in_place
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# ruby26-only, no tests, no reverse dependencies
-# Removal in 30 days.
-dev-ruby/cinch
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# ruby26-only, fails tests, last upstream release in 2020,
-# no reverse dependencies. Removal in 30 days.
-dev-ruby/dotenv
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# ruby26-only, no longer maintained upstream,
-# no reverse dependencies. Removal in 30 days.
-dev-ruby/origin
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-19)
-# ruby26-only, fails tests, no longer maintained upstream,
-# no reverse dependencies. Removal in 30 days.
-dev-ruby/packetfu
-
-# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2022-06-19)
-# Unused java libraries. Removal on 2022-07-19
-dev-java/netty-transport
-dev-java/netty-buffer
-dev-java/netty-common
-
-# John Helmert III <ajak@gentoo.org> (2022-06-19)
-# Untouched by maintainer since Git transition. No reverse dependencies,
-# unused by upstream, vulnerable. Removal in 30 days. Bug #678705
-dev-libs/libvterm-neovim
-
-# Hans de Graaff <graaff@gentoo.org> (2022-06-18)
-# Obsolete ruby26-only slots. Please use a newer slot instead.
-# Masked for removal in 30 days.
-dev-ruby/autoprefixer-rails:9
-dev-ruby/sass:3.5
-dev-ruby/slim:0
-
-# William Hubbs <williamh@gentoo.org> (2022-06-17)
-# Dead upstream, please use dev-util/github-cli
-# Bug #845921
-# Removal: 2022-07-17
-dev-util/cligh
-
-# Ulrich Müller <ulm@gentoo.org> (2022-06-16)
-# Last release in 2002. The distfile cannot be redistributed
-# and is no longer available upstream. Use media-gfx/imagemagick
-# ("convert" with eps2 or eps3 output format) as replacement.
-# Masked for removal in 30 days. Bug #851708.
-media-gfx/jpeg2ps
-
-# John Helmert III <ajak@gentoo.org> (2022-06-15)
-# Open security bug with patches for years. Upstream seems dead since
-# 2020. Removal on 2022-07-15.  Bug #718550.
-sys-cluster/csync2
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-13)
-# Upstream has discontinued the fork.  No revdeps.  They recommend using
-# the original editdistance (not packaged on Gentoo)
-# or dev-python/ukkonen.
-# Removal on 2022-07-13.  Bug #851678.
-dev-python/editdistance-s
-
-# Sam James <sam@gentoo.org> (2022-06-10)
-# Masked for removal on 2022-07-10. No upstream activity in a long time,
-# no reverse dependencies, and Gentoo maintains a huge number of patches
-# w/ no hope of them being upstreamed. Bug #850958.
-dev-cpp/commoncpp2
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-08)
-# pulseaudio-dlna has not seen any upstream activity since 2017,
-# and has had its last release in 2016.  It does not feature a non-live
-# ebuild.
-# Removal on 2022-07-08.  Bug #813990.
-net-misc/pulseaudio-dlna
-
-# Andreas K. Hüttel <dilfridge@gentoo.org> (2022-06-05)
-# Ages old, abandoned upstream, and server installs now provide an
-# actually useful webmail interface. Removal in 30 days.
-mail-client/novell-groupwise-client
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-05)
-# The current version in Gentoo is broken with modern pytest.  The new
-# version (from Dec 2021) fails tests with modern pyflakes.  No revdeps.
-# Removal on 2022-07-05.  Bug #834816.
-dev-python/pytest-flakes
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-05)
-# Barely any upstream activity since 2017.  The LICENSE in ebuild
-# is incorrect and the package bundles sources with non-free license.
-# No revdeps.
-# Removal on 2022-07-05.  Bug #849824.
-dev-python/polygon
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-05)
-# Pending bump since January.  No Python 3.10 compat.  Tests restricted.
-# Uses PEP517-incompatible hacks to build.  Hard requires dev-db/mysql
-# (and blocks dev-db/mariad).  No revdeps in Gentoo.
-# Use dev-python/mysqlclient instead.
-# Removal on 2022-07-05.  Bug #845756.
-dev-python/mysql-connector-python
-
-# Michał Górny <mgorny@gentoo.org> (2022-06-02)
-# The current Gentoo version requires setup.py to exist which breaks
-# the new versions of its revdeps.  The new upstream release is broken
-# by design and requires installing setuptools in a virtualenv (enjoy
-# pep517) to get the package's version, so fails without Internet.
-# No reply on the bug for 3 months already.
-# Removal on 2022-07-02.  Bug #834534.
-dev-python/jaraco-packaging
-
-# Sam James <sam@gentoo.org> (2022-06-02)
-# No reverse dependencies, uses long-deprecated and abandoned nose for tests,
-# no upstream activity in years. Removal on 2022-07-02.
-dev-python/chai
-
-# Sam James <sam@gentoo.org> (2022-05-30)
-# Doesn't support Python 3.10+, maintainer-needed, and out of date.
-# Bugs #818847, #845936, #786585.
-# Removal on 2022-06-30.
-dev-util/dput-ng
-dev-util/distro-info
-dev-util/distro-info-data
-
-# Sam James <sam@gentoo.org> (2022-05-30)
-# No upstream activity since 2019, doesn't even support Python 3.9+ properly,
-# and doesn't support Python 3.10. Bugs #845819, #798384. Removal on 2022-06-30.
-dev-python/pypcap
-
-# Sam James <sam@gentoo.org> (2022-05-30)
-# Obsolete, no new releases since 2015, doesn't support Python 3.10.
-# Bugs #845681, #747982. Removal on 2022-06-30.
-dev-python/3to2
-
-# Sam James <sam@gentoo.org> (2022-05-30)
-# No upstream development since 2017, doesn't support Python 3.10. Bug #845678.
-# Removal on 2022-06-30.
-dev-perl/Inline-Python
-
-# Sam James <sam@gentoo.org> (2022-05-30)
-# Out of date, no tests, and most importantly, doesn't yet support Python 3.10
-# which will soon be the default. Bugs #845783, #822540, #798204.
-# Removal on 2022-06-30.
-dev-python/pycapnp
-
-# Matt Turner <mattst88@gentoo.org> (2022-05-30)
-# libwacom-2 broke ABI compatibility; reverse dependencies need to be updated.
-# Bug #848501
->=dev-libs/libwacom-2.0
->=x11-drivers/xf86-input-wacom-1.0
-
-# Hans de Graaff <graaff@gentoo.org> (2022-05-29)
-# Old slots that are no longer used by dependencies. Upgrade to the
-# latest slot instead. Masked for removal in one month.
-dev-ruby/regexp_parser:0
-dev-ruby/regexp_parser:1
+# Fabian Groffen <grobian@gentoo.org> (2022-07-02)
+# Segfaults handling SPF validations (warn on permerror), like the
+# previous release, better not to trust your important mail to
+~mail-mta/exim-4.96
 
 # Sam James <sam@gentoo.org> (2022-05-28)
 # GCC 9 and older no longer receive upstream support or fixes for
 # bugs. Please switch to a newer GCC version using gcc-config.
 # The lowest supported version of GCC is GCC 10.
 <sys-devel/gcc-10
-
-# Sam James <sam@gentoo.org> (2022-05-28)
-# Masked for removal. Dead upstream, no releases in a long time, and superseded
-# by dev-python/python-pam. Fails tests in a few scary ways too. Removal
-# on 2022-06-28. Bugs #833297, #802927.
-dev-python/pypam
-
-# Hans de Graaff <graaff@gentoo.org> (2022-05-20)
-# Unused slots of cucumber components that are no longer or were never
-# used by current cucumber versions. Masked for removal in 30 days.
-dev-util/cucumber-core:9
-dev-util/cucumber-create-meta:4
-dev-util/cucumber-cucumber-expressions:10
-dev-util/cucumber-gherkin:18
-dev-util/cucumber-gherkin:20
-dev-util/cucumber-html-formatter:13
-dev-util/cucumber-html-formatter:16
-dev-util/cucumber-messages:13
-dev-util/cucumber-messages:14
-dev-util/cucumber-messages:15
-dev-util/cucumber-tag-expressions:2
-dev-util/cucumber-tag-expressions:3
-dev-util/cucumber-wire:5
-
-# Matt Turner <mattst88@gentoo.org> (2022-04-30)
-# Masked for testing. Apparently causes crashes. Bug #841857.
->=x11-libs/libX11-1.8
 
 # Joonas Niilola <juippis@gentoo.org> (2022-04-29)
 # Apparently the "b" in version means "beta". 3.24 is available, we
@@ -325,6 +386,7 @@ dev-util/cucumber-wire:5
 # Alfredo Tupone <tupone@gentoo.org> (2022-04-27)
 # New release of janestreet packages need to tested
 dev-ml/sexplib0:0/0.15
+dev-ml/sexplib:0/0.15
 dev-ml/base:0/0.15
 dev-ml/stdio:0/0.15
 dev-ml/ppx_sexp_conv:0/0.15
@@ -381,20 +443,7 @@ dev-ml/async_extra:0/0.15
 dev-ml/core_bench:0/0.15
 dev-ml/patience_diff:0/0.15
 dev-util/patdiff:0/0.15
-
-# Marek Szuba <marecki@gentoo.org> (2022-04-14)
-# Singularity has been renamed upstream to Apptainer. Therefore, up-to-date
-# versions of this software are now available as app-containers/apptainer.
-sys-cluster/singularity
-
-# Sam James <sam@gentoo.org> (2022-04-13)
-# 2.35.2 was a quick release to mitigate a security issue (bug #838127), but
-# introduces problems of its own with e.g. Portage. bug #838223. Pending
-# investigation both on the Portage side and potentially upstream (as there's
-# at least some UX issues with 2.35.2+ with the new "safe directory" mechanism).
-# Earlier versions are still safe as long as you do not use git commands
-# on a local repository controlled by a user you do not trust.
->=dev-vcs/git-2.35.2
+=dev-ml/alcotest-1.6.0*
 
 # David Seifert <soap@gentoo.org> (2022-04-06)
 # Unsupported branches, no consumers left, removal on 2023-01-01.
@@ -406,13 +455,7 @@ sys-devel/automake:1.15
 # not use this program yet if you seriously need anonymity, privacy,
 # security, or stability." Feel free to unmask if this is not a
 # necessity.
-net-p2p/arti
-
-# Stephan Hartmann <sultan@gentoo.org> (2022-05-29)
-# Dev channel releases are only for people who
-# are developers or want more experimental features
-# and accept a more unstable release.
->=www-client/chromium-104
+<net-p2p/arti-1.0.0
 
 # Anton Fischl <github@fischl-online.de> (2022-02-23)
 # Version 2.5.* is not meant for production according to upstream
@@ -437,11 +480,6 @@ net-p2p/arti
 <sci-electronics/kicad-templates-6.0.2
 <app-doc/kicad-doc-6.0.2
 
-# Jonas Stein <jstein@gentoo.org> (2022-02-08)
-# Not maintained, open bugs, upstream outdated.
-# Removal after 2022-07-01.  Bug #832953.
-x11-misc/easystroke
-
 # Eray Aslan <eras@gentoo.org> (2022-01-24)
 # Mask experimental software
 =mail-mta/postfix-3.8*
@@ -455,14 +493,6 @@ x11-misc/easystroke
 # The main consumer, phpunit, does not initiate the new timer correctly
 # This is likely to cause issues in tests; Unmask if using for other purposes
 >=dev-php/PHP_Timer-5.0
-
-# Georgy Yakovlev <gyakovlev@gentoo.org> (2021-12-14)
-# AT&T decided to roll back community changes in March 2020
-# for version 2020.x.x
-# This version is no longer maintained.
-# New version is maintained at https://github.com/ksh93/ksh
-# and is available as app-shells/ksh-1.0.0_beta1 at time of writing.
-~app-shells/ksh-2020.0.0
 
 # Sam James <sam@gentoo.org> (2021-12-01)
 # OSL 12 is a development release (for now).
@@ -494,6 +524,7 @@ sys-devel/automake:1.11
 # New major parallel-installable release which needs special care to not
 # end up loaded into the same process together with the earlier libsoup ABI.
 # Migration to it is expected for GNOME 42, NOT to be unmasked with GNOME 41.
+>=gnome-extra/gnome-calculator-43
 net-libs/libsoup:3.0
 
 # Thomas Deutschmann <whissi@gentoo.org> (2021-09-07)
@@ -599,7 +630,7 @@ app-office/texmacs
 # switch the compiler / the binutils) ASAP. If you need them for a specific
 # (isolated) use case, feel free to unmask them on your system.
 <sys-libs/glibc-2.33
-<sys-devel/binutils-2.37_p1
+<sys-devel/binutils-2.38
 
 # Michael Orlitzky <mjo@gentoo.org> (2017-01-07)
 # This package has some dangerous quality and security issues, but

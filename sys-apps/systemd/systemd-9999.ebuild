@@ -35,8 +35,8 @@ LICENSE="GPL-2 LGPL-2.1 MIT public-domain"
 SLOT="0/2"
 IUSE="
 	acl apparmor audit build cgroup-hybrid cryptsetup curl +dns-over-tls elfutils
-	fido2 +gcrypt gnuefi gnutls homed http idn importd +kmod
-	+lz4 lzma nat +openssl pam pcre pkcs11 policykit pwquality qrcode
+	fido2 +gcrypt gnuefi gnutls homed http idn importd iptables +kmod
+	+lz4 lzma +openssl pam pcre pkcs11 policykit pwquality qrcode
 	+resolvconf +seccomp selinux split-usr +sysv-utils test tpm vanilla xkb +zstd
 "
 REQUIRED_USE="
@@ -71,7 +71,7 @@ COMMON_DEPEND="
 	kmod? ( >=sys-apps/kmod-15:0= )
 	lz4? ( >=app-arch/lz4-0_p131:0=[${MULTILIB_USEDEP}] )
 	lzma? ( >=app-arch/xz-utils-5.0.5-r1:0=[${MULTILIB_USEDEP}] )
-	nat? ( net-firewall/iptables:0= )
+	iptables? ( net-firewall/iptables:0= )
 	openssl? ( >=dev-libs/openssl-1.1.0:0= )
 	pam? ( sys-libs/pam:=[${MULTILIB_USEDEP}] )
 	pkcs11? ( app-crypt/p11-kit:0= )
@@ -168,8 +168,8 @@ BDEPEND="
 "
 
 python_check_deps() {
-	has_version -b "dev-python/jinja[${PYTHON_USEDEP}]" &&
-	has_version -b "dev-python/lxml[${PYTHON_USEDEP}]"
+	python_has_version "dev-python/jinja[${PYTHON_USEDEP}]" &&
+	python_has_version "dev-python/lxml[${PYTHON_USEDEP}]"
 }
 
 QA_FLAGS_IGNORED="usr/lib/systemd/boot/efi/.*"
@@ -234,13 +234,7 @@ src_unpack() {
 }
 
 src_prepare() {
-	# Do NOT add patches here
-	local PATCHES=()
-
-	[[ -d "${WORKDIR}"/patches ]] && PATCHES+=( "${WORKDIR}"/patches )
-
-	# Add local patches here
-	PATCHES+=(
+	local PATCHES=(
 	)
 
 	if ! use vanilla; then
@@ -288,9 +282,8 @@ multilib_src_configure() {
 		-Dpamlibdir="$(getpam_mod_dir)"
 		# avoid bash-completion dep
 		-Dbashcompletiondir="$(get_bashcompdir)"
-		# make sure we get /bin:/sbin in PATH
 		$(meson_use split-usr)
-		-Dsplit-bin=true
+		$(meson_use split-usr split-bin)
 		-Drootprefix="$(usex split-usr "${EPREFIX:-/}" "${EPREFIX}/usr")"
 		-Drootlibdir="${EPREFIX}/usr/$(get_libdir)"
 		# Avoid infinite exec recursion, bug 642724
@@ -322,7 +315,7 @@ multilib_src_configure() {
 		$(meson_use lz4)
 		$(meson_use lzma xz)
 		$(meson_use zstd)
-		$(meson_native_use_bool nat libiptc)
+		$(meson_native_use_bool iptables libiptc)
 		$(meson_native_use_bool openssl)
 		$(meson_use pam)
 		$(meson_native_use_bool pkcs11 p11kit)
@@ -372,6 +365,7 @@ multilib_src_test() {
 
 multilib_src_install_all() {
 	local rootprefix=$(usex split-usr '' /usr)
+	local sbin=$(usex split-usr sbin bin)
 
 	# meson doesn't know about docdir
 	mv "${ED}"/usr/share/doc/{systemd,${PF}} || die
@@ -380,19 +374,19 @@ multilib_src_install_all() {
 	dodoc "${FILESDIR}"/nsswitch.conf
 
 	if ! use resolvconf; then
-		rm -f "${ED}${rootprefix}"/sbin/resolvconf || die
+		rm -f "${ED}${rootprefix}/${sbin}"/resolvconf || die
 	fi
 
 	rm "${ED}"/etc/init.d/README || die
 	rm "${ED}${rootprefix}"/lib/systemd/system-generators/systemd-sysv-generator || die
 
 	if ! use sysv-utils; then
-		rm "${ED}${rootprefix}"/sbin/{halt,init,poweroff,reboot,runlevel,shutdown,telinit} || die
+		rm "${ED}${rootprefix}/${sbin}"/{halt,init,poweroff,reboot,runlevel,shutdown,telinit} || die
 		rm "${ED}"/usr/share/man/man1/init.1 || die
 		rm "${ED}"/usr/share/man/man8/{halt,poweroff,reboot,runlevel,shutdown,telinit}.8 || die
 	fi
 
-	if ! use resolvconf && ! use sysv-utils; then
+	if ! use resolvconf && ! use sysv-utils && ! use split-usr; then
 		rmdir "${ED}${rootprefix}"/sbin || die
 	fi
 

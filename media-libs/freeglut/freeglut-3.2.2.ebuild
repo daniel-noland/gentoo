@@ -3,7 +3,6 @@
 
 EAPI=7
 
-CMAKE_ECLASS=cmake
 inherit cmake-multilib
 
 DESCRIPTION="A free OpenGL utility toolkit, the open-sourced alternative to the GLUT library"
@@ -27,6 +26,10 @@ RDEPEND=">=virtual/glu-9.0-r1[${MULTILIB_USEDEP}]
 DEPEND="${RDEPEND}
 	x11-base/xorg-proto"
 BDEPEND="virtual/pkgconfig"
+
+PATCHES=(
+	"${FILESDIR}"/${PV}-Fix-aliasing-violation.patch
+)
 
 src_configure() {
 	local mycmakeargs=(
