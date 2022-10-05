@@ -4,7 +4,9 @@
 <sys-devel/clang-16.0.0 ~amd64
 <sys-devel/clang-common-16.0.0 ~amd64
 <sys-devel/clang-runtime-16.0.0 ~amd64
+<sys-devel/clang-toolchain-symlinks-16.0.0 ~amd64
 <sys-devel/lld-16.0.0 ~amd64
+<sys-devel/lld-toolchain-symlinks-16.0.0 ~amd64
 <sys-devel/llvm-16.0.0 ~amd64
 <sys-devel/llvm-common-16.0.0 ~amd64
 <sys-libs/compiler-rt-16.0.0 ~amd64
