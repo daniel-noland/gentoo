@@ -6,4 +6,4 @@
 ../../../features/git
 ../../../features/llvm
 ../../../features/llvm/amd64
-../../../features/llvm/v15
+../../../features/llvm/v14
