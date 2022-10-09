@@ -2,7 +2,6 @@
 ../../../features/minimal
 ../../../features/container
 ../../../features/unified-usr
-../../../features/static-libs
 ../../../features/python3.10
 ../../../features/git
 ../../../features/llvm
