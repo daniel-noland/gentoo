@@ -101,6 +101,8 @@ src_prepare() {
 	cp "${DISTDIR}"/getconf.c "${WORKDIR}"/misc/getconf.c || die
 	cp "${DISTDIR}/${GETENT_FILE}" "${WORKDIR}"/misc/getent.c || die
 	cp "${DISTDIR}"/iconv.c "${WORKDIR}"/misc/iconv.c || die
+	# Make LTO functional if the C/LDFLAGS dictate it
+	eapply "${FILESDIR}/${PN}-Makefile.patch"
 }
 
 src_configure() {
