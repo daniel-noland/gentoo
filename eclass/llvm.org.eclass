@@ -66,7 +66,7 @@ _LLVM_MASTER_MAJOR=16
 # @INTERNAL
 # @DESCRIPTION:
 # The newest release of LLVM for which manpages were generated.
-_LLVM_NEWEST_MANPAGE_RELEASE=15.0.2
+_LLVM_NEWEST_MANPAGE_RELEASE=15.0.3
 
 # @ECLASS_VARIABLE: _LLVM_SOURCE_TYPE
 # @INTERNAL
@@ -95,6 +95,9 @@ if [[ -z ${_LLVM_SOURCE_TYPE+1} ]]; then
 					;;
 				16.0.0_pre20221010)
 					EGIT_COMMIT=ebb258d3b0785f6dcc65e1f277d0690891ddc94d
+					;;
+				16.0.0_pre20221016)
+					EGIT_COMMIT=14f996dca8a2b5b17d6917528bfd9ee71ba6192a
 					;;
 				*)
 					die "Unknown snapshot: ${PV}"
