@@ -1,5 +1,8 @@
+<dev-libs/libclc-16.0.0 ~amd64
 <dev-libs/opencl-clang-16.0.0 ~amd64
+<dev-ml/llvm-ocaml-16.0.0 ~amd64
 <dev-python/clang-python-16.0.0 ~amd64
+<dev-python/lit-16.0.0 ~amd64
 <dev-util/lldb-16.0.0 ~amd64
 <sys-devel/clang-16.0.0 ~amd64
 <sys-devel/clang-common-16.0.0 ~amd64
@@ -11,6 +14,7 @@
 <sys-devel/llvm-common-16.0.0 ~amd64
 <sys-devel/llvm-toolchain-symlinks-16.0.0 ~amd64
 <sys-libs/compiler-rt-16.0.0 ~amd64
+<sys-libs/compiler-rt-sanitizers-16.0.0 ~amd64
 <sys-libs/libcxx-16.0.0 ~amd64
 <sys-libs/libcxxabi-16.0.0 ~amd64
 <sys-libs/libomp-16.0.0 ~amd64
