@@ -1,8 +1,1 @@
 ../../../../default/linux/amd64/23.0/musl/llvm
-../../../features/minimal
-../../../features/container
-../../../features/python3.10
-../../../features/git
-../../../features/llvm
-../../../features/llvm/amd64
-../../../features/llvm/v15
