@@ -1,14 +1,14 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 LUA_COMPAT=( lua5-{1..2} )
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 inherit fcaps flag-o-matic lua-single python-any-r1 qmake-utils xdg cmake
 
-DESCRIPTION="A network protocol analyzer formerly known as ethereal"
+DESCRIPTION="Network protocol analyzer (sniffer)"
 HOMEPAGE="https://www.wireshark.org/"
 
 if [[ ${PV} == *9999* ]] ; then
@@ -18,7 +18,7 @@ else
 	SRC_URI="https://www.wireshark.org/download/src/all-versions/${P/_/}.tar.xz"
 	S="${WORKDIR}/${P/_/}"
 
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc64 ~riscv ~x86"
+	KEYWORDS="amd64 arm arm64 ~hppa ~ia64 ppc64 ~riscv x86"
 fi
 
 LICENSE="GPL-2"
@@ -30,7 +30,7 @@ IUSE+=" +randpktdump +reordercap sbc selinux +sharkd smi snappy spandsp sshdump 
 IUSE+=" sdjournal test +text2pcap tfshark +tshark +udpdump zlib +zstd"
 
 REQUIRED_USE="lua? ( ${LUA_REQUIRED_USE} )
-	plugin-ifdemo? ( plugins )"
+	plugin-ifdemo? ( plugins qt5 )"
 
 RESTRICT="!test? ( test )"
 
@@ -137,12 +137,15 @@ src_configure() {
 	python_setup
 
 	mycmakeargs+=(
+		-DPython3_EXECUTABLE="${PYTHON}"
 		-DCMAKE_DISABLE_FIND_PACKAGE_{Asciidoctor,DOXYGEN}=$(usex !doc)
+
 		$(use androiddump && use pcap && echo -DEXTCAP_ANDROIDDUMP_LIBPCAP=yes)
 		$(usex qt5 LRELEASE=$(qt5_get_bindir)/lrelease '')
 		$(usex qt5 MOC=$(qt5_get_bindir)/moc '')
 		$(usex qt5 RCC=$(qt5_get_bindir)/rcc '')
 		$(usex qt5 UIC=$(qt5_get_bindir)/uic '')
+
 		-DBUILD_androiddump=$(usex androiddump)
 		-DBUILD_capinfos=$(usex capinfos)
 		-DBUILD_captype=$(usex captype)

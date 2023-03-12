@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: unpacker.eclass
@@ -30,7 +30,7 @@ inherit multiprocessing toolchain-funcs
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # Utility to use to decompress bzip2 files.  Will dynamically pick between
-# `lbzip2`, `pbzip2` and `bzip2`.  Make sure your choice accepts the "-dc"
+# `lbzip2`, `pbzip2`, and `bzip2`.  Make sure your choice accepts the "-dc"
 # options.
 # Note: this is meant for users to set, not ebuilds.
 
@@ -39,7 +39,7 @@ inherit multiprocessing toolchain-funcs
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # Utility to use to decompress lzip files.  Will dynamically pick between
-# `plzip`, `pdlzip` and `lzip`.  Make sure your choice accepts the "-dc" options.
+# `xz`, `plzip`, `pdlzip`, and `lzip`.  Make sure your choice accepts the "-dc" options.
 # Note: this is meant for users to set, not ebuilds.
 
 # for internal use only (unpack_pdv and unpack_makeself)
@@ -122,7 +122,7 @@ unpack_pdv() {
 	local tmpfile="${T}/${FUNCNAME}"
 	tail -c +$((${tailskip}+1)) ${src} 2>/dev/null | head -c 512 > "${tmpfile}"
 
-	local iscompressed=$(file -b "${tmpfile}")
+	local iscompressed=$(file -S -b "${tmpfile}")
 	if [[ ${iscompressed:0:8} == "compress" ]] ; then
 		iscompressed=1
 		mv "${tmpfile}"{,.Z}
@@ -130,7 +130,7 @@ unpack_pdv() {
 	else
 		iscompressed=0
 	fi
-	local istar=$(file -b "${tmpfile}")
+	local istar=$(file -S -b "${tmpfile}")
 	if [[ ${istar:0:9} == "POSIX tar" ]] ; then
 		istar=1
 	else
@@ -244,7 +244,7 @@ unpack_makeself() {
 
 	# lets grab the first few bytes of the file to figure out what kind of archive it is
 	local decomp= filetype suffix
-	filetype=$("${exe[@]}" 2>/dev/null | head -c 512 | file -b -) || die
+	filetype=$("${exe[@]}" 2>/dev/null | head -c 512 | file -S -b -) || die
 	case ${filetype} in
 		*tar\ archive*)
 			decomp=cat
@@ -429,7 +429,22 @@ _unpacker_get_decompressor() {
 	*.lzma|*.xz|*.txz)
 		echo "xz -T$(makeopts_jobs) -dc" ;;
 	*.lz)
-		: ${UNPACKER_LZIP:=$(type -P plzip || type -P pdlzip || type -P lzip)}
+		find_lz_unpacker() {
+			local has_version_arg="-b"
+
+			[[ ${EAPI} == 6 ]] && has_version_arg="--host-root"
+			if has_version "${has_version_arg}" ">=app-arch/xz-utils-5.4.0" ; then
+				echo xz
+				return
+			fi
+
+			local x
+			for x in plzip pdlzip lzip ; do
+				type -P ${x} && break
+			done
+		}
+
+		: ${UNPACKER_LZIP:=$(find_lz_unpacker)}
 		echo "${UNPACKER_LZIP} -dc" ;;
 	*.zst)
 		echo "zstd -dc" ;;
@@ -472,7 +487,7 @@ unpack_gpkg() {
 	local dirname=${images[0]%/*}
 	mkdir -p "${dirname}" || die
 	tar -xOf "${gpkg}" "${images[0]}" | ${decomp:-cat} |
-		tar --no-same-owner -xC "${dirname}"
+		tar --no-same-owner -C "${dirname}" -xf -
 	assert "Unpacking ${gpkg} failed"
 }
 
@@ -581,7 +596,8 @@ unpacker_src_unpack() {
 #
 # Note: USE flags are not yet handled.
 unpacker_src_uri_depends() {
-	local uri deps d
+	local uri
+	local -A deps
 
 	if [[ $# -eq 0 ]] ; then
 		# Disable path expansion for USE conditionals. #654960
@@ -591,33 +607,39 @@ unpacker_src_uri_depends() {
 	fi
 
 	for uri in "$@" ; do
-		local m=${uri,,}
-		case ${m} in
+		case ${uri,,} in
 		*.cpio.*|*.cpio)
-			d="app-arch/cpio" ;;
+			deps[cpio]="app-arch/cpio" ;;
 		*.rar)
-			d="app-arch/unrar" ;;
+			deps[rar]="app-arch/unrar" ;;
 		*.7z)
-			d="app-arch/p7zip" ;;
+			deps[7z]="app-arch/p7zip" ;;
 		*.xz)
-			d="app-arch/xz-utils" ;;
+			deps[xz]="app-arch/xz-utils" ;;
 		*.zip)
-			d="app-arch/unzip" ;;
+			deps[zip]="app-arch/unzip" ;;
 		*.lz)
-			d="|| ( app-arch/plzip app-arch/pdlzip app-arch/lzip )" ;;
+			deps[lz]="
+				|| (
+					>=app-arch/xz-utils-5.4.0
+					app-arch/plzip
+					app-arch/pdlzip
+					app-arch/lzip
+				)
+			"
+			;;
 		*.zst)
-			d="app-arch/zstd" ;;
+			deps[zst]="app-arch/zstd" ;;
 		*.lha|*.lzh)
-			d="app-arch/lha" ;;
+			deps[lhah]="app-arch/lha" ;;
 		*.lz4)
-			d="app-arch/lz4" ;;
+			deps[lz4]="app-arch/lz4" ;;
 		*.lzo)
-			d="app-arch/lzop" ;;
+			deps[lzo]="app-arch/lzop" ;;
 		esac
-		deps+=" ${d}"
 	done
 
-	echo "${deps}"
+	echo "${deps[*]}"
 }
 
 EXPORT_FUNCTIONS src_unpack

@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit cmake python-single-r1
 
@@ -11,7 +11,7 @@ DESCRIPTION="A fast and easy-to-use tool for creating status bars"
 HOMEPAGE="https://github.com/polybar/polybar"
 SRC_URI="https://github.com/polybar/${PN}/releases/download/${PV}/${P}.tar.gz"
 
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64 ~riscv x86"
 LICENSE="MIT"
 SLOT="0"
 IUSE="alsa curl doc i3wm ipc mpd network pulseaudio"

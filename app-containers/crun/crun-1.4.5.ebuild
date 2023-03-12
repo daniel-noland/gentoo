@@ -1,9 +1,9 @@
-# Copyright 2019-2022 Gentoo Authors
+# Copyright 2019-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 # Can drop autotools/eautoreconf after next release & glibc patch gone
 inherit autotools python-any-r1
@@ -14,7 +14,7 @@ SRC_URI="https://github.com/containers/${PN}/releases/download/${PV}/${P}.tar.xz
 
 LICENSE="GPL-2+ LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~riscv"
+KEYWORDS="amd64 ~arm arm64 ppc64 ~riscv"
 IUSE="+bpf +caps criu +seccomp selinux systemd static-libs"
 
 DEPEND="

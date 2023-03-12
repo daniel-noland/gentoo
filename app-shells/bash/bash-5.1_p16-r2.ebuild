@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -73,7 +73,7 @@ fi
 LICENSE="GPL-3"
 SLOT="0"
 [[ "${PV}" == *_rc* ]] || \
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~x64-cygwin ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~x64-cygwin ~amd64-linux ~x86-linux ~arm64-macos ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="afs bashlogger examples mem-scramble +net nls plugins +readline"
 
 DEPEND="
@@ -85,7 +85,7 @@ RDEPEND="
 	${DEPEND}
 "
 # We only need yacc when the .y files get patched (bash42-005, bash51-011)
-BDEPEND="virtual/yacc
+BDEPEND="app-alternatives/yacc
 	verify-sig? ( sec-keys/openpgp-keys-chetramey )"
 
 S="${WORKDIR}/${MY_P}"
@@ -115,6 +115,11 @@ src_unpack() {
 	else
 		if use verify-sig ; then
 			verify-sig_verify_detached "${DISTDIR}"/${MY_P}.tar.gz{,.sig}
+
+			local patch
+			for patch in "${MY_PATCHES[@]}" ; do
+				verify-sig_verify_detached ${patch}{,.sig}
+			done
 		fi
 
 		unpack ${MY_P}.tar.gz
@@ -169,10 +174,10 @@ src_configure() {
 	# For descriptions of these, see config-top.h
 	# bashrc/#26952 bash_logout/#90488 ssh/#24762 mktemp/#574426
 	append-cppflags \
-		-DDEFAULT_PATH_VALUE=\'\"${EPREFIX}/usr/local/sbin:${EPREFIX}/usr/local/bin:${EPREFIX}/usr/sbin:${EPREFIX}/usr/bin:${EPREFIX}/sbin:${EPREFIX}/bin\"\' \
-		-DSTANDARD_UTILS_PATH=\'\"${EPREFIX}/bin:${EPREFIX}/usr/bin:${EPREFIX}/sbin:${EPREFIX}/usr/sbin\"\' \
-		-DSYS_BASHRC=\'\"${EPREFIX}/etc/bash/bashrc\"\' \
-		-DSYS_BASH_LOGOUT=\'\"${EPREFIX}/etc/bash/bash_logout\"\' \
+		-DDEFAULT_PATH_VALUE=\'\""${EPREFIX}"/usr/local/sbin:"${EPREFIX}"/usr/local/bin:"${EPREFIX}"/usr/sbin:"${EPREFIX}"/usr/bin:"${EPREFIX}"/sbin:"${EPREFIX}"/bin\"\' \
+		-DSTANDARD_UTILS_PATH=\'\""${EPREFIX}"/bin:"${EPREFIX}"/usr/bin:"${EPREFIX}"/sbin:"${EPREFIX}"/usr/sbin\"\' \
+		-DSYS_BASHRC=\'\""${EPREFIX}"/etc/bash/bashrc\"\' \
+		-DSYS_BASH_LOGOUT=\'\""${EPREFIX}"/etc/bash/bash_logout\"\' \
 		-DNON_INTERACTIVE_LOGIN_SHELLS \
 		-DSSH_SOURCE_BASHRC \
 		$(use bashlogger && echo -DSYSLOG_HISTORY)

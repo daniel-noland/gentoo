@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_10 )
 DISTUTILS_SINGLE_IMPL=1
 DISTUTILS_USE_PEP517=setuptools
 
@@ -18,7 +18,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~riscv"
+KEYWORDS="amd64 ~riscv"
 IUSE="selinux"
 
 RDEPEND="$(python_gen_cond_dep '
@@ -37,7 +37,7 @@ RDEPEND="$(python_gen_cond_dep '
 	selinux? ( sys-libs/libselinux[python,${PYTHON_USEDEP}] )
 ')"
 BDEPEND="$(python_gen_cond_dep '
-	>=dev-python/setuptools_scm-3.5.0[${PYTHON_USEDEP}]
+	>=dev-python/setuptools-scm-3.5.0[${PYTHON_USEDEP}]
 	>=dev-python/setuptools_scm_git_archive-1.1[${PYTHON_USEDEP}]
 	doc? (
 		app-admin/ansible-core[${PYTHON_USEDEP}]

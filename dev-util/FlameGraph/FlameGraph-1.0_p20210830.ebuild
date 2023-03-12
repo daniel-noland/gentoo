@@ -11,7 +11,7 @@ if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/brendangregg/FlameGraph.git"
 else
 	SRC_URI="https://dev.gentoo.org/~flow/distfiles/${PN}/${P}.tar.gz"
-	KEYWORDS="~amd64 ~x86"
+	KEYWORDS="amd64 x86"
 fi
 
 LICENSE="CDDL"
@@ -19,7 +19,7 @@ SLOT="0"
 
 RDEPEND="
 	dev-lang/perl
-	virtual/awk
+	app-alternatives/awk
 "
 
 src_test() {

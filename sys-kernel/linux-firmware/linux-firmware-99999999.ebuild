@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -26,17 +26,19 @@ DESCRIPTION="Linux firmware files"
 HOMEPAGE="https://git.kernel.org/?p=linux/kernel/git/firmware/linux-firmware.git"
 
 LICENSE="GPL-2 GPL-2+ GPL-3 BSD MIT || ( MPL-1.1 GPL-2 )
-	redistributable? (
-		linux-fw-redistributable ( BSD-2 BSD BSD-4 ISC MIT no-source-code ) )
+	redistributable? ( linux-fw-redistributable BSD-2 BSD BSD-4 ISC MIT )
 	unknown-license? ( all-rights-reserved )"
 SLOT="0"
-IUSE="compress initramfs +redistributable savedconfig unknown-license"
-REQUIRED_USE="initramfs? ( redistributable )"
+IUSE="compress-xz compress-zstd initramfs +redistributable savedconfig unknown-license"
+REQUIRED_USE="initramfs? ( redistributable )
+	?? ( compress-xz compress-zstd )"
 
 RESTRICT="binchecks strip test
 	unknown-license? ( bindist )"
 
-BDEPEND="initramfs? ( app-arch/cpio )"
+BDEPEND="initramfs? ( app-arch/cpio )
+	compress-xz? ( app-arch/xz-utils )
+	compress-zstd? ( app-arch/zstd )"
 
 #add anything else that collides to this
 RDEPEND="!savedconfig? (
@@ -62,12 +64,24 @@ RDEPEND="!savedconfig? (
 QA_PREBUILT="*"
 
 pkg_setup() {
-	if ! use compress ; then
-		return
-	fi
+	if use compress-xz || use compress-zstd ; then
+		if ! linux_config_exists; then
+			eerror "Unable to check your kernel for compressed firmware support"
+		else
+			local CONFIG_CHECK
 
-	local CONFIG_CHECK="~FW_LOADER_COMPRESS"
-	linux-info_pkg_setup
+			if kernel_is -ge 5 19; then
+				use compress-xz && CONFIG_CHECK="~FW_LOADER_COMPRESS_XZ"
+				use compress-zstd && CONFIG_CHECK="~FW_LOADER_COMPRESS_ZSTD"
+			else
+				use compress-xz && CONFIG_CHECK="~FW_LOADER_COMPRESS"
+				if use compress-zstd; then
+					eerror "You kernel does not support ZSTD-compressed firmware files"
+				fi
+			fi
+			linux-info_pkg_setup
+		fi
+	fi
 }
 
 pkg_pretend() {
@@ -311,15 +325,34 @@ src_install() {
 	find * ! -type d >> "${S}"/${PN}.conf || die
 	save_config "${S}"/${PN}.conf
 
-	if use compress ; then
+	if use compress-xz || use compress-zstd; then
+		einfo "Compressing firmware ..."
+		local target
+		local ext
+		local compressor
+
+		if use compress-xz; then
+			ext=xz
+			compressor="xz -T1 -C crc32"
+		elif use compress-zstd; then
+			ext=zst
+			compressor="zstd -15 -T1 -C -q --rm"
+		fi
+
+		# rename symlinks
 		while IFS= read -r -d '' f; do
+			# skip symlinks pointing to directories
+			[[ -d ${f} ]] && continue
+
 			target=$(readlink "${f}")
-			ln -sf "${target}".xz "${f}" || die
-			mv "${f}" "${f}".xz || die
+			[[ $? -eq 0 ]] || die
+			ln -sf "${target}".${ext} "${f}" || die
+			mv -T "${f}" "${f}".${ext} || die
 		done < <(find . -type l -print0) || die
 
 		find . -type f ! -path "./amd-ucode/*" -print0 | \
-			xargs -0 -P $(makeopts_jobs) -I'{}' xz -T1 -C crc32 '{}' || die
+			xargs -0 -P $(makeopts_jobs) -I'{}' ${compressor} '{}' || die
+
 	fi
 
 	popd &>/dev/null || die

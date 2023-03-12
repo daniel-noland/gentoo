@@ -3,14 +3,14 @@
 
 EAPI=8
 
-inherit gnome.org meson vala
+inherit gnome.org meson vala xdg
 
 DESCRIPTION="GNOME framework for accessing online accounts"
 HOMEPAGE="https://wiki.gnome.org/Projects/GnomeOnlineAccounts"
 
 LICENSE="LGPL-2+"
 SLOT="0/1"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="amd64 ~arm arm64 ~ppc64 ~riscv ~sparc x86"
 
 IUSE="debug gnome gtk-doc +introspection kerberos man +vala"
 REQUIRED_USE="vala? ( introspection )"
@@ -50,6 +50,10 @@ DEPEND="${RDEPEND}
 "
 BDEPEND="gtk-doc? ( dev-util/gtk-doc )"
 
+PATCHES=(
+	"${FILESDIR}/${P}-fix-meson-dependencies.patch"
+)
+
 src_prepare() {
 	default
 	use vala && vala_setup
@@ -72,7 +76,7 @@ src_configure() {
 		$(meson_use gtk-doc gtk_doc)
 		$(meson_use introspection)
 		-Dman=true
-		$(meson use vala vapi)
+		$(meson_use vala vapi)
 	)
 	meson_src_configure
 }

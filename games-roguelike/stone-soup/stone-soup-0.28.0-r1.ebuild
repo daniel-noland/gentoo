@@ -1,11 +1,22 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# There are many slots for this package because people in the community
+# like to play old versions.  Every release includes content changes
+# where species/spells/monsters are added or removed.  The public
+# servers (e.g. http://crawl.akrasiac.org:8080) usually support playing
+# versions back to 0.11.
+
+# It's not necessary for Gentoo to support these old version but it's
+# something nice that our distro can offer that others don't.  If the
+# maintenance burden becomes excessive than we can revisit that
+# position.
 
 EAPI=8
 
 LUA_COMPAT=( lua5-1 )
 LUA_REQ_USE="deprecated"
-PYTHON_COMPAT=( python3_{8,9,10,11} )
+PYTHON_COMPAT=( python3_{9,10,11} )
 VIRTUALX_REQUIRED="manual"
 inherit desktop python-any-r1 lua-single xdg-utils toolchain-funcs
 
@@ -84,7 +95,7 @@ BDEPEND="
 		)
 	)
 	virtual/pkgconfig
-	virtual/yacc
+	app-alternatives/yacc
 	"
 
 PATCHES=(

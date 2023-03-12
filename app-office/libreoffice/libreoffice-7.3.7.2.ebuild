@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 PYTHON_REQ_USE="threads(+),xml(+)"
 
 MY_PV="${PV/_alpha/.alpha}"
@@ -102,8 +102,8 @@ RESTRICT="!test? ( test )"
 LICENSE="|| ( LGPL-3 MPL-1.1 )"
 SLOT="0"
 
-# [[ ${MY_PV} == *9999* ]] || \
-# KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~x86 ~amd64-linux"
+[[ ${MY_PV} == *9999* ]] || \
+KEYWORDS="amd64 ~arm arm64 ~loong ~ppc64 x86 ~amd64-linux"
 
 COMMON_DEPEND="${PYTHON_DEPS}
 	app-arch/unzip
@@ -164,7 +164,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	media-libs/zxing-cpp:=
 	>=net-libs/neon-0.31.1:=
 	net-misc/curl
-	sci-mathematics/lpsolve
+	sci-mathematics/lpsolve:=
 	sys-libs/zlib
 	virtual/opengl
 	x11-libs/cairo[X]
@@ -294,6 +294,10 @@ PATCHES=(
 
 	# 7.4 branch
 	"${FILESDIR}/${PN}-7.3.5.2-gpgme-1.18.0.patch"
+
+	# 7.5 branch
+	"${FILESDIR}/${P}-boost-1.81-locale.patch"
+	"${FILESDIR}/${P}-zxing-cpp-1.4.0.patch"
 )
 
 S="${WORKDIR}/${PN}-${MY_PV}"

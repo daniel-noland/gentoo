@@ -7,13 +7,13 @@ MY_PV="$(ver_rs 1 '-')"
 MY_P=${PN}${MY_PV}
 
 DESCRIPTION="An ANSI C library for parsing GNU-style command-line options with minimal fuss"
-HOMEPAGE="http://argtable.sourceforge.net/"
+HOMEPAGE="https://argtable.sourceforge.net"
 SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz"
 S="${WORKDIR}"/${MY_P}
 
 LICENSE="LGPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm64 ~ia64 ppc ppc64 ~riscv sparc x86"
+KEYWORDS="~alpha amd64 ~arm64 ~ia64 ~loong ppc ppc64 ~riscv sparc x86"
 IUSE="doc debug examples static-libs"
 
 PATCHES=(

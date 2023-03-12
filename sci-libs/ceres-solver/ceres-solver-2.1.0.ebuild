@@ -1,11 +1,11 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 DOCS_BUILDER="sphinx"
-DOCS_DEPEND="dev-python/sphinx_rtd_theme"
+DOCS_DEPEND="dev-python/sphinx-rtd-theme"
 DOCS_DIR="docs/source"
 inherit cmake-multilib python-any-r1 docs toolchain-funcs
 

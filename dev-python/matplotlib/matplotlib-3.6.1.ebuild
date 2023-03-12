@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 PYTHON_REQ_USE='tk?,threads(+)'
 
 inherit distutils-r1 flag-o-matic multiprocessing prefix toolchain-funcs \
@@ -47,7 +47,6 @@ RDEPEND="
 	>=dev-python/pyparsing-2.2.1[${PYTHON_USEDEP}]
 	>=dev-python/python-dateutil-2.7[${PYTHON_USEDEP}]
 	>=dev-python/pytz-2019.3[${PYTHON_USEDEP}]
-	>=dev-python/six-1.14.0[${PYTHON_USEDEP}]
 	media-fonts/dejavu
 	media-fonts/stix-fonts
 	media-libs/freetype:2
@@ -89,8 +88,7 @@ RDEPEND="
 
 BDEPEND="
 	${RDEPEND}
-	>=dev-python/setuptools_scm-7[${PYTHON_USEDEP}]
-	dev-python/setuptools_scm_git_archive[${PYTHON_USEDEP}]
+	>=dev-python/setuptools-scm-7[${PYTHON_USEDEP}]
 	virtual/pkgconfig
 	doc? (
 		>=app-text/dvipng-1.15-r1
@@ -140,11 +138,6 @@ python_prepare_all() {
 #	)
 #	rm -r agg24 CXX || die
 #	rm -r agg24 || die
-
-#	cat > lib/${PN}/externals/six.py <<-EOF
-#	from __future__ import absolute_import
-#	from six import *
-#	EOF
 
 	# Affects installed _version.py, bug #854600
 	export SETUPTOOLS_SCM_PRETEND_VERSION=${PV}

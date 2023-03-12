@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,13 +14,13 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="BSD-2"
 SLOT="0/2"
-KEYWORDS="~amd64 ~arm ~arm64 ~riscv ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 ~loong ~riscv x86 ~amd64-linux ~x86-linux"
 IUSE="+szip"
 
 RDEPEND="szip? ( !sci-libs/szip )"
 
 src_configure() {
-	mycmakeargs=(
+	local mycmakeargs=(
 		-DCMAKE_INSTALL_LIBDIR=$(get_libdir)
 	)
 

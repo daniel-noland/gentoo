@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -64,23 +64,7 @@ tmpfile=$(mktemp)
 
 inherit python-utils-r1
 
-ebegin "Testing python2.7"
-eindent
-test_var EPYTHON python2_7 python2.7
-test_var PYTHON python2_7 /usr/bin/python2.7
-if [[ -x /usr/bin/python2.7 ]]; then
-	test_var PYTHON_SITEDIR python2_7 "/usr/lib*/python2.7/site-packages"
-	test_var PYTHON_INCLUDEDIR python2_7 /usr/include/python2.7
-	test_var PYTHON_LIBPATH python2_7 "/usr/lib*/libpython2.7$(get_libname)"
-	test_var PYTHON_CONFIG python2_7 /usr/bin/python2.7-config
-	test_var PYTHON_CFLAGS python2_7 "*-I/usr/include/python2.7*"
-	test_var PYTHON_LIBS python2_7 "*-lpython2.7*"
-fi
-test_var PYTHON_PKG_DEP python2_7 '*dev-lang/python*:2.7'
-test_var PYTHON_SCRIPTDIR python2_7 /usr/lib/python-exec/python2.7
-eoutdent
-
-for minor in 6 7 8 9 10 11; do
+for minor in 9 10 11; do
 	ebegin "Testing python3.${minor}"
 	eindent
 	test_var EPYTHON "python3_${minor}" "python3.${minor}"
@@ -215,15 +199,18 @@ test_is "_python_impl_matches python3_6 python*" 0
 test_is "_python_impl_matches python3_7 python*" 0
 test_is "_python_impl_matches pypy3 python*" 1
 set +f
-test_is "_python_impl_matches python3_8 3.8" 0
-test_is "_python_impl_matches python3_8 3.9" 1
-test_is "_python_impl_matches python3_8 3.10" 1
-test_is "_python_impl_matches python3_9 3.8" 1
 test_is "_python_impl_matches python3_9 3.9" 0
 test_is "_python_impl_matches python3_9 3.10" 1
-test_is "_python_impl_matches pypy3 3.8" 1
+test_is "_python_impl_matches python3_9 3.11" 1
+test_is "_python_impl_matches python3_10 3.9" 1
+test_is "_python_impl_matches python3_10 3.10" 0
+test_is "_python_impl_matches python3_10 3.11" 1
+test_is "_python_impl_matches python3_11 3.9" 1
+test_is "_python_impl_matches python3_11 3.10" 1
+test_is "_python_impl_matches python3_11 3.11" 0
 test_is "_python_impl_matches pypy3 3.9" 0
 test_is "_python_impl_matches pypy3 3.10" 1
+test_is "_python_impl_matches pypy3 3.11" 1
 eoutdent
 
 rm "${tmpfile}"

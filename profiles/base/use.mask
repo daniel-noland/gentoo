@@ -4,10 +4,6 @@
 # This file is only for generic masks. For arch-specific masks (i.e.
 # mask everywhere, unmask on arch/*) use arch/base.
 
-# Brian Evans <grknight@gentoo.org> (2022-09-30)
-# PHP 8.2 is in RC
-php_targets_php8-2
-
 # Sam James <sam@gentoo.org> (2022-08-02)
 # Masked for testing. The split of some packages may still
 # change. bug #838970.
@@ -34,13 +30,6 @@ pch
 # PHP 7.2 is security vulnerable and end-of-life
 # Please upgrade to a newer slot
 php_targets_php7-2
-
-# Alexis Ballier <aballier@gentoo.org> (2020-10-13)
-# Nothing depends on those ROS messages. dev-ros/geneus
-# is half broken in our setup where it looks for packages
-# on the filesystem and causes build failures.
-# See e.g. bug #741076
-ros_messages_eus
 
 # Matt Turner <mattst88@gentoo.org> (2019-09-01)
 # app-office/texmacs is package.mask'd. Bug #436400

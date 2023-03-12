@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit gnome.org meson python-r1 vala xdg
 
@@ -29,13 +29,8 @@ DEPEND="${RDEPEND}"
 BDEPEND="
 	dev-util/glib-utils
 	virtual/pkgconfig
-	gtk-doc? (
-		dev-util/gtk-doc
-		app-text/docbook-xml-dtd:4.1.2
-	)
-	vala? (
-		$(vala_depend)
-	)
+	gtk-doc? ( dev-util/gi-docgen )
+	vala? ( $(vala_depend) )
 "
 
 src_configure() {

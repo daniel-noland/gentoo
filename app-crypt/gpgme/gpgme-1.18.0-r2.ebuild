@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -9,7 +9,7 @@ EAPI=8
 # (find the one for the current release then subscribe to it +
 # any subsequent ones linked within so you're covered for a while.)
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 DISTUTILS_OPTIONAL=1
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/gnupg.asc
 
@@ -27,7 +27,7 @@ LICENSE="GPL-2 LGPL-2.1"
 # Bump FUDGE if a release is made which breaks ABI without changing SONAME.
 # (Reset to 0 if FUDGE != 0 if libgpgme/libgpgmepp/libqpggme change.)
 SLOT="1/11.6.15.1"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~x64-cygwin ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~x64-cygwin ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="common-lisp static-libs +cxx python qt5 test"
 RESTRICT="!test? ( test )"
 

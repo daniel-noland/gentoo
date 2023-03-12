@@ -1,5 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Florian Schmaus <flow@gentoo.org> (2022-11-23)
+# avoid larger deptree, bug #882593
+dev-python/bracex doc
 
 # Sam James <sam@gentoo.org> (2022-04-26)
 # Unkeyworded dependencies
@@ -29,10 +33,6 @@ app-admin/syslog-ng kafka test
 # Sam James <sam@gentoo.org> (2022-04-26)
 # Large number of unkeyworded sci testdeps
 dev-cpp/eigen test
-
-# Sam James <sam@gentoo.org> (2022-04-26)
-# Avoid unkeyworded sci-libs/umfpack
-dev-python/scipy sparse
 
 # Sam James <sam@gentoo.org> (2022-04-26)
 # Avoid unkeyworded media-gfx/libimagequant
@@ -101,11 +101,6 @@ app-portage/nattka depgraph-order
 # Untested useflag on other arches, needs keywording
 media-video/ffmpeg vmaf
 
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2021-12-11)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
-
 # Sam James <sam@gentoo.org> (2021-11-05)
 # Avoid keywording unnecessary depenencies for now, bug #804115
 dev-python/scipy pythran
@@ -128,7 +123,7 @@ dev-python/cssselect doc
 # not really interested in supporting alternative
 # VCS for overlays yet. Layman needs SVN for tests too.
 app-portage/layman darcs mercurial test
-dev-python/setuptools_scm test
+dev-python/setuptools-scm test
 # no lua support for vim
 app-editors/vim lua
 # not keyworded yet

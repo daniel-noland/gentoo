@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8,9,10} )
+PYTHON_COMPAT=( python3_{9,10} )
 
 inherit cmake gnome2-utils python-single-r1 udev
 
@@ -49,6 +49,10 @@ BDEPEND="
 "
 
 S="${WORKDIR}/${P}/host"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-4.3.0.0-gcc-13.patch
+)
 
 src_unpack() {
 	default

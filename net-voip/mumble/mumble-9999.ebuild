@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 inherit cmake flag-o-matic python-any-r1 xdg
 
 DESCRIPTION="Mumble is an open source, low-latency, high quality voice chat software"
@@ -11,7 +11,19 @@ HOMEPAGE="https://wiki.mumble.info"
 if [[ "${PV}" == 9999 ]] ; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/mumble-voip/mumble.git"
-	EGIT_SUBMODULES=( '-*' celt-0.7.0-src celt-0.11.0-src themes/Mumble 3rdparty/rnnoise-src 3rdparty/FindPythonInterpreter 3rdparty/tracy 3rdparty/gsl )
+
+	# needed for the included 3rdparty license script,
+	# even if these components may not be compiled in
+	EGIT_SUBMODULES=(
+		'-*'
+		3rdparty/FindPythonInterpreter
+		3rdparty/gsl
+		3rdparty/minhook
+		3rdparty/opus
+		3rdparty/rnnoise-src
+		3rdparty/speexdsp
+		3rdparty/tracy
+	)
 else
 	if [[ "${PV}" == *_pre* ]] ; then
 		SRC_URI="https://dev.gentoo.org/~concord/distfiles/${P}.tar.xz"
@@ -85,7 +97,6 @@ src_configure() {
 
 	local mycmakeargs=(
 		-Dalsa="$(usex alsa)"
-		-Dbundled-celt="ON"
 		-Dbundled-json="OFF"
 		-Dbundled-opus="OFF"
 		-Dbundled-speex="OFF"

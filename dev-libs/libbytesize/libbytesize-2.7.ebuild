@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit autotools python-r1
 
@@ -23,7 +23,7 @@ REQUIRED_USE="
 RDEPEND="
 	dev-libs/gmp:0=
 	dev-libs/mpfr:=
-	dev-libs/libpcre2
+	dev-libs/libpcre2:=
 	python? ( ${PYTHON_DEPS} )
 "
 
@@ -31,7 +31,10 @@ DEPEND="${RDEPEND}"
 
 BDEPEND="
 	sys-devel/gettext
-	doc? ( dev-util/gtk-doc )
+	doc? (
+		dev-util/gtk-doc
+		virtual/pkgconfig
+	)
 	test? (
 		dev-python/pocketlint[${PYTHON_USEDEP}]
 		dev-python/polib[${PYTHON_USEDEP}]

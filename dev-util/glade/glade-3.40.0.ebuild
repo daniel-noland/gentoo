@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit gnome2 python-single-r1 meson optfeature virtualx
 
@@ -38,7 +38,10 @@ DEPEND="
 RDEPEND="${DEPEND}"
 BDEPEND="
 	${PYTHON_DEPS}
-	app-text/docbook-xml-dtd:4.1.2
+	gtk-doc? (
+		dev-util/gtk-doc
+		app-text/docbook-xml-dtd:4.2
+	)
 	dev-libs/libxslt
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8

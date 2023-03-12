@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 PYTHON_REQ_USE="threads(+),xml(+)"
 
 MY_PV="${PV/_alpha/.alpha}"
@@ -44,9 +44,8 @@ unset DEV_URI
 # These are bundles that can't be removed for now due to huge patchsets.
 # If you want them gone, patches are welcome.
 ADDONS_SRC=(
-	# broken against latest upstream release, too many patches on top:
-	# https://github.com/tdf/libcmis/pull/43
-	"${ADDONS_URI}/libcmis-0.5.2.tar.xz"
+	# not packaged in Gentoo
+	"${ADDONS_URI}/dragonbox-1.1.3.tar.gz"
 	# not packaged in Gentoo, https://www.netlib.org/fp/dtoa.c
 	"${ADDONS_URI}/dtoa-20180411.tgz"
 	# not packaged in Gentoo, https://skia.org/
@@ -103,7 +102,7 @@ LICENSE="|| ( LGPL-3 MPL-1.1 )"
 SLOT="0"
 
 #[[ ${MY_PV} == *9999* ]] || \
-#KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~x86 ~amd64-linux"
+#KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~riscv ~x86 ~amd64-linux"
 
 COMMON_DEPEND="${PYTHON_DEPS}
 	app-arch/unzip
@@ -117,7 +116,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	app-text/libexttextcat
 	app-text/liblangtag
 	>=app-text/libmspub-0.1.0
-	>=app-text/libmwaw-0.3.1
+	>=app-text/libmwaw-0.3.21
 	>=app-text/libnumbertext-1.0.6
 	>=app-text/libodfgen-0.1.0
 	app-text/libqxp
@@ -128,7 +127,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	app-text/mythes
 	dev-cpp/abseil-cpp:=
 	>=dev-cpp/clucene-2.3.3.4-r2
-	>=dev-cpp/libcmis-0.5.2
+	>=dev-cpp/libcmis-0.5.2-r2
 	dev-db/unixODBC
 	dev-lang/perl
 	dev-libs/boost:=[nls]
@@ -137,7 +136,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	dev-libs/icu:=
 	dev-libs/libassuan
 	dev-libs/libgpg-error
-	>=dev-libs/liborcus-0.17.2:0/0.17
+	>=dev-libs/liborcus-0.18.0:0/0.18
 	dev-libs/librevenge
 	dev-libs/libxml2
 	dev-libs/libxslt
@@ -150,7 +149,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	media-gfx/graphite2
 	media-libs/fontconfig
 	>=media-libs/freetype-2.11.0-r1:2
-	>=media-libs/harfbuzz-0.9.42:=[graphite,icu]
+	>=media-libs/harfbuzz-5.1.0:=[graphite,icu]
 	media-libs/lcms:2
 	>=media-libs/libcdr-0.1.0
 	>=media-libs/libepoxy-1.3.1[X]
@@ -159,12 +158,13 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	media-libs/libpagemaker
 	>=media-libs/libpng-1.4:0=
 	>=media-libs/libvisio-0.1.0
+	media-libs/libwebp:=
 	media-libs/libzmf
 	media-libs/openjpeg:=
+	media-libs/tiff:=
 	media-libs/zxing-cpp:=
-	>=net-libs/neon-0.31.1:=
 	net-misc/curl
-	sci-mathematics/lpsolve
+	sci-mathematics/lpsolve:=
 	sys-libs/zlib
 	virtual/opengl
 	x11-libs/cairo[X]
@@ -192,6 +192,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 		media-libs/gst-plugins-base:1.0
 	)
 	gtk? (
+		app-accessibility/at-spi2-core:2
 		dev-libs/glib:2
 		dev-libs/gobject-introspection
 		gnome-base/dconf
@@ -227,9 +228,8 @@ DEPEND="${COMMON_DEPEND}
 	dev-perl/Archive-Zip
 	>=dev-util/cppunit-1.14.0
 	>=dev-util/gperf-3.1
-	dev-util/mdds:1/2.0
+	dev-util/mdds:1/2.1
 	media-libs/glm
-	sys-devel/ucpp
 	x11-base/xorg-proto
 	x11-libs/libXt
 	x11-libs/libXtst
@@ -263,15 +263,15 @@ BDEPEND="
 	virtual/pkgconfig
 	clang? (
 		|| (
+			(	sys-devel/clang:16
+				sys-devel/llvm:16
+				=sys-devel/lld-16*	)
 			(	sys-devel/clang:15
 				sys-devel/llvm:15
 				=sys-devel/lld-15*	)
 			(	sys-devel/clang:14
 				sys-devel/llvm:14
 				=sys-devel/lld-14*	)
-			(	sys-devel/clang:13
-				sys-devel/llvm:13
-				=sys-devel/lld-13*	)
 		)
 	)
 	odk? ( >=app-doc/doxygen-1.8.4 )
@@ -281,7 +281,7 @@ if [[ ${MY_PV} != *9999* ]] && [[ ${PV} != *_* ]]; then
 else
 	# Translations are not reliable on live ebuilds
 	# rather force people to use english only.
-	PDEPEND="!app-office/libreoffice-l10n"
+	RDEPEND+=" !app-office/libreoffice-l10n"
 fi
 
 PATCHES=(
@@ -493,18 +493,17 @@ src_configure() {
 		--with-parallelism=$(makeopts_jobs)
 		--with-system-abseil
 		--with-system-openjpeg
-		--with-system-ucpp
 		--with-tls=nss
 		--with-vendor="Gentoo Foundation"
-		--with-webdav="neon"
 		--with-x
 		--without-fonts
 		--without-myspell-dicts
 		--with-help="html"
 		--without-helppack-integration
 		--with-system-gpgmepp
+		--without-system-dragonbox
 		--without-system-jfreereport
-		--without-system-libcmis
+		--without-system-libfixmath
 		--without-system-sane
 		$(use_enable base report-builder)
 		$(use_enable bluetooth sdremote-bluetooth)

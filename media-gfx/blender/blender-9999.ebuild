@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,9 +13,9 @@ HOMEPAGE="https://www.blender.org"
 if [[ ${PV} = *9999* ]] ; then
 	# Subversion is needed for downloading unit test files
 	inherit git-r3 subversion
-	EGIT_REPO_URI="https://git.blender.org/blender.git"
+	EGIT_REPO_URI="https://projects.blender.org/blender/blender.git"
 else
-	SRC_URI="https://download.blender.org/source/${P}.tar.xz"
+	SRC_URI="https://projects.blender.org/blender/blender/archive/v${PV}.tar.gz"
 	# Update these between major releases.
 	TEST_TARBALL_VERSION="$(ver_cut 1-2).0"
 	SRC_URI+=" test? ( https://dev.gentoo.org/~sam/distfiles/${CATEGORY}/${PN}/${PN}-${TEST_TARBALL_VERSION}-tests.tar.xz )"
@@ -50,8 +50,8 @@ RDEPEND="${PYTHON_DEPS}
 	$(python_gen_cond_dep '
 		dev-python/cython[${PYTHON_USEDEP}]
 		dev-python/numpy[${PYTHON_USEDEP}]
-		dev-python/requests[${PYTHON_USEDEP}]
 		dev-python/zstandard[${PYTHON_USEDEP}]
+		dev-python/requests[${PYTHON_USEDEP}]
 	')
 	media-libs/freetype:=[brotli]
 	media-libs/libepoxy:=
@@ -80,7 +80,7 @@ RDEPEND="${PYTHON_DEPS}
 	nls? ( virtual/libiconv )
 	openal? ( media-libs/openal )
 	oidn? ( >=media-libs/oidn-1.4.1 )
-	openimageio? ( >=media-libs/openimageio-2.3.12.0-r3:= )
+	openimageio? ( >=media-libs/openimageio-2.4.6.0:= )
 	openexr? (
 		>=dev-libs/imath-3.1.4-r2:=
 		>=media-libs/openexr-3:0=
@@ -99,7 +99,7 @@ RDEPEND="${PYTHON_DEPS}
 	sdl? ( media-libs/libsdl2[sound,joystick] )
 	sndfile? ( media-libs/libsndfile )
 	tbb? ( dev-cpp/tbb:= )
-	tiff? ( media-libs/tiff )
+	tiff? ( media-libs/tiff:= )
 	valgrind? ( dev-util/valgrind )
 	wayland? (
 		>=dev-libs/wayland-1.12
@@ -215,6 +215,7 @@ src_prepare() {
 
 src_configure() {
 	append-lfs-flags
+	blender_get_version
 
 	local mycmakeargs=(
 		-DBUILD_SHARED_LIBS=OFF
@@ -238,6 +239,7 @@ src_configure() {
 		-DWITH_DOC_MANPAGE=$(usex man)
 		-DWITH_FFTW3=$(usex fftw)
 		-DWITH_GHOST_WAYLAND=$(usex wayland)
+		-DWITH_GHOST_WAYLAND_APP_ID=blender-${BV}
 		-DWITH_GHOST_WAYLAND_DBUS=$(usex wayland)
 		-DWITH_GHOST_WAYLAND_DYNLOAD=OFF
 		-DWITH_GHOST_WAYLAND_LIBDECOR=OFF

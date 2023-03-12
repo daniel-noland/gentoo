@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # When you add an entry to the top of this file, add your name, the date, and
@@ -16,6 +16,30 @@
 #
 
 #--- END OF EXAMPLES ---
+
+# Yiyang Wu <xgreenlandforwyy@gmail.com> (2023-01-27)
+# AMDGPU enablement depends on dev-libs/rocr-runtime, ~amd64 only
+# See also: https://bugs.gentoo.org/891499
+sys-libs/libomp -llvm_targets_AMDGPU
+
+# Michał Górny <mgorny@gentoo.org> (2023-01-24)
+# libomptarget is only supported on 64-bit architectures.
+>=sys-libs/libomp-16.0.0_pre20230124 -offload
+
+# Sam James <sam@gentoo.org> (2023-01-05)
+# asm is only available for amd64 and arm, but for arm, is gated
+# behind an experimental flag.
+>=dev-libs/libsecp256k1-0.2.0 -asm
+
+# Sam James <sam@gentoo.org> (2022-12-11)
+# net-libs/rustls-ffi is keyworded here
+net-misc/curl -rustls -curl_ssl_rustls
+
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2022-12-06)
+# Quick Sync Video (through intel-mediasdk or oneVPL) is
+# only keyworded on amd64
+media-video/ffmpeg -qsv
+media-libs/gst-plugins-bad -qsv
 
 # WANG Xuerui <xen0n@gentoo.org> (2022-10-07)
 # sys-libs/libsmbios is available here.
@@ -41,6 +65,10 @@ media-sound/qmmp -xmp
 # Kai-Chun Ning <kaichun.ning@gmail.com> (2022-05-23)
 # Need intel-hybrid-codec-driver, which only works on amd64
 media-libs/libva-intel-driver -hybrid
+
+# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-02-17)
+# Unmask AMF keyword on amd64 only
+media-video/ffmpeg -amf
 
 # James Le Cuirot <chewi@gentoo.org> (2021-10-22)
 # The JIT feature only works on amd64 and x86.
@@ -220,7 +248,7 @@ dev-util/catalyst -system-bootloader
 # Ilya Tumaykin <itumaykin+gentoo@gmail.com> (2018-06-17)
 # Vulkan support is only available on few selected arches atm.
 # Mask everywhere, unmask where appropriate.
-media-video/mpv -vulkan
+media-video/mpv -libplacebo -vulkan
 
 # Richard Yao <ryao@gentoo.org> (2018-04-16)
 # sys-fs/zfs is keyworded on amd64
@@ -286,7 +314,7 @@ sys-boot/grub:2 -grub_platforms_xen-32
 
 # Brian Evans <grknight@gentoo.org (2015-09-14)
 # Unmask new USE flags for mariadb on supported arches
->=dev-db/mariadb-10.1.0 -mroonga -sst-xtrabackup -galera
+>=dev-db/mariadb-10.1.0 -mroonga -galera
 
 # Mike Gilbert <floppym@gentoo.org> (2015-09-05)
 # sys-boot/gnu-efi is not supported on all archs.

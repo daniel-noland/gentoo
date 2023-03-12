@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 PYTHON_REQ_USE="xml(+)"
 
 inherit cmake flag-o-matic llvm python-any-r1
@@ -13,11 +13,11 @@ if [[ ${PV} = *9999* ]]; then
 else
 	SRC_URI="https://doxygen.nl/files/${P}.src.tar.gz"
 	SRC_URI+=" mirror://sourceforge/doxygen/rel-${PV}/${P}.src.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 fi
 
 DESCRIPTION="Documentation system for most programming languages"
-HOMEPAGE="http://www.doxygen.org"
+HOMEPAGE="https://www.doxygen.nl/"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -25,7 +25,7 @@ IUSE="clang debug doc dot doxysearch qt5 sqlite test"
 # We need TeX for tests, bug #765472
 # We keep the odd construct of noop USE=test because of
 # the special relationship b/t RESTRICT & USE for tests. Also, it's a hint
-# which avoids tests being silently skipped during arch testing.t
+# which avoids tests being silently skipped during arch testing.
 REQUIRED_USE="test? ( doc )"
 RESTRICT="!test? ( test )"
 

@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit distutils-r1
 
 MY_COMMIT="2dbe627c1ec245db206cdc73bf1f9d785f1512d8"
@@ -16,20 +16,19 @@ S="${WORKDIR}/${PN}-${MY_COMMIT}"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~hppa ~ia64 ~ppc ppc64 ~sparc x86 ~amd64-linux ~x86-linux"
-IUSE="doc gdbm gevent mysql pyzord redis test"
+IUSE="doc gdbm mysql pyzord redis test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
 	pyzord? (
 		gdbm? ( $(python_gen_impl_dep 'gdbm') )
-		gevent? ( dev-python/gevent[${PYTHON_USEDEP}] )
 		mysql? ( dev-python/mysqlclient[${PYTHON_USEDEP}] )
-		redis? ( dev-python/redis-py[${PYTHON_USEDEP}] )
+		redis? ( dev-python/redis[${PYTHON_USEDEP}] )
 	)"
 DEPEND="
 	test? (
 		gdbm? ( $(python_gen_impl_dep 'gdbm') )
-		redis? ( dev-python/redis-py[${PYTHON_USEDEP}] )
+		redis? ( dev-python/redis[${PYTHON_USEDEP}] )
 	)
 "
 
@@ -43,7 +42,7 @@ REQUIRED_USE="
 distutils_enable_sphinx docs
 
 python_test() {
-	pytest -vv tests/unit || die "Tests fail with ${EPYTHON}"
+	epytest -vv tests/unit
 }
 
 src_install() {

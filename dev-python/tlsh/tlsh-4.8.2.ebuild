@@ -1,10 +1,10 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2022-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit distutils-r1
 
 DESCRIPTION="Fuzzy matching library - C++ extension for Python"
@@ -14,7 +14,7 @@ S=${WORKDIR}/${P}/py_ext
 
 LICENSE="|| ( Apache-2.0 BSD )"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~arm64 ~ppc64 x86"
+KEYWORDS="amd64 ~arm ~arm64 ~ia64 ~ppc64 x86"
 
 DEPEND="dev-libs/tlsh"
 RDEPEND="${DEPEND}"

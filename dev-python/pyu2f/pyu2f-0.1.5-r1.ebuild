@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit distutils-r1
 
@@ -31,3 +31,13 @@ BDEPEND="
 DOCS=( CONTRIBUTING.md README.md )
 
 distutils_enable_tests pytest
+
+python_prepare_all() {
+	# adjust pyfakefs usage #888223
+	sed -e "s:CreateFile:create_file:" \
+		-e "s:CreateDirectory:create_dir:" \
+		-e "s:RemoveObject:remove_object:" \
+		-e "s:SetContents:set_contents:" \
+		-i pyu2f/tests/hid/linux_test.py || die
+	distutils-r1_python_prepare_all
+}

@@ -8,7 +8,7 @@
 # @AUTHOR:
 # Michał Górny <mgorny@gentoo.org>
 # Mike Gilbert <floppym@gentoo.org>
-# @SUPPORTED_EAPIS: 5 6 7 8
+# @SUPPORTED_EAPIS: 7 8
 # @BLURB: common bits to run dev-util/ninja builder
 # @DESCRIPTION:
 # This eclass provides a single function -- eninja -- that can be used
@@ -19,7 +19,7 @@
 # Meson).
 
 case ${EAPI} in
-	5|6|7|8) ;;
+	7|8) ;;
 	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
 
@@ -62,23 +62,27 @@ case "${NINJA}" in
 	;;
 esac
 
+# @FUNCTION: get_NINJAOPTS
+# @DESCRIPTION:
+# Get the value of NINJAOPTS, inferring them from MAKEOPTS if unset.
+get_NINJAOPTS() {
+	if [[ -z ${NINJAOPTS+set} ]]; then
+		NINJAOPTS="-j$(makeopts_jobs "${MAKEOPTS}" 999) -l$(makeopts_loadavg "${MAKEOPTS}" 0)"
+	fi
+	echo "${NINJAOPTS}"
+}
+
 # @FUNCTION: eninja
 # @USAGE: [<args>...]
 # @DESCRIPTION:
 # Call Ninja, passing the NINJAOPTS (or converted MAKEOPTS), followed
-# by the supplied arguments. This function dies if ninja fails. Starting
-# with EAPI 6, it also supports being called via 'nonfatal'.
+# by the supplied arguments.  This function dies if ninja fails.  It
+# also supports being called via 'nonfatal'.
 eninja() {
-	local nonfatal_args=()
-	[[ ${EAPI} != 5 ]] && nonfatal_args+=( -n )
-
-	if [[ -z ${NINJAOPTS+set} ]]; then
-		NINJAOPTS="-j$(makeopts_jobs "${MAKEOPTS}" 999) -l$(makeopts_loadavg "${MAKEOPTS}" 0)"
-	fi
 	[[ -n "${NINJA_DEPEND}" ]] || ewarn "Unknown value '${NINJA}' for \${NINJA}"
-	set -- "${NINJA}" -v ${NINJAOPTS} "$@"
+	set -- "${NINJA}" -v $(get_NINJAOPTS) "$@"
 	echo "$@" >&2
-	"$@" || die "${nonfatal_args[@]}" "${*} failed"
+	"$@" || die -n "${*} failed"
 }
 
 fi

@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} pypy3 )
+PYTHON_COMPAT=( python3_{9..11} pypy3 )
 
 inherit distutils-r1
 
@@ -27,11 +27,6 @@ RDEPEND="
 	dev-python/mock[${PYTHON_USEDEP}]
 	dev-python/termcolor[${PYTHON_USEDEP}]
 "
-# block pytest plugins that will be broken by the upgrade
-RDEPEND+="
-	!<dev-python/pytest-virtualenv-1.7.0-r1[python_targets_python2_7(-)]
-"
-
 BDEPEND="
 	${RDEPEND}
 	dev-python/setuptools-git[${PYTHON_USEDEP}]

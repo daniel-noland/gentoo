@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8,9,10} )
+PYTHON_COMPAT=( python3_{9,10} )
 DISTUTILS_USE_SETUPTOOLS=rdepend
 
 inherit distutils-r1 optfeature
@@ -17,7 +17,7 @@ S="${WORKDIR}/${MY_P}"
 
 LICENSE="MIT Apache-2.0 CC0-1.0 public-domain"
 SLOT="0"
-KEYWORDS="~amd64 ~riscv"
+KEYWORDS="amd64 ~riscv"
 RESTRICT="test" # needs coveralls
 
 DEPEND=">=dev-python/docutils-0.13[${PYTHON_USEDEP}]" # needs rst2man to build manpage

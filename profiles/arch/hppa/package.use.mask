@@ -1,8 +1,25 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # NOTE: When masking a USE flag due to missing keywords, please file a keyword
 # request bug for the hppa arch.
+
+# Hans de Graaff <graaff@gentoo.org> (2023-02-27)
+# Depends on virtual/rust
+dev-lang/ruby jit
+
+# Sam James <sam@gentoo.org> (2022-12-26)
+# Unkeyworded dependencies
+dev-util/diffoscope opendocument pascal pdf R
+
+# Florian Schmaus <flow@gentoo.org> (2022-11-23)
+# avoid larger deptree, bug #882593
+dev-python/bracex doc
+
+# Conrad Kostecki <conikost@gentoo.org> (2022-11-01)
+# Mask tests, as not all needed deps are available on this arch.
+# See #878933 for progress.
+net-dns/ddclient test
 
 # Arthur Zamarin <arthurzam@gentoo.org> (2022-08-15)
 # deps not keyworded
@@ -55,11 +72,6 @@ media-video/ffmpeg vmaf
 # Sam James <sam@gentoo.org> (2022-03-06)
 # Unkeyworded dependencies
 net-mail/cyrus-imapd http
-
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-02-17)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
 
 # Arthur Zamarin <arthurzam@gentoo.org> (2022-02-08)
 # bash becomes corrupted and system breaks, bug #832946
@@ -293,10 +305,6 @@ kde-frameworks/extra-cmake-modules doc
 # pulls in many dev-ruby/asciidoctor dependencies (bug #583390)
 net-misc/chrony html
 
-# Jeroen Roovers <jer@gentoo.org> (2015-07-03)
-# net-libs/nghttp2 fails to compile (bug #552898)
-net-libs/nghttp2 cxx
-
 # Jeroen Roovers <jer@gentoo.org> (2015-05-17)
 # Mask USE=rados for net-analyzer/rrdtool since sys-cluster/ceph is not
 # keyworded (bug #549516)
@@ -306,11 +314,6 @@ net-analyzer/rrdtool rados
 # Contact us if you want or have an HPPA cluster with dev-db/mariadb
 # (bug #544378)
 dev-db/mariadb galera
-
-# Jeroen Roovers <jer@gentoo.org> (2015-02-02)
-# dev-python/gevent requires dev-python/greenlet which has not been ported to
-# HPPA (bug #538510)
-mail-filter/pyzor gevent
 
 # Jeroen Roovers <jer@gentoo.org> (2014-10-19)
 # requires dev-python/restkit which requires

@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -6,14 +6,14 @@ EAPI=7
 WX_GTK_VER=3.0-gtk3
 FORTRAN_NEEDED=fortran
 LUA_COMPAT=( lua5-1 )
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 # fails with ninja, due to USE=java missing swig output dependencies
 CMAKE_MAKEFILE_GENERATOR=emake
 
 inherit cmake flag-o-matic fortran-2 java-pkg-opt-2 lua-single python-single-r1 virtualx wxwidgets
 
 DESCRIPTION="Multi-language scientific plotting library"
-HOMEPAGE="http://plplot.sourceforge.net/"
+HOMEPAGE="https://plplot.sourceforge.net"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2"

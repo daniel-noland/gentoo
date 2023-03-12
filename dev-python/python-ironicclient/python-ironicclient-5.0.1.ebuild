@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 inherit distutils-r1
 
@@ -22,7 +22,7 @@ RDEPEND="
 	>dev-python/cliff-2.9.0[${PYTHON_USEDEP}]
 	>=dev-python/dogpile-cache-0.8.0[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
-	>=dev-python/keystoneauth-3.11.0[${PYTHON_USEDEP}]
+	>=dev-python/keystoneauth1-3.11.0[${PYTHON_USEDEP}]
 	>=dev-python/openstacksdk-0.18.0[${PYTHON_USEDEP}]
 	>=dev-python/osc-lib-2.0.0[${PYTHON_USEDEP}]
 	>=dev-python/oslo-utils-3.33.0[${PYTHON_USEDEP}]

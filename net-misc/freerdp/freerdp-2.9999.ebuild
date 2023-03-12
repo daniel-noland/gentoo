@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit cmake
+inherit cmake flag-o-matic
 
 if [[ ${PV} == *9999 ]]; then
 	inherit git-r3
@@ -15,7 +15,7 @@ else
 	MY_P=${P/_/-}
 	S="${WORKDIR}/${MY_P}"
 	SRC_URI="https://pub.freerdp.com/releases/${MY_P}.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ppc ~ppc64 ~riscv ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv ~x86"
 fi
 
 DESCRIPTION="Free implementation of the Remote Desktop Protocol"
@@ -89,6 +89,9 @@ BDEPEND="
 "
 
 src_configure() {
+	# bug #881695
+	filter-lto
+
 	local mycmakeargs=(
 		-DBUILD_TESTING=$(usex test ON OFF)
 		-DCHANNEL_URBDRC=$(usex usb ON OFF)

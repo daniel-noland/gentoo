@@ -3,6 +3,9 @@
 
 EAPI=8
 
+# note: version 2.6 should be kept for longer given it's the
+# last version to support <wine-7.1 and <nvidia-drivers-510
+
 MULTILIB_COMPAT=( abi_x86_{32,64} )
 inherit flag-o-matic meson-multilib toolchain-funcs
 
@@ -22,11 +25,15 @@ else
 	HASH_SPIRV=ae217c17809fadb232ec94b29304b4afcd417bb4
 	HASH_VULKAN=83e1a9ed8ce289cebb1c02c8167d663dc1befb24
 	SRC_URI="
-		https://github.com/HansKristian-Work/vkd3d-proton/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
-		https://github.com/HansKristian-Work/dxil-spirv/archive/${HASH_DXIL}.tar.gz -> ${PN}-dxil-spirv-${HASH_DXIL::10}.tar.gz
-		https://github.com/KhronosGroup/SPIRV-Headers/archive/${HASH_SPIRV}.tar.gz -> ${PN}-spirv-headers-${HASH_SPIRV::10}.tar.gz
-		https://github.com/KhronosGroup/Vulkan-Headers/archive/${HASH_VULKAN}.tar.gz -> ${PN}-vulkan-headers-${HASH_VULKAN::10}.tar.gz"
-	KEYWORDS="-* ~amd64 ~x86"
+		https://github.com/HansKristian-Work/vkd3d-proton/archive/refs/tags/v${PV}.tar.gz
+			-> ${P}.tar.gz
+		https://github.com/HansKristian-Work/dxil-spirv/archive/${HASH_DXIL}.tar.gz
+			-> ${PN}-dxil-spirv-${HASH_DXIL::10}.tar.gz
+		https://github.com/KhronosGroup/SPIRV-Headers/archive/${HASH_SPIRV}.tar.gz
+			-> ${PN}-spirv-headers-${HASH_SPIRV::10}.tar.gz
+		https://github.com/KhronosGroup/Vulkan-Headers/archive/${HASH_VULKAN}.tar.gz
+			-> ${PN}-vulkan-headers-${HASH_VULKAN::10}.tar.gz"
+	KEYWORDS="-* amd64 x86"
 fi
 
 DESCRIPTION="Fork of VKD3D, development branches for Proton's Direct3D 12 implementation"
@@ -99,6 +106,7 @@ src_configure() {
 			filter-flags '-fstack-clash-protection' #758914
 			filter-flags '-fstack-protector*' #870136
 			filter-flags '-fuse-ld=*'
+			filter-flags '-mfunction-return=thunk*' #878849
 		fi
 
 		CHOST_amd64=x86_64-w64-mingw32
@@ -156,11 +164,4 @@ pkg_postinst() {
 		elog
 		elog "See ${EROOT}/usr/share/doc/${PF}/README.md* for details."
 	fi
-
-	# don't try to keep wine-*[vulkan] in RDEPEND, but still give a warning
-	local wine
-	for wine in app-emulation/wine-{vanilla,staging}; do
-		has_version ${wine} && ! has_version "${wine}[vulkan]" &&
-			ewarn "${wine} was not built with USE=vulkan, ${PN} will not be usable with it"
-	done
 }

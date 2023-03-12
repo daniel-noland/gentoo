@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -62,25 +62,20 @@ RDEPEND="
 	${DEPEND}
 	app-eselect/eselect-vi
 "
-BDEPEND="
+BDEPEND+="
 	test? (
 		$(lua_gen_cond_dep 'dev-lua/busted[${LUA_USEDEP}]')
 	)
 "
 
-PATCHES=()
+PATCHES=(
+	"${FILESDIR}/${PN}-9999-cmake_lua_version.patch"
+	"${FILESDIR}/${PN}-9999-cmake-darwin.patch"
+)
 
-if [[ ${PV} == 9999 ]]; then
+if [[ ${PV} != 9999 ]]; then
 	PATCHES+=(
-		"${FILESDIR}/${PN}-9999-cmake_lua_version.patch"
-		"${FILESDIR}/${PN}-9999-cmake-release-type.patch"
-		"${FILESDIR}/${PN}-9999-cmake-darwin.patch"
-	)
-else
-	PATCHES+=(
-		"${FILESDIR}/${PN}-9999-cmake_lua_version.patch"
-		"${FILESDIR}/${PN}-9999-cmake-release-type.patch"
-		"${FILESDIR}/${PN}-9999-cmake-darwin.patch"
+		"${FILESDIR}/${PN}-0.8.0-cmake-release-type.patch"
 	)
 fi
 

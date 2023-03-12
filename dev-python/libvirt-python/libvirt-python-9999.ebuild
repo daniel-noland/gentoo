@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -10,7 +10,7 @@ EAPI=8
 # app-emulation/libvirt
 # Please bump them together!
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 DISTUTILS_USE_PEP517=setuptools
 MY_P="${P/_rc/-rc}"
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/libvirt.org.asc
@@ -19,7 +19,7 @@ inherit distutils-r1 verify-sig
 if [[ ${PV} == *9999* ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://gitlab.com/libvirt/libvirt-python.git"
-	RDEPEND="app-emulation/libvirt:=[-python(-)]"
+	RDEPEND="app-emulation/libvirt:="
 else
 	SRC_URI="https://libvirt.org/sources/python/${MY_P}.tar.gz
 		verify-sig? ( https://libvirt.org/sources/python/${MY_P}.tar.gz.asc )"

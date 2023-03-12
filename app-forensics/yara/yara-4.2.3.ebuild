@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,7 +13,7 @@ S="${WORKDIR}/${PN}-${PV/_/-}"
 LICENSE="Apache-2.0"
 SLOT="0/8"
 if [[ ${PV} != *_rc* ]] ; then
-	KEYWORDS="amd64 ~ppc64 x86"
+	KEYWORDS="amd64 ~arm64 ~ppc64 x86"
 fi
 IUSE="+dex +dotnet +cuckoo +macho +magic profiling python test"
 RESTRICT="!test? ( test )"
@@ -26,7 +26,10 @@ DEPEND="
 RDEPEND="${DEPEND}"
 PDEPEND="python? ( =dev-python/yara-python-$(ver_cut 1)* )"
 
-PATCHES=( "${FILESDIR}/${PN}-$(ver_cut 1-2)-test.patch" )
+PATCHES=(
+	"${FILESDIR}/${PN}-$(ver_cut 1-2)-test.patch"
+	"${FILESDIR}/${P}-libmagic.patch"
+)
 
 src_prepare() {
 	default

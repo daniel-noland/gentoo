@@ -1,8 +1,8 @@
-# Copyright 2014-2022 Gentoo Authors
+# Copyright 2014-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit meson python-any-r1 udev
 
@@ -24,7 +24,7 @@ BDEPEND="
 			dev-python/commonmark[${PYTHON_USEDEP}]
 			dev-python/recommonmark[${PYTHON_USEDEP}]
 			dev-python/sphinx[${PYTHON_USEDEP}]
-			>=dev-python/sphinx_rtd_theme-0.2.4[${PYTHON_USEDEP}]
+			>=dev-python/sphinx-rtd-theme-0.2.4[${PYTHON_USEDEP}]
 		')
 		>=app-doc/doxygen-1.8.3
 		>=media-gfx/graphviz-2.38.0
@@ -45,7 +45,7 @@ python_check_deps() {
 	has_version -b "dev-python/commonmark[${PYTHON_USEDEP}]" && \
 	has_version -b "dev-python/recommonmark[${PYTHON_USEDEP}]" && \
 	has_version -b "dev-python/sphinx[${PYTHON_USEDEP}]" && \
-	has_version -b ">=dev-python/sphinx_rtd_theme-0.2.4[${PYTHON_USEDEP}]"
+	has_version -b ">=dev-python/sphinx-rtd-theme-0.2.4[${PYTHON_USEDEP}]"
 }
 
 pkg_setup() {

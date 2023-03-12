@@ -1,9 +1,25 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-# matoro <matoro_gentoo@matoro.tk> (2022-09-30)
-# Per Sam: avoid app-emacs/flycheck deptree, bug #873541
-dev-util/pkgcheck emacs
+# Matt Turner <tetromino@gentoo.org> (2023-02-15)
+# pandoc not keyworded here, bug #878355
+app-admin/conky doc
+
+# Matt Turner <tetromino@gentoo.org> (2023-02-15)
+# net-libs/libqmi and net-libs/libqrtr-glib are not keyworded here
+net-misc/modemmanager qmi qrtr
+
+# Matt Turner <mattst88@gentoo.org> (2023-02-15)
+# Depends on dev-util/umockdev which is broken on alpha.
+# See https://github.com/martinpitt/umockdev/issues/200
+dev-libs/libgudev test
+dev-libs/libgusb test
+sys-power/upower test
+
+# Stijn Tintel <stijn@linux-ipv6.be> (2023-02-02)
+# Dependency not keyworded
+# https://bugs.gentoo.org/show_bug.cgi?id=892389
+net-misc/openvswitch unwind
 
 # matoro <matoro_gentoo@matoro.tk> (2022-09-22)
 # Unable to test due to mask, bug #763963
@@ -45,11 +61,6 @@ media-gfx/graphicsmagick jpegxl
 # Adel Kara Slimane <adel.ks@zegrapher.com> (2022-03-14)
 # Untested useflag on other arches, needs keywording
 media-video/ffmpeg vmaf
-
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-02-17)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
 
 # Sam James <sam@gentoo.org> (2022-01-29)
 # app-text/ronn-ng not keyworded here, bug #801103
@@ -245,11 +256,6 @@ x11-wm/mutter screencast
 # Lars Wendler <polynomial-c@gentoo.org> (2019-04-29)
 # Requires net-libs/webkit-gtk which has no keywords on alpha
 dev-util/geany-plugins markdown
-
-# Tobias Klausmann <klausman@gentoo.rog> (2018-11-23)
-# Requires sys-cluster/ceph, which is unlikely to be used on Alpha
-# and a rather large dependency.
-sys-fs/multipath-tools rbd
 
 # Thomas Deutschmann <whissi@gentoo.org> (2018-10-15)
 # Requires app-text/mecab which isn't yet keyworded
@@ -458,10 +464,6 @@ media-libs/gst-plugins-base ivorbis
 # Julian Ospald <hasufell@gentoo.org> (2013-03-31)
 # depends on mono
 >=net-irc/hexchat-2.9.4-r1 theme-manager
-
-# Alexandre Rostovtsev <tetromino@gentoo.org> (2013-01-31)
-# remove mask when net-libs/libqmi is keyworded here
-net-misc/modemmanager qmi
 
 # Alexandre Rostovtsev <tetromino@gentoo.org> (2013-01-22)
 # remove mask if/when media-gfx/argyllcms is keywored here.

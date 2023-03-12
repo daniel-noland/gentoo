@@ -15,7 +15,7 @@ SLOT="1.0"
 IUSE="gtk-doc +introspection vala"
 REQUIRED_USE="vala? ( introspection )"
 
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~loong ppc ppc64 ~riscv sparc x86"
 
 RDEPEND="
 	>=dev-libs/glib-2.38.0:2
@@ -23,8 +23,13 @@ RDEPEND="
 	introspection? ( >=dev-libs/gobject-introspection-0.9.7:= )
 "
 DEPEND="${RDEPEND}"
-BDEPEND="virtual/pkgconfig
+BDEPEND="
+	gtk-doc? (
+		dev-util/gtk-doc
+		app-text/docbook-xml-dtd:4.3
+	)
 	vala? ( $(vala_depend) )
+	virtual/pkgconfig
 "
 
 src_prepare() {

@@ -3,7 +3,7 @@
 
 EAPI=8
 
-USE_RUBY="ruby26 ruby27 ruby30"
+USE_RUBY="ruby27 ruby30 ruby31"
 
 RUBY_FAKEGEM_BINWRAP=""
 RUBY_FAKEGEM_RECIPE_TEST="rspec3"
@@ -20,7 +20,7 @@ SRC_URI="https://github.com/lostisland/faraday-net_http/archive/v${PV}.tar.gz ->
 
 LICENSE="MIT"
 SLOT="$(ver_cut 1)"
-KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm ~ppc ~ppc64 ~x86"
 IUSE=""
 
 ruby_add_bdepend "test? ( >=dev-ruby/faraday-1.3.1:1 )"

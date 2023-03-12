@@ -14,7 +14,7 @@ S="${WORKDIR}/${P}/src"
 
 LICENSE="BSD-4"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~arm64"
+KEYWORDS="amd64 ~arm ~arm64 ~x86"
 IUSE="X plots wayland xls xlsx lua ods tmux"
 REQUIRED_USE="lua? ( ${LUA_REQUIRED_USE} )"
 
@@ -43,7 +43,7 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 BDEPEND="virtual/pkgconfig
-	virtual/yacc"
+	app-alternatives/yacc"
 
 pkg_setup() {
 	CONFLICTING=$(usex tmux "tmux " "")$(usex wayland "wayland " "")$(usex X "X" "")

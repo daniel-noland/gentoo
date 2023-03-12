@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: dotnet.eclass
 # @MAINTAINER:
 # maintainer-needed@gentoo.org
-# @SUPPORTED_EAPIS: 6 7
+# @SUPPORTED_EAPIS: 7
 # @BLURB: common settings and functions for mono and dotnet related packages
 # @DESCRIPTION:
 # The dotnet eclass contains common environment settings that are useful for
@@ -13,17 +13,14 @@
 # of dotnet packages.
 
 case ${EAPI} in
-	6)
-		inherit eapi7-ver multilib
-		DEPEND="dev-lang/mono"
-		;;
-	7)
-		BDEPEND="dev-lang/mono"
-		;;
-	*)
-		die "${ECLASS}: EAPI ${EAPI:-0} not supported"
-		;;
+	7) ;;
+	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
+
+if [[ ! ${_DOTNET_ECLASS} ]]; then
+_DOTNET_ECLASS=1
+
+BDEPEND="dev-lang/mono"
 
 inherit mono-env
 
@@ -134,7 +131,7 @@ dotnet_multilib_comply() {
 		then
 			for exe in "${ED}/usr/bin"/*
 			do
-				if [[ "$(file "${exe}")" == *"shell script text"* ]]
+				if [[ "$(file -S "${exe}")" == *"shell script text"* ]]
 				then
 					sed -r -i -e ":/lib(/|$): s:/lib(/|$):/$(get_libdir)\1:" \
 						"${exe}" || die "Sedding some sense into ${exe} failed"
@@ -144,5 +141,7 @@ dotnet_multilib_comply() {
 
 	fi
 }
+
+fi
 
 EXPORT_FUNCTIONS pkg_setup

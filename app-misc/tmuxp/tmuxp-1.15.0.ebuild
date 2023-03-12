@@ -1,9 +1,9 @@
-# Copyright 2019-2022 Gentoo Authors
+# Copyright 2019-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 DISTUTILS_USE_PEP517=poetry
 inherit distutils-r1
 
@@ -13,7 +13,7 @@ SRC_URI="https://github.com/tmux-python/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 x86"
+KEYWORDS="amd64 ~arm ~arm64 ~ppc64 x86"
 
 RDEPEND="
 	>=app-misc/tmux-3.0a

@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -8,12 +8,12 @@ inherit toolchain-funcs
 MY_PV=$(ver_rs 3 "")
 
 DESCRIPTION="A 100% compatible, enhanced implementation of the make alternative Jam"
-HOMEPAGE="http://freetype.sourceforge.net/jam/index.html"
+HOMEPAGE="https://freetype.sourceforge.net/jam/index.html"
 SRC_URI="http://david.freetype.org/jam/ftjam-${MY_PV}.tar.bz2"
 
 LICENSE="perforce GPL-2"
 SLOT="0"
-KEYWORDS="amd64 arm64 ~hppa ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux ~ppc-macos"
+KEYWORDS="amd64 arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux ~ppc-macos"
 
 BDEPEND="sys-devel/bison"
 

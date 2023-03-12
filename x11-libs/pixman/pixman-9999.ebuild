@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -34,7 +34,7 @@ pkg_setup() {
 }
 
 multilib_src_configure() {
-	if use arm && tc-is-clang ; then
+	if ( use arm || use arm64 ) && tc-is-clang ; then
 		# See bug #768138 and https://gitlab.freedesktop.org/pixman/pixman/-/issues/46
 		append-cflags $(test-flags-CC -fno-integrated-as)
 	fi
@@ -46,13 +46,20 @@ multilib_src_configure() {
 		$(meson_feature cpu_flags_x86_sse2 sse2)
 		$(meson_feature cpu_flags_x86_ssse3 ssse3)
 		$(meson_feature cpu_flags_ppc_altivec vmx)
-		$(meson_feature cpu_flags_arm_neon neon)
 		$(meson_feature loongson2f loongson-mmi)
 		$(meson_feature test openmp) # only used in unit tests
+		$(meson_feature test tests)
 		-Ddefault_library=$(usex static-libs both shared)
 		-Dgtk=disabled
 		-Dlibpng=disabled
 	)
+
+	if [[ ${ABI} == arm64 ]]; then
+		emesonargs+=($(meson_feature cpu_flags_arm_neon a64-neon))
+	elif [[ ${ABI} == arm ]]; then
+		emesonargs+=($(meson_feature cpu_flags_arm_neon neon))
+	fi
+
 	meson_src_configure
 }
 

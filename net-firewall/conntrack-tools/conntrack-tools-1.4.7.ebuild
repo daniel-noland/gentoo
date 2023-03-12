@@ -13,12 +13,12 @@ SRC_URI="https://www.netfilter.org/projects/conntrack-tools/files/${P}.tar.bz2
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm64 ~hppa ~ppc ~ppc64 ~riscv ~x86"
+KEYWORDS="~alpha amd64 ~arm64 ~hppa ppc ppc64 ~riscv x86"
 IUSE="doc +cthelper +cttimeout systemd"
 
 RDEPEND="
 	>=net-libs/libmnl-1.0.3
-	>=net-libs/libnetfilter_conntrack-1.0.8
+	>=net-libs/libnetfilter_conntrack-1.0.9
 	>=net-libs/libnetfilter_queue-1.0.2
 	>=net-libs/libnfnetlink-1.0.1
 	net-libs/libtirpc

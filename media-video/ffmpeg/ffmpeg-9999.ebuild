@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -12,7 +12,7 @@ EAPI=8
 # changes its ABI then this package will be rebuilt needlessly. Hence, such a
 # package is free _not_ to := depend on FFmpeg but I would strongly encourage
 # doing so since such a case is unlikely.
-FFMPEG_SUBSLOT=57.59.59
+FFMPEG_SUBSLOT=58.60.60
 
 SCM=""
 if [ "${PV#9999}" != "${PV}" ] ; then
@@ -84,7 +84,7 @@ FFMPEG_FLAG_MAP=(
 		# decoders
 		amr:libopencore-amrwb amr:libopencore-amrnb codec2:libcodec2 +dav1d:libdav1d fdk:libfdk-aac
 		jpeg2k:libopenjpeg jpegxl:libjxl bluray:libbluray gme:libgme gsm:libgsm
-		libaribb24 mmal modplug:libmodplug opus:libopus libilbc librtmp ssh:libssh
+		libaribb24 mmal modplug:libmodplug opus:libopus qsv:libvpl libilbc librtmp ssh:libssh
 		speex:libspeex srt:libsrt svg:librsvg nvenc:ffnvcodec
 		vorbis:libvorbis vpx:libvpx zvbi:libzvbi
 		# libavfilter options
@@ -248,6 +248,7 @@ RDEPEND="
 	opengl? ( >=virtual/opengl-7.0-r1[${MULTILIB_USEDEP}] )
 	opus? ( >=media-libs/opus-1.0.2-r2[${MULTILIB_USEDEP}] )
 	pulseaudio? ( >=media-sound/pulseaudio-2.1-r1[${MULTILIB_USEDEP}] )
+	qsv? ( media-libs/oneVPL )
 	rubberband? ( >=media-libs/rubberband-1.8.1-r1[${MULTILIB_USEDEP}] )
 	samba? ( >=net-fs/samba-3.6.23-r1[client,${MULTILIB_USEDEP}] )
 	sdl? ( media-libs/libsdl2[sound,video,${MULTILIB_USEDEP}] )
@@ -278,7 +279,6 @@ RDEPEND="
 		>=x11-libs/libXv-1.0.10[${MULTILIB_USEDEP}]
 		>=x11-libs/libxcb-1.4:=[${MULTILIB_USEDEP}]
 	)
-	postproc? ( !media-libs/libpostproc )
 	zeromq? ( >=net-libs/zeromq-4.1.6 )
 	zimg? ( >=media-libs/zimg-2.7.4:=[${MULTILIB_USEDEP}] )
 	zlib? ( >=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}] )
@@ -430,7 +430,7 @@ multilib_src_configure() {
 
 	# (temporarily) disable non-multilib deps
 	if ! multilib_is_native_abi; then
-		for i in librav1e libzmq ; do
+		for i in librav1e libmfx libvpl libzmq ; do
 			myconf+=( --disable-${i} )
 		done
 	fi

@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit bash-completion-r1 estack llvm toolchain-funcs python-r1 linux-info
 
 DESCRIPTION="Userland tools for Linux Performance Counters"
@@ -113,7 +113,7 @@ src_unpack() {
 	# We expect the tar implementation to support the -j option (both
 	# GNU tar and libarchive's tar support that).
 	echo ">>> Unpacking ${LINUX_SOURCES} (${paths[*]}) to ${PWD}"
-	tar --wildcards -xpf "${DISTDIR}"/${LINUX_SOURCES} \
+	gtar --wildcards -xpf "${DISTDIR}"/${LINUX_SOURCES} \
 		"${paths[@]/#/linux-${LINUX_VER}/}" || die
 
 	if [[ -n ${LINUX_PATCH} ]] ; then
@@ -152,7 +152,8 @@ src_prepare() {
 		"${S}"/Makefile.perf || die
 	# A few places still use -Werror w/out $(WERROR) protection.
 	sed -i -e 's@-Werror@@' \
-		"${S}"/Makefile.perf "${S_K}"/tools/lib/bpf/Makefile || die
+		"${S}"/Makefile.perf "${S_K}"/tools/lib/bpf/Makefile \
+		"${S_K}"/tools/lib/perf/Makefile || die
 
 	# Avoid the call to make kernelversion
 	sed -i -e '/PERF-VERSION-GEN/d' Makefile.perf || die

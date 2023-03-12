@@ -11,7 +11,7 @@ LICENSE="GPL-2"
 SRC_URI="https://github.com/ice-wm/icewm/releases/download/${PV}/${P}.tar.lz"
 
 SLOT="0"
-KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
+KEYWORDS="amd64 ppc ~ppc64 sparc x86"
 IUSE="+alsa ao bidi debug +gdk-pixbuf imlib nls truetype xinerama"
 
 # Tests broken in all versions, patches welcome, bug #323907, #389533
@@ -70,12 +70,11 @@ RDEPEND="
 "
 DEPEND="
 	${RDEPEND}
-	$(unpacker_src_uri_depends)
 	x11-base/xorg-proto
 	gdk-pixbuf? ( gnome-base/librsvg:2 )
 "
-
 BDEPEND="
+	$(unpacker_src_uri_depends)
 	app-text/asciidoc
 	virtual/pkgconfig
 	nls? ( >=sys-devel/gettext-0.19.8 )

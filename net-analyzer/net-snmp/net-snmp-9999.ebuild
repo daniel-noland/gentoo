@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,7 +6,7 @@ EAPI=8
 DISTUTILS_OPTIONAL=yes
 DISTUTILS_SINGLE_IMPL=yes
 GENTOO_DEPEND_ON_PERL=no
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 WANT_AUTOMAKE=none
 
 inherit autotools distutils-r1 perl-module systemd
@@ -20,7 +20,7 @@ else
 	# https://github.com/net-snmp/net-snmp/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
 	SRC_URI="mirror://sourceforge/${PN}/${PV}/${P}.tar.gz"
 
-	KEYWORDS="~alpha ~amd64 ~mips ~ppc ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 fi
 
 SRC_URI+=" https://dev.gentoo.org/~jsmolic/distfiles/${PN}-5.7.3-patches-3.tar.xz"
@@ -84,14 +84,15 @@ RDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-5.8-do-not-conflate-LDFLAGS-and-LIBS.patch
 	"${FILESDIR}"/${PN}-5.8-pcap.patch
-	"${FILESDIR}"/${PN}-5.8.1-pkg-config.patch
-	"${FILESDIR}"/${PN}-5.8.1-net-snmp-config-libdir.patch
 	"${FILESDIR}"/${PN}-5.8.1-mysqlclient.patch
 	"${FILESDIR}"/${PN}-5.9-MakeMaker.patch
-	"${FILESDIR}"/${PN}-5.9.2-fix-LDFLAGS.patch
-	"${FILESDIR}"/${PN}-99999999-tinfo.patch
+	"${FILESDIR}"/${P}-configure-clang16.patch
+	# https://github.com/net-snmp/net-snmp/pull/493
+	"${FILESDIR}"/${PN}-5.9.3-0001-Fix-LDFLAGS-vs-LIBS-ordering.patch
+	"${FILESDIR}"/${PN}-5.9.3-0002-Tidy-up-net-snmp-config-output.patch
+	"${FILESDIR}"/${PN}-5.9.3-0003-Prune-Libs.private-entries-in-netsnmp-.pc.in.patch
+	"${FILESDIR}"/${PN}-5.9.3-0004-Search-for-ltinfo-in-configure-if-needed.patch
 )
 
 pkg_setup() {

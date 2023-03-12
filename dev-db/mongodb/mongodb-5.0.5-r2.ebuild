@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 SCONS_MIN_VERSION="3.3.1"
 CHECKREQS_DISK_BUILD="2400M"
@@ -20,7 +20,7 @@ SRC_URI="https://fastdl.mongodb.org/src/${MY_P}.tar.gz"
 
 LICENSE="Apache-2.0 SSPL-1"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 -riscv"
+KEYWORDS="amd64 ~arm64 -riscv"
 CPU_FLAGS="cpu_flags_x86_avx"
 IUSE="debug kerberos lto mongosh ssl +tools ${CPU_FLAGS}"
 
@@ -69,6 +69,9 @@ PATCHES=(
 	"${FILESDIR}/${PN}-5.0.2-skip-reqs-check.patch"
 	"${FILESDIR}/${PN}-5.0.2-boost-1.79.patch"
 	"${FILESDIR}/${PN}-5.0.5-no-force-lld.patch"
+	"${FILESDIR}/${PN}-4.4.10-boost-1.81.patch"
+	"${FILESDIR}/${PN}-5.0.5-boost-1.81-extra.patch"
+	"${FILESDIR}/${PN}-4.4.8-gcc-13.patch"
 )
 
 S="${WORKDIR}/${MY_P}"

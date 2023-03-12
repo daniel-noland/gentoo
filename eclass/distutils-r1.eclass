@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: distutils-r1.eclass
@@ -7,7 +7,7 @@
 # @AUTHOR:
 # Author: Michał Górny <mgorny@gentoo.org>
 # Based on the work of: Krzysztof Pawlik <nelchael@gentoo.org>
-# @SUPPORTED_EAPIS: 6 7 8
+# @SUPPORTED_EAPIS: 7 8
 # @PROVIDES: python-r1 python-single-r1
 # @BLURB: A simple eclass to build Python packages using distutils.
 # @DESCRIPTION:
@@ -44,15 +44,9 @@
 # For more information, please see the Python Guide:
 # https://projects.gentoo.org/python/guide/
 
-case "${EAPI:-0}" in
-	[0-5])
-		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
-		;;
-	[6-8])
-		;;
-	*)
-		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
-		;;
+case ${EAPI:-0} in
+	7|8) ;;
+	*) die "EAPI=${EAPI:-0} not supported";;
 esac
 
 # @ECLASS_VARIABLE: DISTUTILS_OPTIONAL
@@ -177,8 +171,7 @@ esac
 
 if [[ ! ${_DISTUTILS_R1} ]]; then
 
-[[ ${EAPI} == 6 ]] && inherit eutils xdg-utils
-inherit multibuild multiprocessing toolchain-funcs
+inherit multibuild multilib multiprocessing ninja-utils toolchain-funcs
 
 if [[ ! ${DISTUTILS_SINGLE_IMPL} ]]; then
 	inherit python-r1
@@ -202,12 +195,12 @@ _distutils_set_globals() {
 		fi
 
 		bdep='
-			>=dev-python/gpep517-9[${PYTHON_USEDEP}]
+			>=dev-python/gpep517-13[${PYTHON_USEDEP}]
 		'
 		case ${DISTUTILS_USE_PEP517} in
 			flit)
 				bdep+='
-					>=dev-python/flit_core-3.7.1[${PYTHON_USEDEP}]
+					>=dev-python/flit_core-3.8.0[${PYTHON_USEDEP}]
 				'
 				;;
 			flit_scm)
@@ -217,7 +210,7 @@ _distutils_set_globals() {
 				;;
 			hatchling)
 				bdep+='
-					>=dev-python/hatchling-1.8.1[${PYTHON_USEDEP}]
+					>=dev-python/hatchling-1.12.2[${PYTHON_USEDEP}]
 				'
 				;;
 			jupyter)
@@ -227,7 +220,7 @@ _distutils_set_globals() {
 				;;
 			maturin)
 				bdep+='
-					>=dev-util/maturin-0.13.2[${PYTHON_USEDEP}]
+					>=dev-util/maturin-0.14.10[${PYTHON_USEDEP}]
 				'
 				;;
 			no)
@@ -236,33 +229,39 @@ _distutils_set_globals() {
 				;;
 			meson-python)
 				bdep+='
-					>=dev-python/meson-python-0.9.0[${PYTHON_USEDEP}]
+					>=dev-python/meson-python-0.12.0[${PYTHON_USEDEP}]
 				'
 				;;
 			pbr)
 				bdep+='
-					>=dev-python/pbr-5.10.0[${PYTHON_USEDEP}]
+					>=dev-python/pbr-5.11.1[${PYTHON_USEDEP}]
 				'
 				;;
 			pdm)
 				bdep+='
-					>=dev-python/pdm-pep517-1.0.4[${PYTHON_USEDEP}]
+					>=dev-python/pdm-pep517-1.0.6[${PYTHON_USEDEP}]
 				'
 				;;
 			poetry)
 				bdep+='
-					>=dev-python/poetry-core-1.2.0[${PYTHON_USEDEP}]
+					>=dev-python/poetry-core-1.4.0[${PYTHON_USEDEP}]
 				'
 				;;
 			setuptools)
+				# || ( ... ) dep is a workaround for bug #892525
+				# It can be removed once >=67.2.0 is stable and replaced with
+				# a simple >=67.2.0 dep.
 				bdep+='
-					>=dev-python/setuptools-65.3.0[${PYTHON_USEDEP}]
-					dev-python/wheel[${PYTHON_USEDEP}]
+					|| (
+						>=dev-python/setuptools-67.2.0[${PYTHON_USEDEP}]
+						<dev-python/setuptools-65.7.1[${PYTHON_USEDEP}]
+					)
+					>=dev-python/wheel-0.38.4[${PYTHON_USEDEP}]
 				'
 				;;
 			sip)
 				bdep+='
-					>=dev-python/sip-6.6.2[${PYTHON_USEDEP}]
+					>=dev-python/sip-6.7.5-r1[${PYTHON_USEDEP}]
 				'
 				;;
 			standalone)
@@ -277,7 +276,7 @@ _distutils_set_globals() {
 			eqawarn "is enabled."
 		fi
 	else
-		local setuptools_dep='>=dev-python/setuptools-65.3.0[${PYTHON_USEDEP}]'
+		local setuptools_dep='>=dev-python/setuptools-65.7.0[${PYTHON_USEDEP}]'
 
 		case ${DISTUTILS_USE_SETUPTOOLS:-bdepend} in
 			no|manual)
@@ -322,11 +321,7 @@ _distutils_set_globals() {
 
 	if [[ ! ${DISTUTILS_OPTIONAL} ]]; then
 		RDEPEND="${PYTHON_DEPS} ${rdep}"
-		if [[ ${EAPI} != 6 ]]; then
-			BDEPEND="${PYTHON_DEPS} ${bdep}"
-		else
-			DEPEND="${PYTHON_DEPS} ${bdep}"
-		fi
+		BDEPEND="${PYTHON_DEPS} ${bdep}"
 		REQUIRED_USE=${PYTHON_REQUIRED_USE}
 	fi
 }
@@ -482,7 +477,7 @@ distutils_enable_sphinx() {
 	_DISTUTILS_SPHINX_PLUGINS=( "${@}" )
 
 	local deps autodoc=1 d
-	deps=">=dev-python/sphinx-4.5.0-r1[\${PYTHON_USEDEP}]"
+	deps=">=dev-python/sphinx-5.3.0[\${PYTHON_USEDEP}]"
 	for d; do
 		if [[ ${d} == --no-autodoc ]]; then
 			autodoc=
@@ -506,7 +501,7 @@ distutils_enable_sphinx() {
 			use doc || return 0
 
 			local p
-			for p in ">=dev-python/sphinx-4.5.0-r1" \
+			for p in ">=dev-python/sphinx-5.3.0" \
 				"${_DISTUTILS_SPHINX_PLUGINS[@]}"
 			do
 				python_has_version "${p}[${PYTHON_USEDEP}]" ||
@@ -514,7 +509,7 @@ distutils_enable_sphinx() {
 			done
 		}
 	else
-		deps=">=dev-python/sphinx-4.5.0-r1"
+		deps=">=dev-python/sphinx-5.3.0"
 	fi
 
 	sphinx_compile_all() {
@@ -539,11 +534,7 @@ distutils_enable_sphinx() {
 	python_compile_all() { sphinx_compile_all; }
 
 	IUSE+=" doc"
-	if [[ ${EAPI} == 6 ]]; then
-		DEPEND+=" doc? ( ${deps} )"
-	else
-		BDEPEND+=" doc? ( ${deps} )"
-	fi
+	BDEPEND+=" doc? ( ${deps} )"
 
 	# we need to ensure successful return in case we're called last,
 	# otherwise Portage may wrongly assume sourcing failed
@@ -594,10 +585,10 @@ distutils_enable_tests() {
 	local test_pkg
 	case ${1} in
 		nose)
-			test_pkg=">=dev-python/nose-1.3.7_p20211111_p1-r1"
+			test_pkg=">=dev-python/nose-1.3.7_p20221026"
 			;;
 		pytest)
-			test_pkg=">=dev-python/pytest-7.1.3"
+			test_pkg=">=dev-python/pytest-7.2.1"
 			;;
 		setup.py)
 			;;
@@ -624,11 +615,7 @@ distutils_enable_tests() {
 	if [[ -n ${test_deps} ]]; then
 		IUSE+=" test"
 		RESTRICT+=" !test? ( test )"
-		if [[ ${EAPI} == 6 ]]; then
-			DEPEND+=" test? ( ${test_deps} )"
-		else
-			BDEPEND+=" test? ( ${test_deps} )"
-		fi
+		BDEPEND+=" test? ( ${test_deps} )"
 	fi
 
 	# we need to ensure successful return in case we're called last,
@@ -666,13 +653,19 @@ esetup.py() {
 
 	local setup_py=( setup.py )
 	if [[ ! -f setup.py ]]; then
-		if [[ ! -f setup.cfg ]]; then
+		# The following call can succeed even if the package does not
+		# feature any setuptools configuration.  In non-PEP517 mode this
+		# could lead to installing an "empty" package.  In PEP517 mode,
+		# we verify the build system when invoking the backend,
+		# rendering this check redundant (and broken for projects using
+		# pyproject.toml configuration).
+		if [[ ! ${DISTUTILS_USE_PEP517} && ! -f setup.cfg ]]; then
 			die "${FUNCNAME}: setup.py nor setup.cfg not found"
 		fi
 		setup_py=( -c "from setuptools import setup; setup()" )
 	fi
 
-	if [[ ${EAPI} != [67] && ${mydistutilsargs[@]} ]]; then
+	if [[ ${EAPI} != 7 && ${mydistutilsargs[@]} ]]; then
 		die "mydistutilsargs is banned in EAPI ${EAPI} (use DISTUTILS_ARGS)"
 	fi
 
@@ -744,7 +737,7 @@ distutils_install_for_testing() {
 	local install_method=root
 	case ${1} in
 		--via-home)
-			[[ ${EAPI} == [67] ]] || die "${*} is banned in EAPI ${EAPI}"
+			[[ ${EAPI} == 7 ]] || die "${*} is banned in EAPI ${EAPI}"
 			install_method=home
 			shift
 			;;
@@ -895,7 +888,7 @@ _distutils-r1_check_all_phase_mismatch() {
 		eqawarn "QA Notice: distutils-r1_python_${EBUILD_PHASE}_all called"
 		eqawarn "from python_${EBUILD_PHASE}.  Did you mean to use"
 		eqawarn "python_${EBUILD_PHASE}_all()?"
-		[[ ${EAPI} != [67] ]] &&
+		[[ ${EAPI} != 7 ]] &&
 			die "distutils-r1_python_${EBUILD_PHASE}_all called from python_${EBUILD_PHASE}."
 	fi
 }
@@ -923,19 +916,21 @@ _distutils-r1_print_package_versions() {
 				packages+=(
 					dev-python/flit_core
 					dev-python/flit_scm
-					dev-python/setuptools_scm
+					dev-python/setuptools-scm
 				)
 				;;
 			hatchling)
 				packages+=(
 					dev-python/hatchling
+					dev-python/hatch-fancy-pypi-readme
+					dev-python/hatch-vcs
 				)
 				;;
 			jupyter)
 				packages+=(
 					dev-python/jupyter_packaging
 					dev-python/setuptools
-					dev-python/setuptools_scm
+					dev-python/setuptools-scm
 					dev-python/wheel
 				)
 				;;
@@ -973,7 +968,7 @@ _distutils-r1_print_package_versions() {
 			setuptools)
 				packages+=(
 					dev-python/setuptools
-					dev-python/setuptools_scm
+					dev-python/setuptools-scm
 					dev-python/wheel
 				)
 				;;
@@ -999,7 +994,7 @@ _distutils-r1_print_package_versions() {
 	local pkg
 	einfo "Build system packages:"
 	for pkg in "${packages[@]}"; do
-		local installed=$(best_version "${pkg}")
+		local installed=$(best_version -b "${pkg}")
 		einfo "  $(printf '%-30s' "${pkg}"): ${installed#${pkg}-}"
 	done
 }
@@ -1048,7 +1043,6 @@ distutils-r1_python_prepare_all() {
 	fi
 
 	python_export_utf8_locale
-	[[ ${EAPI} == 6 ]] && xdg_environment_reset # Bug 577704
 	_distutils-r1_print_package_versions
 
 	_DISTUTILS_DEFAULT_CALLED=1
@@ -1233,7 +1227,7 @@ _distutils-r1_get_backend() {
 		if [[ -n ${new_backend} ]]; then
 			if [[ ! -f ${T}/.distutils_deprecated_backend_warned ]]; then
 				eqawarn "${build_backend} backend is deprecated.  Please see:"
-				eqawarn "https://projects.gentoo.org/python/guide/distutils.html#deprecated-pep-517-backends"
+				eqawarn "https://projects.gentoo.org/python/guide/qawarn.html#deprecated-pep-517-backends"
 				eqawarn "The eclass will be using ${new_backend} instead."
 				> "${T}"/.distutils_deprecated_backend_warned || die
 			fi
@@ -1263,25 +1257,14 @@ distutils_wheel_install() {
 	local wheel=${2}
 
 	einfo "  Installing ${wheel##*/} to ${root}"
-	if has_version -b ">=dev-python/gpep517-9"; then
-		# TODO: inline when we dep on >=9
-		local cmd=(
-			gpep517 install-wheel
-				--destdir="${root}"
-				--interpreter="${PYTHON}"
-				--prefix="${EPREFIX}/usr"
-				--optimize=all
-				"${wheel}"
-		)
-	else
-		local cmd=(
-			gpep517 install-wheel
-				--destdir="${root}"
-				--interpreter="${PYTHON}"
-				--prefix="${EPREFIX}/usr"
-				"${wheel}"
-		)
-	fi
+	local cmd=(
+		gpep517 install-wheel
+			--destdir="${root}"
+			--interpreter="${PYTHON}"
+			--prefix="${EPREFIX}/usr"
+			--optimize=all
+			"${wheel}"
+	)
 	printf '%s\n' "${cmd[*]}"
 	"${cmd[@]}" || die "Wheel install failed"
 
@@ -1291,6 +1274,8 @@ distutils_wheel_install() {
 		-o -path '*.dist-info/LICENSE*' \
 		-o -path '*.dist-info/license_files/*' \
 		-o -path '*.dist-info/license_files' \
+		-o -path '*.dist-info/licenses/*' \
+		-o -path '*.dist-info/licenses' \
 		\) -delete || die
 }
 
@@ -1319,18 +1304,40 @@ distutils_pep517_install() {
 	fi
 
 	local config_settings=
-	if [[ -n ${DISTUTILS_ARGS[@]} ]]; then
-		case ${DISTUTILS_USE_PEP517} in
-			setuptools)
+	case ${DISTUTILS_USE_PEP517} in
+		meson-python)
+			local -x NINJAOPTS=$(get_NINJAOPTS)
+			config_settings=$(
+				"${EPYTHON}" - "${DISTUTILS_ARGS[@]}" <<-EOF || die
+					import json
+					import os
+					import shlex
+					import sys
+
+					ninjaopts = shlex.split(os.environ["NINJAOPTS"])
+					print(json.dumps({
+						"setup-args": sys.argv[1:],
+						"compile-args": [
+							"-v",
+							f"--ninja-args={ninjaopts!r}",
+						],
+					}))
+				EOF
+			)
+			;;
+		setuptools)
+			if [[ -n ${DISTUTILS_ARGS[@]} ]]; then
 				config_settings=$(
 					"${EPYTHON}" - "${DISTUTILS_ARGS[@]}" <<-EOF || die
 						import json
 						import sys
-						print(json.dumps({"--global-option": sys.argv[1:]}))
+						print(json.dumps({"--build-option": sys.argv[1:]}))
 					EOF
 				)
-				;;
-			sip)
+			fi
+			;;
+		sip)
+			if [[ -n ${DISTUTILS_ARGS[@]} ]]; then
 				# NB: for practical reasons, we support only --foo=bar,
 				# not --foo bar
 				local arg
@@ -1353,25 +1360,28 @@ distutils_pep517_install() {
 						print(json.dumps(args))
 					EOF
 				)
-				;;
-			*)
+			fi
+			;;
+		*)
+			[[ -n ${DISTUTILS_ARGS[@]} ]] &&
 				die "DISTUTILS_ARGS are not supported by ${DISTUTILS_USE_PEP517}"
-				;;
-		esac
-	fi
+			;;
+	esac
 
 	local build_backend=$(_distutils-r1_get_backend)
 	einfo "  Building the wheel for ${PWD#${WORKDIR}/} via ${build_backend}"
-	local config_args=()
-	[[ -n ${config_settings} ]] &&
-		config_args+=( --config-json "${config_settings}" )
 	local cmd=(
 		gpep517 build-wheel
 			--backend "${build_backend}"
 			--output-fd 3
 			--wheel-dir "${WHEEL_BUILD_DIR}"
-			"${config_args[@]}"
 	)
+	if [[ -n ${config_settings} ]]; then
+		cmd+=( --config-json "${config_settings}" )
+	fi
+	if [[ -n ${SYSROOT} ]]; then
+		cmd+=( --sysroot "${SYSROOT}" )
+	fi
 	printf '%s\n' "${cmd[*]}"
 	local wheel=$(
 		"${cmd[@]}" 3>&1 >&2 || die "Wheel build failed"
@@ -1434,7 +1444,9 @@ distutils-r1_python_compile() {
 				#
 				# see extension.py for list of suffixes
 				# .pyx is added for Cython
-				if [[ 1 -ne ${jobs} && 2 -eq $(
+				#
+				# esetup.py does not respect SYSROOT, so skip it there
+				if [[ -z ${SYSROOT} && 1 -ne ${jobs} && 2 -eq $(
 					find '(' -name '*.c' -o -name '*.cc' -o -name '*.cpp' \
 						-o -name '*.cxx' -o -name '*.c++' -o -name '*.m' \
 						-o -name '*.mm' -o -name '*.pyx' ')' -printf '\n' |
@@ -1502,7 +1514,7 @@ _distutils-r1_wrap_scripts() {
 
 			debug-print "${FUNCNAME}: installing wrapper at ${bindir}/${basename}"
 			local dosym=dosym
-			[[ ${EAPI} == [67] ]] && dosym=dosym8
+			[[ ${EAPI} == 7 ]] && dosym=dosym8
 			"${dosym}" -r /usr/lib/python-exec/python-exec2 \
 				"${bindir#${EPREFIX}}/${basename}"
 		done
@@ -1556,7 +1568,7 @@ distutils-r1_python_test() {
 	esac
 
 	if [[ ${?} -ne 0 ]]; then
-		die "Tests failed with ${EPYTHON}"
+		die -n "Tests failed with ${EPYTHON}"
 	fi
 }
 
@@ -1968,6 +1980,36 @@ distutils-r1_src_test() {
 	return ${ret}
 }
 
+# @FUNCTION: _distutils-r1_strip_namespace_packages
+# @USAGE: <sitedir>
+# @INTERNAL
+# @DESCRIPTION:
+# Find and remove setuptools-style namespaces in the specified
+# directory.
+_distutils-r1_strip_namespace_packages() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	local sitedir=${1}
+	local f ns had_any=
+	while IFS= read -r -d '' f; do
+		while read -r ns; do
+			einfo "Stripping pkg_resources-style namespace ${ns}"
+			had_any=1
+		done < "${f}"
+
+		rm "${f}" || die
+	done < <(
+		# NB: this deliberately does not include .egg-info, in order
+		# to limit this to PEP517 mode.
+		find "${sitedir}" -path '*.dist-info/namespace_packages.txt' -print0
+	)
+
+	# If we had any namespace packages, remove .pth files as well.
+	if [[ ${had_any} ]]; then
+		find "${sitedir}" -name '*-nspkg.pth' -delete || die
+	fi
+}
+
 # @FUNCTION: _distutils-r1_post_python_install
 # @INTERNAL
 # @DESCRIPTION:
@@ -1978,25 +2020,39 @@ _distutils-r1_post_python_install() {
 
 	local sitedir=${D%/}$(python_get_sitedir)
 	if [[ -d ${sitedir} ]]; then
+		_distutils-r1_strip_namespace_packages "${sitedir}"
+
 		local forbidden_package_names=(
 			examples test tests
 			.pytest_cache .hypothesis _trial_temp
 		)
+		local strays=()
 		local p
+		mapfile -d $'\0' -t strays < <(
+			find "${sitedir}" -maxdepth 1 -type f '!' '(' \
+					-name '*.egg-info' -o \
+					-name '*.pth' -o \
+					-name '*.py' -o \
+					-name '*.pyi' -o \
+					-name "*$(get_modname)" \
+				')' -print0
+		)
 		for p in "${forbidden_package_names[@]}"; do
-			if [[ -d ${sitedir}/${p} ]]; then
-				die "Package installs '${p}' package which is forbidden and likely a bug in the build system."
-			fi
+			[[ -d ${sitedir}/${p} ]] && strays+=( "${sitedir}/${p}" )
 		done
 
-		if [[ ${DISTUTILS_USE_PEP517} ]]; then
-			if ! has_version -b ">=dev-python/gpep517-9"
-			then
-				# TODO: remove when we dep on >=9
-				# we need to recompile everything here in order to embed
-				# the correct paths
-				python_optimize "${sitedir}"
-			fi
+		if [[ -n ${strays[@]} ]]; then
+			eerror "The following unexpected files/directories were found top-level"
+			eerror "in the site-packages directory:"
+			eerror
+			for p in "${strays[@]}"; do
+				eerror "  ${p#${ED}}"
+			done
+			eerror
+			eerror "This is most likely a bug in the build system.  More information"
+			eerror "can be found in the Python Guide:"
+			eerror "https://projects.gentoo.org/python/guide/qawarn.html#stray-top-level-files-in-site-packages"
+			die "Failing install because of stray top-level files in site-packages"
 		fi
 	fi
 }

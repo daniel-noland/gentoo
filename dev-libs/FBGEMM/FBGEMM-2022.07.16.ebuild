@@ -1,9 +1,9 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2022-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit python-any-r1 flag-o-matic cmake
 
 CommitId=7d59e803359eb323598e572700db27de467b705a
@@ -33,6 +33,7 @@ S="${WORKDIR}"/${PN}-${CommitId}
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-2022.01.13-gentoo.patch
+	"${FILESDIR}"/${P}-gcc13.patch
 )
 
 src_prepare() {

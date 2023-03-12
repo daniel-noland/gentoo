@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit gnome.org gnome2-utils python-any-r1 meson udev virtualx xdg
 
@@ -14,7 +14,7 @@ SLOT="0"
 IUSE="+colord +cups debug elogind input_devices_wacom modemmanager networkmanager smartcard systemd test wayland"
 RESTRICT="!test? ( test )"
 REQUIRED_USE="^^ ( elogind systemd )"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~x86-solaris"
+KEYWORDS="~alpha amd64 ~arm arm64 ~ia64 ~ppc ~ppc64 ~riscv ~sparc x86 ~amd64-linux ~x86-linux ~x86-solaris"
 
 COMMON_DEPEND="
 	>=sci-geosciences/geocode-glib-3.10:2

@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 inherit cmake python-single-r1
 
@@ -28,12 +28,12 @@ RDEPEND="net-wireless/gnuradio:0=[${PYTHON_SINGLE_USEDEP}]
 		dev-libs/boost:=[python,${PYTHON_USEDEP}]
 		dev-python/pybind11[${PYTHON_USEDEP}]
 	')
-	dev-libs/gmp
+	dev-libs/gmp:=
+	dev-libs/spdlog:=
 	sci-libs/volk:=
 	${PYTHON_DEPS}"
-DEPEND="${RDEPEND}
-	dev-libs/spdlog
-	dev-lang/swig:0"
+DEPEND="${RDEPEND}"
+BDEPEND="dev-lang/swig"
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
@@ -47,7 +47,7 @@ src_prepare() {
 }
 
 src_configure() {
-	mycmakeargs=(
+	local mycmakeargs=(
 		-DPYTHON_EXECUTABLE="${PYTHON}"
 		-DGR_PKG_DOC_DIR="/usr/share/doc/${P}"
 	)

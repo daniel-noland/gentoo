@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 inherit font python-any-r1
 
@@ -14,7 +14,7 @@ SRC_URI="https://github.com/googlefonts/noto-emoji/archive/${COMMIT}.tar.gz -> $
 
 LICENSE="Apache-2.0 OFL-1.1"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~loong ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm arm64 ~loong ~ppc64 ~riscv x86"
 IUSE="buildfont"
 
 BDEPEND="
@@ -63,7 +63,7 @@ src_prepare() {
 		sed -i -e 's:@$(ZOPFLIPNG) -y "$<" "$@" 1> /dev/null 2>&1:@$(ZOPFLIPNG) -y "$<" "$@":g' Makefile || die
 
 		# Based on Fedora patch to allow graphicsmagick usage
-		if has_version -b media-gfx/graphicsmagick; then
+		if has_version -b media-gfx/graphicsmagick[png]; then
 			eapply "${FILESDIR}/${PN}-20190328-use-gm.patch"
 		fi
 	fi

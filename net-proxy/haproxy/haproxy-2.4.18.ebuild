@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
@@ -6,7 +6,7 @@ EAPI="7"
 LUA_COMPAT=( lua5-4 lua5-3 )
 
 [[ ${PV} == *9999 ]] && SCM="git-r3"
-inherit toolchain-funcs flag-o-matic lua-single systemd linux-info ${SCM}
+inherit toolchain-funcs lua-single systemd linux-info ${SCM}
 
 MY_P="${PN}-${PV/_beta/-dev}"
 
@@ -14,7 +14,7 @@ DESCRIPTION="A TCP/HTTP reverse proxy for high availability environments"
 HOMEPAGE="http://www.haproxy.org"
 if [[ ${PV} != *9999 ]]; then
 	SRC_URI="http://haproxy.1wt.eu/download/$(ver_cut 1-2)/src/${MY_P}.tar.gz"
-	KEYWORDS="amd64 ~arm ~arm64 ~ppc ~x86"
+	KEYWORDS="amd64 arm ~arm64 ppc ~x86"
 elif [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://git.haproxy.org/git/haproxy.git/"
 	EGIT_BRANCH=master
@@ -70,11 +70,16 @@ pkg_setup() {
 src_compile() {
 	local -a args=(
 		V=1
-		TARGET=linux-glibc
 		# Switching to PCRE2 by default, bug 838013
 		PCRE=
 		PCRE_JIT=
 	)
+
+	if use elibc_musl; then
+		args+=( TARGET=linux-musl )
+	else
+		args+=( TARGET=linux-glibc )
+	fi
 
 	# TODO: PCRE2_WIDTH?
 	args+=( $(haproxy_use threads THREAD) )

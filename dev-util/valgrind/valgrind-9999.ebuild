@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,12 +6,15 @@ EAPI=8
 inherit autotools flag-o-matic toolchain-funcs multilib pax-utils
 
 DESCRIPTION="An open-source memory debugger for GNU/Linux"
-HOMEPAGE="https://www.valgrind.org"
+HOMEPAGE="https://valgrind.org"
 if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://sourceware.org/git/${PN}.git"
 	inherit git-r3
 else
+	VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/valgrind.gpg
+	inherit verify-sig
 	SRC_URI="https://sourceware.org/pub/valgrind/${P}.tar.bz2"
+	SRC_URI+=" verify-sig? ( https://sourceware.org/pub/valgrind/${P}.tar.bz2.asc )"
 	KEYWORDS="-* ~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x64-solaris"
 fi
 
@@ -21,6 +24,9 @@ IUSE="mpi"
 
 DEPEND="mpi? ( virtual/mpi )"
 RDEPEND="${DEPEND}"
+if [[ ${PV} != 9999 ]] ; then
+	BDEPEND="verify-sig? ( sec-keys/openpgp-keys-valgrind )"
+fi
 
 PATCHES=(
 	# Respect CFLAGS, LDFLAGS
@@ -35,10 +41,10 @@ src_prepare() {
 	# Don't force multiarch stuff on OSX, bug #306467
 	sed -i -e 's:-arch \(i386\|x86_64\)::g' Makefile.all.am || die
 
-	# Conditionally copy musl specific suppressions && apply patch
 	if use elibc_musl ; then
-		cp "${FILESDIR}/musl.supp" "${S}" || die
-		PATCHES+=( "${FILESDIR}"/valgrind-3.13.0-malloc.patch )
+		PATCHES+=(
+			"${FILESDIR}"/${PN}-3.13.0-malloc.patch
+		)
 	fi
 
 	if [[ ${CHOST} == *-solaris* ]] ; then
@@ -77,6 +83,7 @@ src_configure() {
 	filter-flags -fstack-protector-all
 	filter-flags -fstack-protector-strong
 	filter-flags -m64 -mx32
+	filter-flags -fsanitize -fsanitize=*
 	replace-flags -ggdb3 -ggdb2
 	filter-lto
 
@@ -108,6 +115,9 @@ src_install() {
 
 	pax-mark m "${ED}"/usr/$(get_libdir)/valgrind/*-*-linux
 
+	# See README_PACKAGERS
+	dostrip -x /usr/libexec/valgrind/vgpreload* /usr/$(get_libdir)/valgrind/*
+
 	if [[ ${CHOST} == *-darwin* ]] ; then
 		# fix install_names on shared libraries, can't turn them into bundles,
 		# as dyld won't load them any more then, bug #306467
@@ -119,9 +129,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	elog "Valgrind will not work if glibc does not have debug symbols."
+	elog "Valgrind will not work if libc (e.g. glibc) does not have debug symbols."
 	elog "To fix this you can add splitdebug to FEATURES in make.conf"
-	elog "and remerge glibc.  See:"
+	elog "and remerge glibc. See:"
 	elog "https://bugs.gentoo.org/show_bug.cgi?id=214065"
 	elog "https://bugs.gentoo.org/show_bug.cgi?id=274771"
 	elog "https://bugs.gentoo.org/show_bug.cgi?id=388703"

@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,7 +13,7 @@ if [[ "${PV}" = 9999* ]]; then
 	inherit git-r3
 else
 	SRC_URI="https://${EGO_PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="amd64 ~riscv ~x86 ~amd64-linux ~x86-linux"
+	KEYWORDS="amd64 ~ppc64 ~riscv ~x86 ~amd64-linux ~x86-linux"
 fi
 
 LICENSE="Apache-2.0 BSD BSD-2 BSD-4 ISC MIT"
@@ -64,7 +64,7 @@ src_test() {
 pkg_postinst () {
 	if [[ -z "${REPLACING_VERSIONS}" ]]; then
 		elog ""
-		elog "Run \'git lfs install\' once for each user account manually."
+		elog "Run 'git lfs install' once for each user account manually."
 		elog "For more details see https://bugs.gentoo.org/show_bug.cgi?id=733372."
 	fi
 }

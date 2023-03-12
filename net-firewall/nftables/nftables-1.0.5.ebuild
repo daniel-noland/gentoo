@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_OPTIONAL=1
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/netfilter.org.asc
 inherit edo linux-info distutils-r1 systemd verify-sig
 
@@ -22,7 +22,7 @@ if [[ ${PV} =~ ^[9]{4,}$ ]]; then
 else
 	SRC_URI="https://netfilter.org/projects/nftables/files/${P}.tar.bz2
 		verify-sig? ( https://netfilter.org/projects/nftables/files/${P}.tar.bz2.sig )"
-	KEYWORDS="amd64 arm arm64 hppa ~ia64 ~mips ppc ppc64 ~riscv sparc x86"
+	KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv sparc x86"
 	BDEPEND+="verify-sig? ( sec-keys/openpgp-keys-netfilter )"
 fi
 

@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 FINDLIB_USE="ocaml"
 JAVA_PKG_WANT_SOURCE="1.8"
 JAVA_PKG_WANT_TARGET="1.8"
@@ -16,7 +16,7 @@ SRC_URI="https://brltty.app/archive/${P}.tar.xz"
 
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~loong ~ppc ~ppc64 ~riscv ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~ia64 ~loong ppc ppc64 ~riscv x86"
 IUSE="+api +beeper bluetooth doc +fm gpm iconv icu
 		java louis +midi ncurses nls ocaml +pcm policykit python
 		usb systemd +speech tcl xml X"
@@ -53,7 +53,7 @@ DEPEND="
 	usb? ( virtual/libusb:1 )
 	xml? ( dev-libs/expat )
 	X? (
-	app-accessibility/at-spi2-core:2
+		app-accessibility/at-spi2-core:2
 		sys-apps/dbus
 		x11-libs/libX11
 		x11-libs/libXaw
@@ -192,10 +192,10 @@ src_install() {
 	newinitd "${FILESDIR}"/brltty.initd brltty
 	pushd Autostart/Systemd 1> /dev/null || die
 	emake -j1 INSTALL_ROOT="${ED}" install
-	popd
+	popd || die
 	pushd Autostart/Udev 1> /dev/null || die
 	emake -j1 INSTALL_ROOT="${ED}" install
-	popd
+	popd || die
 
 	dodoc Documents/{CONTRIBUTORS,ChangeLog,HISTORY,README*,TODO}
 	if use doc; then

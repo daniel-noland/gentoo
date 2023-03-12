@@ -1,11 +1,11 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_OPTIONAL=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{8..11} )
+PYTHON_COMPAT=( pypy3 python3_{9..11} )
 
 inherit cmake toolchain-funcs flag-o-matic distutils-r1
 
@@ -16,7 +16,7 @@ IUSE="custom-optimization doc examples python test"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
+KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv ~x86"
 RDEPEND="
 	dev-cpp/rapidyaml:=
 	dev-cpp/nlohmann_json:=

@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -6,7 +6,7 @@ EAPI=7
 # Bumping notes: https://wiki.gentoo.org/wiki/Project:Toolchain/sys-libs/glibc
 # Please read & adapt the page as necessary if obsolete.
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 TMPFILES_OPTIONAL=1
 
 inherit python-any-r1 prefix preserve-libs toolchain-funcs flag-o-matic gnuconfig \
@@ -109,7 +109,7 @@ BDEPEND="
 	!compile-locales? (
 		app-arch/gzip
 		sys-apps/grep
-		virtual/awk
+		app-alternatives/awk
 	)
 "
 COMMON_DEPEND="
@@ -126,14 +126,14 @@ DEPEND="${COMMON_DEPEND}
 	compile-locales? (
 		app-arch/gzip
 		sys-apps/grep
-		virtual/awk
+		app-alternatives/awk
 	)
 	test? ( >=net-dns/libidn2-2.3.0 )
 "
 RDEPEND="${COMMON_DEPEND}
 	app-arch/gzip
 	sys-apps/grep
-	virtual/awk
+	app-alternatives/awk
 	sys-apps/gentoo-functions
 	!<app-misc/pax-utils-${MIN_PAX_UTILS_VER}
 	!<net-misc/openssh-8.1_p1-r2

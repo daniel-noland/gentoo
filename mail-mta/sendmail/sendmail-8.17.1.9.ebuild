@@ -20,7 +20,7 @@ fi
 
 LICENSE="Sendmail GPL-2" # GPL-2 is here for initscript
 SLOT="0"
-KEYWORDS="~alpha amd64 arm ~hppa ~ia64 ~mips ~ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm hppa ~ia64 ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 IUSE="ipv6 ldap mbox nis sasl sockets ssl tcpd"
 
 DEPEND="
@@ -144,7 +144,6 @@ src_install() {
 	fowners smmsp:smmsp /var/spool/clientmqueue
 	fperms 770 /var/spool/clientmqueue
 	fperms 700 /var/spool/mqueue
-	dosym ../sbin/makemap /usr/bin/makemap
 	dodoc FAQ KNOWNBUGS README RELEASE_NOTES doc/op/op.ps
 
 	dodoc sendmail/{SECURITY,TUNING}

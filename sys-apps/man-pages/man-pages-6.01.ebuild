@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -40,7 +40,7 @@ else
 		"
 	fi
 
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~arm64-macos"
 fi
 
 SRC_URI+="
@@ -67,7 +67,10 @@ RDEPEND="
 "
 PDEPEND="
 	l10n_ja? ( app-i18n/man-pages-ja )
-	l10n_ru? ( app-i18n/man-pages-ru )
+	l10n_ru? ( || (
+		app-i18n/man-pages-l10n[l10n_ru(-)]
+		app-i18n/man-pages-ru
+	) )
 	l10n_zh-CN? ( app-i18n/man-pages-zh_CN )
 "
 for lang in "${MY_L10N[@]}"; do

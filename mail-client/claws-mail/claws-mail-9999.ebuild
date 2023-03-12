@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit autotools desktop python-any-r1 xdg
 
@@ -32,6 +32,7 @@ REQUIRED_USE="
 "
 
 COMMONDEPEND="
+	>=dev-libs/glib-2.50:2
 	dev-libs/nettle:=
 	net-mail/ytnef
 	sys-libs/zlib:=
@@ -46,6 +47,7 @@ COMMONDEPEND="
 	)
 	bogofilter? ( mail-filter/bogofilter )
 	calendar? (
+		dev-lang/perl:=
 		>=dev-libs/libical-2.0.0:=
 		>=net-misc/curl-7.9.7
 	)
@@ -59,7 +61,6 @@ COMMONDEPEND="
 	imap? ( >=net-libs/libetpan-0.57 )
 	ldap? ( >=net-nds/openldap-2.0.7:= )
 	litehtml? (
-		>=dev-libs/glib-2.36:2
 		>=dev-libs/gumbo-0.10
 		net-misc/curl
 		media-libs/fontconfig
@@ -67,12 +68,16 @@ COMMONDEPEND="
 	nls? ( >=sys-devel/gettext-0.18 )
 	nntp? ( >=net-libs/libetpan-0.57 )
 	notification? (
-		dev-libs/glib:2
 		libcanberra? (  media-libs/libcanberra[gtk3] )
 		libnotify? ( x11-libs/libnotify )
 	)
+	perl? ( dev-lang/perl:= )
 	pdf? ( app-text/poppler[cairo] )
 	pgp? ( >=app-crypt/gpgme-1.0.0:= )
+	rss? (
+		dev-libs/libxml2
+		net-misc/curl
+	)
 	session? (
 		x11-libs/libICE
 		x11-libs/libSM
@@ -100,11 +105,6 @@ RDEPEND="${COMMONDEPEND}
 	clamav? ( app-antivirus/clamav )
 	networkmanager? ( net-misc/networkmanager )
 	pdf? ( app-text/ghostscript-gpl )
-	perl? ( dev-lang/perl:= )
-	rss? (
-		dev-libs/libxml2
-		net-misc/curl
-	)
 "
 
 PATCHES=(
@@ -117,9 +117,6 @@ src_prepare() {
 }
 
 src_configure() {
-	# Don't use libsoup-gnome (bug #565924)
-	export HAVE_LIBSOUP_GNOME=no
-
 	local myeconfargs=(
 		--disable-bsfilter-plugin
 		--disable-generic-umpc
@@ -142,6 +139,8 @@ src_configure() {
 		$(use_enable clamav clamd-plugin)
 		$(use_enable dbus)
 		$(use_enable debug crash-dialog)
+		$(use_enable debug more-addressbook-debug)
+		$(use_enable debug more-ldap-debug)
 		$(use_enable dillo dillo-plugin)
 		$(use_enable doc manual)
 		$(use_enable gdata gdata-plugin)

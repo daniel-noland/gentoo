@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,7 +13,7 @@ SRC_URI="https://github.com/brndnmtthws/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.
 
 LICENSE="GPL-3 BSD LGPL-2.1 MIT"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ppc ~ppc64 ~riscv sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~ppc ppc64 ~riscv sparc x86"
 IUSE="apcupsd bundled-toluapp cmus curl doc hddtemp ical iconv imlib
 	intel-backlight iostats ipv6 irc lua-cairo lua-imlib lua-rsvg math moc
 	mpd mysql nano-syntax ncurses nvidia +portmon pulseaudio rss systemd
@@ -103,10 +103,10 @@ src_prepare() {
 }
 
 src_configure() {
-	local mycmakeargs
+	local mycmakeargs=()
 
 	if use X; then
-		mycmakeargs=(
+		mycmakeargs+=(
 			-DBUILD_ARGB=yes
 			-DBUILD_X11=yes
 			-DBUILD_XDAMAGE=yes
@@ -115,7 +115,7 @@ src_configure() {
 			-DOWN_WINDOW=yes
 		)
 	else
-		mycmakeargs=(
+		mycmakeargs+=(
 			-DBUILD_X11=no
 		)
 	fi

@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # genkernel-9999        -> latest Git branch "master"
@@ -6,7 +6,7 @@
 
 EAPI="7"
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit bash-completion-r1 python-single-r1
 
@@ -90,7 +90,7 @@ if [[ ${PV} == 9999* ]] ; then
 	S="${WORKDIR}/${P}"
 	SRC_URI="${COMMON_URI}"
 else
-	SRC_URI="https://dev.gentoo.org/~whissi/dist/genkernel/${P}.tar.xz
+	SRC_URI="https://dev.gentoo.org/~mattst88/distfiles/${P}.tar.xz
 		${COMMON_URI}"
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 fi
@@ -114,6 +114,7 @@ RDEPEND="${PYTHON_DEPS}
 	app-arch/cpio
 	>=app-misc/pax-utils-1.2.2
 	app-portage/elt-patches
+	app-portage/portage-utils
 	dev-util/gperf
 	sys-apps/sandbox
 	sys-devel/autoconf

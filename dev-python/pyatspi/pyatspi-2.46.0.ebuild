@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit gnome2 python-r1
 
@@ -12,7 +12,7 @@ HOMEPAGE="https://wiki.gnome.org/Accessibility"
 # Note: only some of the tests are GPL-licensed, everything else is LGPL
 LICENSE="LGPL-2 GPL-2+"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv sparc x86"
 
 IUSE="test"
 RESTRICT="!test? ( test )"

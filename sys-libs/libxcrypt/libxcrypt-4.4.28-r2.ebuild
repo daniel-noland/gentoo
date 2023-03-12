@@ -1,9 +1,9 @@
-# Copyright 2004-2022 Gentoo Authors
+# Copyright 2004-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 # NEED_BOOTSTRAP is for developers to quickly generate a tarball
 # for publishing to the tree.
 NEED_BOOTSTRAP="no"
@@ -20,8 +20,8 @@ fi
 
 LICENSE="LGPL-2.1+ public-domain BSD BSD-2"
 SLOT="0/1"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
-IUSE="+compat split-usr static-libs system test headers-only"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
+IUSE="+compat split-usr static-libs +system test headers-only"
 REQUIRED_USE="split-usr? ( system )"
 RESTRICT="!test? ( test )"
 
@@ -128,6 +128,13 @@ src_configure() {
 	# Doesn't work with LTO: bug #852917.
 	# https://github.com/besser82/libxcrypt/issues/24
 	filter-lto
+
+	# ideally we want !tc-ld-is-bfd for best future-proofing, but it needs
+	# https://github.com/gentoo/gentoo/pull/28355
+	# mold needs this too but right now tc-ld-is-mold is also not available
+	if tc-ld-is-lld; then
+		append-ldflags -Wl,--undefined-version
+	fi
 
 	multibuild_foreach_variant multilib-minimal_src_configure
 }
@@ -320,17 +327,17 @@ pkg_preinst() {
 	# is cleaned up in *_src_install.
 	local broken_symlinks=()
 	mapfile -d '' broken_symlinks < <(
-		find "${ED}" -type l ! -exec test -e {} \; -print0 2>/dev/null
+		find "${ED}" -xtype l -print0
 	)
 
-	[[ -z "${broken_symlinks[@]}" ]] && return
-
-	eerror "Broken symlinks found before merging!"
-	for symlink in "${broken_symlinks[@]}" ; do
-		bad_dest="$(readlink -f ${symlink})"
-		eerror "\t${symlink} is broken!"
-		eerror "\treadlink -f ${symlink}:"
-		eerror "\t\t${bad_dest}"
+	if [[ ${#broken_symlinks[@]} -gt 0 ]]; then
+		eerror "Broken symlinks found before merging!"
+		local symlink target resolved
+		for symlink in "${broken_symlinks[@]}" ; do
+			target="$(readlink "${symlink}")"
+			resolved="$(readlink -f "${symlink}")"
+			eerror "  '${symlink}' -> '${target}' (${resolved})"
+		done
 		die "Broken symlinks found! Aborting to avoid damaging system. Please report a bug."
-	done
+	fi
 }

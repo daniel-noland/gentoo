@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -6,7 +6,7 @@ EAPI=7
 # Bumping notes: https://wiki.gentoo.org/wiki/Project:Toolchain/sys-libs/glibc
 # Please read & adapt the page as necessary if obsolete.
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 TMPFILES_OPTIONAL=1
 
 inherit python-any-r1 prefix preserve-libs toolchain-funcs flag-o-matic gnuconfig \
@@ -26,7 +26,7 @@ PATCH_DEV=dilfridge
 if [[ ${PV} == 9999* ]]; then
 	inherit git-r3
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+	KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 	SRC_URI="mirror://gnu/glibc/${P}.tar.xz"
 	SRC_URI+=" https://dev.gentoo.org/~${PATCH_DEV}/distfiles/${P}-patches-${PATCH_VER}.tar.xz"
 fi
@@ -109,7 +109,7 @@ BDEPEND="
 	!compile-locales? (
 		app-arch/gzip
 		sys-apps/grep
-		virtual/awk
+		app-alternatives/awk
 	)
 "
 COMMON_DEPEND="
@@ -126,14 +126,14 @@ DEPEND="${COMMON_DEPEND}
 	compile-locales? (
 		app-arch/gzip
 		sys-apps/grep
-		virtual/awk
+		app-alternatives/awk
 	)
 	test? ( >=net-dns/libidn2-2.3.0 )
 "
 RDEPEND="${COMMON_DEPEND}
 	app-arch/gzip
 	sys-apps/grep
-	virtual/awk
+	app-alternatives/awk
 	sys-apps/gentoo-functions
 	!<app-misc/pax-utils-${MIN_PAX_UTILS_VER}
 	!<net-misc/openssh-8.1_p1-r2
@@ -1304,6 +1304,17 @@ glibc_do_src_install() {
 		sed -i "s@\(libm-${upstream_pv}.a\)@${P}/\1@" "${ED}"/$(alt_usrlibdir)/libm.a || die
 		dodir $(alt_usrlibdir)/${P}
 		mv "${ED}"/$(alt_usrlibdir)/libm-${upstream_pv}.a "${ED}"/$(alt_usrlibdir)/${P}/libm-${upstream_pv}.a || die
+	fi
+
+	# We configure toolchains for standalone prefix systems with a sysroot,
+	# which is prepended to paths in ld scripts, so strip the prefix from these.
+	# Before: GROUP ( /foo/lib64/libc.so.6 /foo/usr/lib64/libc_nonshared.a  AS_NEEDED ( /foo/lib64/ld-linux-x86-64.so.2 ) )
+	# After: GROUP ( /lib64/libc.so.6 /usr/lib64/libc_nonshared.a  AS_NEEDED ( /lib64/ld-linux-x86-64.so.2 ) )
+	if [[ -n $(host_eprefix) ]] ; then
+		local file
+		grep -lZIF "ld script" "${ED}/$(alt_usrlibdir)"/lib*.{a,so} 2>/dev/null | while read -rd '' file ; do
+			sed -i "s|$(host_eprefix)/|/|g" "${file}" || die
+		done
 	fi
 
 	# We'll take care of the cache ourselves

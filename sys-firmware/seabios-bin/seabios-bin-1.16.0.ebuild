@@ -12,12 +12,12 @@ S="${WORKDIR}"
 
 LICENSE="LGPL-3 GPL-3"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ppc64 ~riscv ~s390 ~sparc x86"
 
 RDEPEND="!sys-firmware/seabios"
 
 src_unpack() {
-	tar -x < <(xz -c -d --single-stream "${DISTDIR}/${BINPKG}.xpak") || die "unpacking binpkg failed"
+	tar -xf - < <(xz -c -d --single-stream "${DISTDIR}/${BINPKG}.xpak") || die "unpacking binpkg failed"
 }
 
 src_install() {

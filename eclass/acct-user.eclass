@@ -181,7 +181,7 @@ acct-user_add_deps() {
 eislocked() {
 	[[ $# -eq 1 ]] || die "usage: ${FUNCNAME} <user>"
 
-	if [[ ${EUID} -ne 0 ]]; then
+	if [[ ${EUID} -ne 0 || -n ${EPREFIX} ]]; then
 		einfo "Insufficient privileges to execute ${FUNCNAME[0]}"
 		return 0
 	fi
@@ -332,42 +332,41 @@ acct-user_pkg_preinst() {
 
 	unset _ACCT_USER_ADDED
 
-	if [[ ${EUID} -ne 0 ]]; then
+	if [[ ${EUID} -ne 0 || -n ${EPREFIX} ]]; then
 		einfo "Insufficient privileges to execute ${FUNCNAME[0]}"
 		return
 	fi
 
 	if egetent passwd "${ACCT_USER_NAME}" >/dev/null; then
 		elog "User ${ACCT_USER_NAME} already exists"
-		return
+	else
+		local groups=( ${_ACCT_USER_GROUPS} )
+		local aux_groups=${groups[*]:1}
+		local opts=(
+			--system
+			--no-create-home
+			--no-user-group
+			--comment "${_ACCT_USER_COMMENT}"
+			--home-dir "${_ACCT_USER_HOME}"
+			--shell "${_ACCT_USER_SHELL}"
+			--gid "${groups[0]}"
+			--groups "${aux_groups// /,}"
+		)
+
+		if [[ ${_ACCT_USER_ID} -ne -1 ]] &&
+			! egetent passwd "${_ACCT_USER_ID}" >/dev/null
+		then
+			opts+=( --uid "${_ACCT_USER_ID}" )
+		fi
+
+		if [[ -n ${ROOT} ]]; then
+			opts+=( --prefix "${ROOT}" )
+		fi
+
+		elog "Adding user ${ACCT_USER_NAME}"
+		useradd "${opts[@]}" "${ACCT_USER_NAME}" || die
+		_ACCT_USER_ADDED=1
 	fi
-
-	local groups=( ${_ACCT_USER_GROUPS} )
-	local aux_groups=${groups[*]:1}
-	local opts=(
-		--system
-		--no-create-home
-		--no-user-group
-		--comment "${_ACCT_USER_COMMENT}"
-		--home-dir "${_ACCT_USER_HOME}"
-		--shell "${_ACCT_USER_SHELL}"
-		--gid "${groups[0]}"
-		--groups "${aux_groups// /,}"
-	)
-
-	if [[ ${_ACCT_USER_ID} -ne -1 ]] &&
-		! egetent passwd "${_ACCT_USER_ID}" >/dev/null
-	then
-		opts+=( --uid "${_ACCT_USER_ID}" )
-	fi
-
-	if [[ -n ${ROOT} ]]; then
-		opts+=( --prefix "${ROOT}" )
-	fi
-
-	elog "Adding user ${ACCT_USER_NAME}"
-	useradd "${opts[@]}" "${ACCT_USER_NAME}" || die
-	_ACCT_USER_ADDED=1
 
 	if [[ ${_ACCT_USER_HOME} != /dev/null ]]; then
 		# default ownership to user:group
@@ -405,7 +404,7 @@ acct-user_pkg_postinst() {
 		return
 	fi
 
-	if [[ ${EUID} -ne 0 ]]; then
+	if [[ ${EUID} -ne 0 || -n ${EPREFIX} ]]; then
 		einfo "Insufficient privileges to execute ${FUNCNAME[0]}"
 		return
 	fi
@@ -454,7 +453,7 @@ acct-user_pkg_prerm() {
 		return
 	fi
 
-	if [[ ${EUID} -ne 0 ]]; then
+	if [[ ${EUID} -ne 0 || -n ${EPREFIX} ]]; then
 		einfo "Insufficient privileges to execute ${FUNCNAME[0]}"
 		return
 	fi

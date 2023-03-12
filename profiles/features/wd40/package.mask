@@ -1,10 +1,12 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Various packages requiring Rust.
 app-admin/ansible
 app-admin/ansible-core
 >=app-antivirus/clamav-0.105.1
+app-backup/borgbackup
+app-backup/borgmatic
 app-crypt/acme
 app-crypt/certbot
 app-crypt/certbot-nginx
@@ -25,6 +27,13 @@ dev-python/josepy
 dev-python/keyring
 dev-python/libcloud
 dev-python/moto
+dev-python/mkdocs-redirects
+dev-python/mkdocs-material
+dev-python/mkdocs_pymdownx_material_extras
+dev-python/mkdocs-git-authors-plugin
+dev-python/mkdocs-i18n
+dev-python/mkdocs-material-extensions
+dev-python/mkdocs-git-revision-date-localized-plugin
 dev-python/ndg-httpsclient
 dev-python/oauth2client
 dev-python/oauthlib
@@ -32,9 +41,13 @@ dev-python/openstacksdk
 dev-python/os-client-config
 dev-python/osc-lib
 dev-python/paramiko
+dev-python/pooch
+dev-python/pyfuse3
 >=dev-python/pyopenssl-22
+dev-python/pymdown-extensions
+dev-python/pyspelling
 dev-python/pyspnego
-dev-python/python-daemon
+dev-python/pytest-trio
 dev-python/python-glanceclient
 dev-python/python-ironicclient
 dev-python/python-jose
@@ -44,21 +57,25 @@ dev-python/python-sshpubkeys
 dev-python/requests-kerberos
 dev-python/requests-oauthlib
 dev-python/secretstorage
+dev-python/selenium
 dev-python/service_identity
 dev-python/setuptools-rust
 dev-python/spur
 dev-python/sshtunnel
 dev-python/tempest
 dev-python/trustme
->=dev-python/trio-0.22.0
+dev-python/trio
+dev-python/trio-websocket
 dev-python/twine
 dev-python/watchfiles
-dev-ros/roswtf
+dev-python/wcmatch
+dev-util/buildbot-worker
 dev-util/cargo-c
 dev-util/cbindgen
 dev-util/git-delta
 dev-util/maturin
 dev-util/tree-sitter-cli
+>=dev-vcs/stgit-2
 gnome-base/gdm
 >=gnome-base/gnome-core-apps-3.36.5
 >=gnome-base/gnome-core-libs-3.36.5
@@ -67,19 +84,20 @@ gnome-base/gdm
 >=gnome-base/librsvg-2.41
 gnome-extra/gnome-browser-connector
 gnome-extra/gnome-tweaks
+gnome-extra/sushi
 >=media-gfx/libimagequant-4
-media-libs/libavif
 >=media-libs/libopenraw-0.3.2
 media-video/rav1e
+net-im/gajim
 >=net-irc/polari-3.37
 net-libs/quiche
 net-misc/electrum-ltc
 net-misc/gsutil
 net-news/newsboat
 net-p2p/deluge
-ros-meta/ros_comm
 sci-geosciences/gnome-maps
 >=sys-apps/bat-0.18.1
+sys-fs/bcachefs-tools
 virtual/rust
 www-apps/radicale
 >=x11-themes/adwaita-icon-theme-3.36

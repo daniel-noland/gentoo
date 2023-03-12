@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
@@ -27,11 +27,14 @@ IUSE="+backup bindist columnstore cracklib debug extraengine galera innodb-lz4
 
 RESTRICT="!bindist? ( bindist ) !test? ( test )"
 
-REQUIRED_USE="jdbc? ( extraengine server !static )
+REQUIRED_USE="
+	jdbc? ( extraengine server !static )
 	?? ( tcmalloc jemalloc )
-	static? ( yassl !pam )"
+	static? ( yassl !pam )
+	test? ( extraengine perl server xml )
+"
 
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~mips ppc ppc64 ~riscv ~s390 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris ~x86-solaris"
 
 # Shorten the path because the socket path length must be shorter than 107 chars
 # and we will run a mysql server during test phase
@@ -41,7 +44,6 @@ S="${WORKDIR}/mysql"
 # These are used for both runtime and compiletime
 COMMON_DEPEND="
 	>=dev-libs/libpcre2-10.34:=
-	>=sys-apps/sed-4
 	>=sys-apps/texinfo-4.7-r1
 	sys-libs/ncurses:0=
 	>=sys-libs/zlib-1.2.3:0=
@@ -90,7 +92,7 @@ COMMON_DEPEND="
 		>=dev-libs/openssl-1.0.0:0=
 	)
 "
-BDEPEND="virtual/yacc"
+BDEPEND="app-alternatives/yacc"
 DEPEND="${COMMON_DEPEND}
 	server? (
 		extraengine? ( jdbc? ( >=virtual/jdk-1.8 ) )
@@ -291,7 +293,7 @@ src_configure() {
 	CMAKE_BUILD_TYPE="RelWithDebInfo"
 
 	# debug hack wrt #497532
-	mycmakeargs=(
+	local mycmakeargs=(
 		-DCMAKE_C_FLAGS_RELWITHDEBINFO="$(usex debug '' '-DNDEBUG')"
 		-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="$(usex debug '' '-DNDEBUG')"
 		-DMYSQL_DATADIR="${EPREFIX}/var/lib/mysql"

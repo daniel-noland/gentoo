@@ -1,10 +1,11 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
+FORTRAN_NEEDED=fortran
 DISTUTILS_USE_PEP517=meson-python
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 PYTHON_REQ_USE="threads(+)"
 
 inherit fortran-2 distutils-r1 multiprocessing
@@ -38,13 +39,13 @@ else
 	S="${WORKDIR}"/${MY_P}
 
 	if [[ ${PV} != *rc* ]] ; then
-		KEYWORDS="~amd64 ~arm ~arm64 -hppa ~ppc ~ppc64 ~riscv ~s390 ~x86"
+		KEYWORDS="amd64 arm arm64 -hppa ~ia64 ~loong ~ppc ppc64 ~riscv ~s390 ~sparc ~x86"
 	fi
 fi
 
 LICENSE="BSD LGPL-2"
 SLOT="0"
-IUSE="doc +pythran"
+IUSE="doc +fortran"
 
 # umfpack is technically optional but it's preferred to have it available.
 DEPEND="
@@ -61,17 +62,14 @@ RDEPEND="
 BDEPEND="
 	dev-lang/swig
 	>=dev-python/cython-0.29.18[${PYTHON_USEDEP}]
+	>=dev-python/meson-python-0.11[${PYTHON_USEDEP}]
 	dev-python/pybind11[${PYTHON_USEDEP}]
 	>=dev-util/meson-0.62.2
 	dev-util/patchelf
 	virtual/pkgconfig
 	doc? ( app-arch/unzip )
-	pythran? ( dev-python/pythran[${PYTHON_USEDEP}] )
+	fortran? ( dev-python/pythran[${PYTHON_USEDEP}] )
 	test? ( dev-python/pytest-xdist[${PYTHON_USEDEP}] )"
-
-PATCHES=(
-	"${FILESDIR}"/${PN}-1.9.9999-meson-options-lapack.patch
-)
 
 EPYTEST_DESELECT=(
 	linalg/tests/test_decomp.py::TestSchur::test_sort
@@ -89,7 +87,11 @@ src_unpack() {
 }
 
 python_configure_all() {
-	export SCIPY_USE_PYTHRAN=$(usex pythran 1 0)
+	export SCIPY_USE_PYTHRAN=$(usex fortran 1 0)
+	DISTUTILS_ARGS=(
+		-Dblas=blas
+		-Dlapack=lapack
+	)
 }
 
 python_test() {

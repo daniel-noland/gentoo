@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..9} )
+PYTHON_COMPAT=( python3_9 )
 CMAKE_MAKEFILE_GENERATOR=emake
 
 DISTUTILS_OPTIONAL=1
@@ -65,7 +65,6 @@ DEPEND="
 	sys-apps/hwloc:=
 	sys-apps/keyutils:=
 	sys-apps/util-linux:=
-	sys-apps/sed
 	sys-apps/util-linux
 	sys-libs/libcap-ng:=
 	sys-libs/ncurses:0=
@@ -111,7 +110,6 @@ BDEPEND="
 	dev-util/valgrind
 	sys-apps/coreutils
 	sys-apps/grep
-	sys-apps/sed
 	sys-apps/which
 	sys-devel/bc
 	sys-devel/patch
@@ -135,7 +133,7 @@ RDEPEND="${DEPEND}
 	sys-fs/cryptsetup
 	sys-fs/lsscsi
 	sys-fs/lvm2[lvm]
-	virtual/awk
+	app-alternatives/awk
 	dev-python/bcrypt[${PYTHON_USEDEP}]
 	dev-python/cherrypy[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
@@ -158,12 +156,10 @@ RDEPEND="${DEPEND}
 		dev-python/six[${PYTHON_USEDEP}]
 	)
 "
-# diskprediction needs older scipy not compatible with py38
-# bug #724438
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	?? ( jemalloc tcmalloc )
-	diskprediction? ( mgr !python_targets_python3_8 )
+	diskprediction? ( mgr )
 	kafka? ( radosgw )
 	mgr? ( cephfs )
 	rabbitmq? ( radosgw )

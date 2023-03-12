@@ -1,5 +1,21 @@
-# Copyright 2019-2022 Gentoo Authors
+# Copyright 2019-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Yixun Lan <dlan@gentoo.org> (2023-02-16)
+# USE=java depend on virtual/jdk:1.8 which is not support on RISC-V
+app-office/libreoffice java libreoffice_extensions_scripting-beanshell libreoffice_extensions_scripting-javascript
+
+# Sam James <sam@gentoo.org> (2023-01-27)
+# media-libs/shaderc not keyworded here
+games-action/supertuxkart vulkan
+
+# Mike Rivnak <rivnakm1@gmail.com> (2022-11-30)
+# luajit is currently not supported on riscv
+app-editors/neovim lua_single_target_luajit
+
+# Yixun Lan <dlan@gentoo.org> (2022-11-24)
+# depend on dev-libs/libpcre2[jit] which not supported yet, bug #879511
+www-servers/varnish jit
 
 # Sam James <sam@gentoo.org> (2022-10-29)
 # pandoc not keyworded here, bug #878355
@@ -22,7 +38,7 @@ sys-cluster/slurm nvml
 # Jakov Smolić <jsmolic@gentoo.org> (2022-09-07)
 # Unkeyworded dependencies (xen-tools, aws stack), masking to reduce
 # the dependency graph
-net-analyzer/netdata xen kinesis
+net-analyzer/netdata xen
 
 # Jakov Smolić <jsmolic@gentoo.org> (2022-08-27)
 # depends on <sys-libs/libfaketime-0.9.7 which is not available on riscv
@@ -72,17 +88,11 @@ sys-block/fio rbd
 # Upstream bug for criu: https://github.com/checkpoint-restore/criu/issues/1702
 app-containers/crun criu
 
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-02-17)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
-
 # Yongxinag Liang <tanekliang@gmail.com> (2022-01-09)
 # app-emulation/xen-tools doesn't support riscv yet
 app-emulation/qemu xen
 # unkeyworded depdendency - sys-cluster/ceph
 app-emulation/qemu rbd
-sys-fs/multipath-tools rbd
 
 # Alexey Sokolov <alexey+gentoo@asokolov.org> (2012-12-25)
 # Requires dev-qt/qtwebengine

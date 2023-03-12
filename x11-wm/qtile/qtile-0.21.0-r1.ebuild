@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 inherit distutils-r1 virtualx
 
@@ -21,7 +21,7 @@ RDEPEND=">=dev-python/cairocffi-0.9.0[${PYTHON_USEDEP}]
 	dev-python/dbus-next[${PYTHON_USEDEP}]
 	dev-python/pygobject[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/setuptools_scm[${PYTHON_USEDEP}]
+	dev-python/setuptools-scm[${PYTHON_USEDEP}]
 	>=dev-python/six-1.4.1[${PYTHON_USEDEP}]
 	>=dev-python/xcffib-0.10.1[${PYTHON_USEDEP}]
 	media-sound/pulseaudio
@@ -55,7 +55,7 @@ python_test() {
 	# Force usage of built module
 	rm -rf "${S}"/libqtile || die
 
-	epytest || die "Tests failed with ${EPYTHON}"
+	epytest -p no:xdist || die "Tests failed with ${EPYTHON}"
 }
 
 python_install_all() {
@@ -66,7 +66,7 @@ python_install_all() {
 	doins resources/qtile.desktop
 
 	insinto /usr/share/wayland-sessions
-	doins "${FILESDIR}"/qtile.desktop
+	doins resources/qtile-wayland.desktop
 
 	exeinto /etc/X11/Sessions
 	newexe "${FILESDIR}"/${PN}-session-r1 ${PN}

@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 CMAKE_MAKEFILE_GENERATOR="emake"
 
 inherit cmake cuda python-single-r1 savedconfig
@@ -63,7 +63,7 @@ src_prepare() {
 }
 
 src_configure() {
-	mycmakeargs=(
+	local mycmakeargs=(
 		-DWITH_CUDA=$(usex cuda)
 		-DPYTHON_EXECUTABLE="${PYTHON}"
 		-DWITH_TESTS=$(usex test)

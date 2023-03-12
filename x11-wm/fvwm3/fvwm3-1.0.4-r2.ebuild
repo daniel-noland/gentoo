@@ -1,14 +1,14 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 GO_OPTIONAL=1
 inherit autotools desktop flag-o-matic go-module python-single-r1 toolchain-funcs
 
 DESCRIPTION="A multiple large virtual desktop window manager derived from fvwm"
-HOMEPAGE="http://www.fvwm.org/"
+HOMEPAGE="https://www.fvwm.org/"
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
@@ -22,7 +22,7 @@ fi
 LICENSE="GPL-2+ FVWM
 	go? ( Apache-2.0 BSD MIT )"
 SLOT="0"
-IUSE="bidi debug doc go netpbm nls perl readline rplay stroke svg tk vanilla lock"
+IUSE="bidi debug doc go netpbm nls perl readline stroke svg tk vanilla lock"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}"
 
@@ -76,7 +76,6 @@ RDEPEND="${PYTHON_DEPS}
 		sys-libs/ncurses:=
 		sys-libs/readline:=
 	)
-	rplay? ( media-sound/rplay )
 	stroke? ( dev-libs/libstroke )
 	svg? (
 		gnome-base/librsvg:2

@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{8..11} )
+PYTHON_COMPAT=( pypy3 python3_{9..11} )
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/vinaysajip.asc
 inherit distutils-r1 verify-sig
 
@@ -13,7 +13,7 @@ HOMEPAGE="https://docs.red-dove.com/python-gnupg/"
 SRC_URI="https://github.com/vsajip/python-gnupg/releases/download/${PV}/${P}.tar.gz"
 SRC_URI+=" verify-sig? ( https://github.com/vsajip/python-gnupg/releases/download/${PV}/${P}.tar.gz.asc )"
 
-KEYWORDS="~alpha amd64 ~arm ~arm64 ~ppc ~ppc64 ~riscv x86"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~loong ~ppc ~ppc64 ~riscv x86"
 LICENSE="BSD"
 SLOT="0"
 

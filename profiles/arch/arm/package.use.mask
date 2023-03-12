@@ -1,13 +1,37 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2023-03-07)
+# nbval/nbclassic docs require pandoc which is not keyworded here yet
+dev-python/nbval doc
+dev-python/nbclassic doc
+
+# Andreas Sturmlechner <asturm@gentoo.org> (2023-02-06)
+# Successful build of dev-qt/qtwebengine depends on 64-bit host
+# Bug #893234
+app-i18n/fcitx-libpinyin dictionary-manager
+dev-lang/idris2 test-full
+dev-python/cloudscraper test
+dev-python/QtPy test
+games-util/lgogdownloader gui
+kde-apps/kde-apps-meta:5 pim
+kde-apps/kdenetwork-meta:5 bittorrent telepathy
+kde-apps/kleopatra:5 pim
+kde-apps/umbrello:5 php
+kde-misc/kio-gdrive share
+net-irc/quassel urlpreview
+net-misc/fatrat bittorrent
+net-misc/seafile-client shibboleth
+sci-mathematics/yacas gui
+sci-physics/root qt5
+
+# Florian Schmaus <flow@gentoo.org> (2022-11-23)
+# avoid larger deptree, bug #882593
+dev-python/bracex doc
 
 # Sam James <sam@gentoo.org> (2022-10-29)
 # pandoc not keyworded here, bug #878355
 app-admin/conky doc
-
-# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2022-08-09)
-# dev-java/jaxws-api not keyworded
->=dev-java/jmock-2.12.0 test
 
 # Bernd Waibel <waebbl-gentoo@posteo.net> (2022-09-16)
 # dev-libs/optix depends on x11-drivers/nvidia-drivers,
@@ -38,11 +62,6 @@ kde-frameworks/kfilemetadata mobi
 # Boost has support for ARM32
 # https://www.boost.org/doc/libs/1_78_0/libs/context/doc/html/context/architectures.html
 dev-libs/boost -context
-
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-01-17)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
 
 # Sam James <sam@gentoo.org> (2022-01-15)
 # Deps not yet stable:
@@ -106,6 +125,7 @@ app-text/enchant voikko
 sys-libs/compiler-rt-sanitizers -asan -lsan
 sys-libs/compiler-rt-sanitizers -ubsan -cfi -scudo
 sys-libs/compiler-rt-sanitizers -profile -xray
+>=sys-libs/compiler-rt-sanitizers-16 -gwp-asan -libfuzzer -orc
 
 # Rick Farina <zerochaos@gentoo.org> (2020-12-18)
 # net-wireless/libxtrx et all needs testing
@@ -131,18 +151,10 @@ games-strategy/0ad nvtt
 # Cinnamon is not keyworded on this architecture.
 x11-themes/arc-theme cinnamon
 
-# Sam James <sam@gentoo.org> (2020-07-11)
-# Don't drag in qtwebengine for Plasma right now
-# Not going for nuclear option of general mask
-# (or dropping keywords) because unclear if it's caused
-# by the use of a linux32 chroot.
-# See bug #713900
-kde-plasma/libksysguard webengine
-kde-plasma/kdeplasma-addons webengine
-
 # Sam James <sam@gentoo.org> (2020-06-27)
 # Tests require Valgrind, not available on <armv7a
 dev-libs/rapidjson test
+sys-apps/proot test
 
 # Jimi Huotari <chiitoo@gentoo.org> (2020-05-17)
 # Mask until 'app-arch/lxqt-archiver' is keyworded.
@@ -180,7 +192,6 @@ sys-cluster/ceph babeltrace lttng
 # Patrick McLean <chutzpah@gentoo.org> (2019-04-15)
 # pending re-keyword request, bug 615400
 net-analyzer/rrdtool rados
-sys-fs/multipath-tools rbd
 www-servers/uwsgi uwsgi_plugins_rados
 
 # Andreas Sturmlechner <asturm@gentoo.org> (2019-02-25)

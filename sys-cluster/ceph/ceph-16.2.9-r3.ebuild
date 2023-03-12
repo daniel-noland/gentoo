@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 LUA_COMPAT=( lua5-3 )
 
 CMAKE_MAKEFILE_GENERATOR=emake
@@ -112,7 +112,6 @@ BDEPEND="
 	dev-util/valgrind
 	sys-apps/coreutils
 	sys-apps/grep
-	sys-apps/sed
 	sys-apps/util-linux
 	sys-apps/which
 	sys-devel/bc
@@ -142,7 +141,7 @@ RDEPEND="
 	sys-fs/cryptsetup
 	sys-fs/lsscsi
 	sys-fs/lvm2[lvm]
-	virtual/awk
+	app-alternatives/awk
 	dev-python/bcrypt[${PYTHON_USEDEP}]
 	dev-python/cherrypy[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
@@ -167,8 +166,6 @@ RDEPEND="
 		dev-python/six[${PYTHON_USEDEP}]
 	)
 "
-# diskprediction needs older scipy not compatible with py38
-# bug #724438
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	${LUA_REQUIRED_USE}
@@ -179,11 +176,8 @@ REQUIRED_USE="
 	mgr? ( cephfs )
 	rabbitmq? ( radosgw )
 	!system-boost? (
+		python_targets_python3_9
 		python_targets_python3_10
-		|| (
-			python_targets_python3_8
-			python_targets_python3_9
-		)
 	)
 "
 

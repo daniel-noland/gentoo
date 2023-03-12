@@ -415,7 +415,7 @@ xorg-3_src_configure() {
 }
 
 multilib_src_compile() {
-	emake "$@" || die 'emake failed'
+	emake "$@"
 }
 
 # @FUNCTION: xorg-3_src_compile
@@ -427,12 +427,12 @@ xorg-3_src_compile() {
 	if [[ ${XORG_MULTILIB} == yes ]]; then
 		multilib-minimal_src_compile "$@"
 	else
-		emake "$@" || die 'emake failed'
+		emake "$@"
 	fi
 }
 
 multilib_src_install() {
-	emake DESTDIR="${D}" "${install_args[@]}" "$@" install || die "emake install failed"
+	emake DESTDIR="${D}" "${install_args[@]}" "$@" install
 }
 
 # @FUNCTION: xorg-3_src_install
@@ -446,7 +446,7 @@ xorg-3_src_install() {
 	if [[ ${XORG_MULTILIB} == yes ]]; then
 		multilib-minimal_src_install "$@"
 	else
-		emake DESTDIR="${D}" "${install_args[@]}" "$@" install || die "emake install failed"
+		emake DESTDIR="${D}" "${install_args[@]}" "$@" install
 		einstalldocs
 	fi
 
@@ -463,7 +463,13 @@ xorg-3_src_install() {
 	# Don't install libtool archives (even for modules)
 	find "${D}" -type f -name '*.la' -delete || die
 
-	[[ -n ${FONT} ]] && remove_font_metadata
+	if [[ -n ${FONT} ]] ; then
+		if [[ -n ${FONT_OPENTYPE_COMPAT} ]] && in_iuse opentype-compat && use opentype-compat ; then
+			font_wrap_opentype_compat
+		fi
+
+		remove_font_metadata
+	fi
 }
 
 # @FUNCTION: xorg-3_pkg_postinst

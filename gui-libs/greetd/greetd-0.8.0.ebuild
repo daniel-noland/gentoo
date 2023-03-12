@@ -60,7 +60,7 @@ SRC_URI="https://git.sr.ht/~kennylevinsen/greetd/archive/${PV}.tar.gz -> ${P}.ta
 
 LICENSE="Apache-2.0 BSD Boost-1.0 GPL-3 MIT Unlicense"
 SLOT="0"
-KEYWORDS="amd64 ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm64 ~ppc64 ~riscv ~x86"
 IUSE="man"
 
 DEPEND="
@@ -88,7 +88,10 @@ src_compile() {
 }
 
 src_install() {
-	dobin target/release/{agreety,fakegreet,greetd}
+	# if USE=debug, install binaries from the debug directory; else
+	# install binaries from the release directory
+	# https://bugs.gentoo.org/889052
+	dobin target/$(usex debug debug release)/{agreety,fakegreet,greetd}
 
 	insinto /etc/greetd
 	doins config.toml

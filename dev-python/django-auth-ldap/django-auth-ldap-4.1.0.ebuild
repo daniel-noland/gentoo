@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit distutils-r1
 
@@ -30,7 +30,7 @@ RDEPEND="
 	>=dev-python/python-ldap-3.1[${PYTHON_USEDEP}]
 "
 BDEPEND="
-	dev-python/setuptools_scm[${PYTHON_USEDEP}]
+	dev-python/setuptools-scm[${PYTHON_USEDEP}]
 	test? (
 		$(python_gen_impl_dep sqlite)
 		net-nds/openldap[-minimal]

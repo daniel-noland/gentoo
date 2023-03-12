@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit gnome.org gnome2-utils meson python-any-r1 vala xdg
 
 DESCRIPTION="Open source photo manager for GNOME"
@@ -11,7 +11,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Shotwell"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="amd64 ~arm arm64 ~ppc64 ~riscv ~sparc x86"
 IUSE="opencv udev wayland"
 
 DEPEND="
@@ -51,7 +51,10 @@ BDEPEND="
 	app-crypt/gcr:0[vala]
 "
 
-PATCHES=( "${FILESDIR}"/0.30.16-optional-wayland.patch )
+PATCHES=(
+	"${FILESDIR}"/${PN}-gphoto2-Add-missing-cheader-attributes-of-delegate-s.patch
+	"${FILESDIR}"/0.30.16-optional-wayland.patch
+)
 
 src_prepare() {
 	default

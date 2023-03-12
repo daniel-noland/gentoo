@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -17,7 +17,12 @@ S="${WORKDIR}/${MY_PN}-${EGIT_COMMIT}"
 
 LICENSE="MIT"
 SLOT="0/114"
-KEYWORDS="~amd64"
+KEYWORDS="amd64"
 
 DEPEND="x11-libs/libdrm"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	sed -e '/-Werror/d' -i CMakeLists.txt || die
+	cmake_src_prepare
+}

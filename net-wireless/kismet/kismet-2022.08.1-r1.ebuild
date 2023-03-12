@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -25,7 +25,7 @@ else
 	#SRC_URI="https://github.com/kismetwireless/kismet/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
 	#S="${WORKDIR}/${PN}-${COMMIT}"
 
-	KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~x86"
+	KEYWORDS="amd64 arm ~arm64 ~ppc x86"
 fi
 
 DESCRIPTION="IEEE 802.11 wireless LAN sniffer"
@@ -108,10 +108,6 @@ src_prepare() {
 		-e 's|@mangrp@|root|g' Makefile.in || die
 
 	eapply_user
-
-	#just use set to fix setup.py
-	find . -name "Makefile.in" -exec sed -i 's#setup.py install#setup.py install --root=$(DESTDIR)#' {} + || die
-	find . -name "Makefile" -exec sed -i 's#setup.py install#setup.py install --root=$(DESTDIR)#' {} + || die
 
 	if [ "${PV}" = "9999" ]; then
 		eautoreconf

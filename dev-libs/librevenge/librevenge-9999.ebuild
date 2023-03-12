@@ -14,7 +14,7 @@ else
 fi
 
 DESCRIPTION="Helper library for REVerse ENGineered formats filters"
-HOMEPAGE="https://sf.net/p/libwpd/librevenge"
+HOMEPAGE="https://sourceforge.net/p/libwpd/librevenge/ci/master/tree/"
 
 LICENSE="|| ( MPL-2.0 LGPL-2.1 )"
 SLOT="0"
@@ -34,7 +34,6 @@ src_prepare() {
 
 multilib_src_configure() {
 	local myeconfargs=(
-		--disable-werror
 		$(use_with doc docs)
 		$(use_enable test tests)
 	)

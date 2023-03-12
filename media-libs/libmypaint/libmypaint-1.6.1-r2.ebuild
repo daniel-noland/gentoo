@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit python-any-r1 toolchain-funcs
 
@@ -19,7 +19,7 @@ LICENSE="ISC"
 # See https://github.com/mypaint/libmypaint/releases/tag/v1.6.1
 # https://github.com/mypaint/libmypaint/compare/v1.6.0...v1.6.1
 SLOT="0/0.0.0"
-KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ia64 ~ppc ppc64 ~riscv x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ia64 ~loong ~ppc ppc64 ~riscv x86"
 IUSE="gegl introspection nls openmp"
 
 BDEPEND="

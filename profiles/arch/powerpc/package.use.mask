@@ -1,5 +1,19 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2023-03-07)
+# nbval/nbclassic docs require pandoc which is not keyworded here yet
+dev-python/nbval doc
+dev-python/nbclassic doc
+
+# Sam James <sam@gentoo.org> (2022-11-19)
+# Drags in Rails (propshaft->rails)
+dev-ruby/actiontext test
+dev-ruby/actionmailbox test
+
+# Florian Schmaus <flow@gentoo.org> (2022-11-23)
+# avoid larger deptree, bug #882593
+dev-python/bracex doc
 
 # Sam James <sam@gentoo.org> (2022-10-29)
 # pandoc not keyworded here, bug #878355
@@ -13,10 +27,6 @@ media-gfx/geeqie heif
 # dev-cpp/notcurses not keyworded here
 media-sound/snd notcurses
 
-# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2022-08-09)
-# dev-java/jaxws-api not keyworded
->=dev-java/jmock-2.12.0 test
-
 # Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2022-09-23)
 # Only PyQt5 is keyworded on pcc64 at the moment.
 # Mask the other Qt4Python implementations
@@ -29,11 +39,6 @@ app-text/enchant nuspell
 # Adel Kara Slimane <adel.ks@zegrapher.com> (2022-03-14)
 # Untested useflag on other arches, needs keywording
 media-video/ffmpeg vmaf
-
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2021-12-11)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
 
 # Sam James <sam@gentoo.org> (2021-11-15)
 # librtas is available on (only) ppc*
@@ -136,7 +141,6 @@ sys-cluster/ceph babeltrace lttng
 # Patrick McLean <chutzpah@gentoo.org> (2019-04-15)
 # pending re-keyword request, bug 615400
 net-analyzer/rrdtool rados
-sys-fs/multipath-tools rbd
 www-servers/uwsgi uwsgi_plugins_rados
 
 # Thomas Deutschmann <whissi@gentoo.org> (2019-02-26)
@@ -233,7 +237,6 @@ net-libs/libproxy kde
 sys-auth/polkit kde
 sys-block/gparted kde
 virtual/notification-daemon kde
-x11-wm/sawfish kde
 
 # Pacho Ramos <pacho@gentoo.org> (2015-11-15)
 # Missing keywords

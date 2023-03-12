@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Gentoo Authors
+# Copyright 2019-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: go-module.eclass
@@ -65,6 +65,8 @@ case ${EAPI} in
 	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
 
+inherit multiprocessing
+
 if [[ -z ${_GO_MODULE} ]]; then
 
 _GO_MODULE=1
@@ -95,6 +97,7 @@ export GOCACHE="${T}/go-build"
 export GOMODCACHE="${WORKDIR}/go-mod"
 
 # The following go flags should be used for all builds.
+# -buildmode=pie builds position independent executables
 # -buildvcs=false omits version control information
 # -modcacherw makes the build cache read/write
 # -v prints the names of packages as they are compiled
@@ -348,6 +351,11 @@ go-module_setup_proxy() {
 # - Otherwise, if EGO_VENDOR is set, bail out.
 # - Otherwise do a normal unpack.
 go-module_src_unpack() {
+	if use amd64 || use arm || use arm64 ||
+		( use ppc64 && [[ $(tc-endian) == "little" ]] ) || use s390 || use x86; then
+			GOFLAGS="-buildmode=pie ${GOFLAGS}"
+	fi
+	GOFLAGS="${GOFLAGS} -p=$(makeopts_jobs)"
 	if [[ "${#EGO_SUM[@]}" -gt 0 ]]; then
 		eqawarn "This ebuild uses EGO_SUM which is deprecated"
 		eqawarn "Please migrate to a dependency tarball"
@@ -360,7 +368,9 @@ go-module_src_unpack() {
 		default
 		if [[ ! -d "${S}"/vendor ]]; then
 			cd "${S}"
-			ego mod verify
+			local nf
+			[[ -n ${NONFATAL_VERIFY} ]] && nf=nonfatal
+			${nf} ego mod verify
 		fi
 	fi
 }

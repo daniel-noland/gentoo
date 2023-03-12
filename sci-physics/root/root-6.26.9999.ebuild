@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,7 +6,7 @@ EAPI=8
 # ninja does not work due to fortran
 CMAKE_MAKEFILE_GENERATOR=emake
 FORTRAN_NEEDED="fortran"
-PYTHON_COMPAT=( python3_{8..10} ) # python3_11 fails to compile
+PYTHON_COMPAT=( python3_{9..10} ) # python3_11 fails to compile
 
 inherit cmake cuda elisp-common fortran-2 python-single-r1 toolchain-funcs
 
@@ -47,7 +47,7 @@ REQUIRED_USE="
 	python? ( ${PYTHON_REQUIRED_USE} )
 	qt5? ( root7 )
 	root7? ( || ( c++17 ) )
-	tmva? ( gsl )
+	tmva? ( gsl python )
 	uring? ( root7 )
 "
 
@@ -139,9 +139,9 @@ pkg_setup() {
 	use python && python-single-r1_pkg_setup
 
 	elog "There are extra options on packages not available in Gentoo."
-	elog "You can use the environment variable EXTRA_ECONF to enable"
+	elog "You can use the environment variable MYCMAKEARGS to enable"
 	elog "these packages. For example, for Vdt you would set:"
-	elog "EXTRA_ECONF=\"-Dbuiltin_vdt=ON -Dvdt=ON\""
+	elog "MYCMAKEARGS=\"-Dbuiltin_vdt=ON -Dvdt=ON\""
 }
 
 src_prepare() {
@@ -290,7 +290,6 @@ src_configure() {
 		-Dx11=$(usex X)
 		-Dxml=$(usex xml)
 		-Dxrootd=$(usex xrootd)
-		${EXTRA_ECONF}
 	)
 
 	cmake_src_configure

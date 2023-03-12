@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 PYTHON_REQ_USE='threads(+)'
 DISTUTILS_USE_SETUPTOOLS=no
 
@@ -34,7 +34,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE} nist? ( rclock_local )"
 
 # net-misc/pps-tools oncore,pps
 DEPEND="${PYTHON_DEPS}
-	dev-libs/openssl:=
+	<dev-libs/openssl-3:=
 	dev-python/psutil[${PYTHON_USEDEP}]
 	sys-libs/libcap
 	libbsd? ( dev-libs/libbsd:0= )

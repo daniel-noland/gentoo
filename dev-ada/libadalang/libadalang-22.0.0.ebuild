@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8,9,10} )
-ADA_COMPAT=( gnat_202{0,1} gcc_12_2_0 )
+PYTHON_COMPAT=( python3_10 )
+ADA_COMPAT=( gnat_2021 gcc_12_2_0 )
 
 inherit ada python-single-r1 multiprocessing
 
@@ -25,7 +25,7 @@ RDEPEND="dev-python/pyyaml
 	dev-ada/gnatcoll-bindings[${ADA_USEDEP},gmp,iconv,shared,static-libs?,static-pic?]
 	${ADA_DEPS}
 	${PYTHON_DEPS}
-	dev-ada/langkit[${ADA_USEDEP},shared,static-libs?,static-pic?]
+	~dev-ada/langkit-${PV}[${ADA_USEDEP},shared,static-libs?,static-pic?]
 	$(python_gen_cond_dep '
 		dev-ada/langkit[${PYTHON_USEDEP}]
 	')"

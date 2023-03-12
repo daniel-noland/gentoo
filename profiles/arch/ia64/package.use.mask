@@ -1,5 +1,13 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# Sam James <sam@gentoo.org> (2022-12-26)
+# Unkeyworded dependencies
+dev-util/diffoscope opendocument pascal pdf R
+
+# Florian Schmaus <flow@gentoo.org> (2022-11-23)
+# avoid larger deptree, bug #882593
+dev-python/bracex doc
 
 # matoro <matoro_gentoo@matoro.tk> (2022-09-30)
 # No ruby on ia64 for dev-ruby/asciidoctor
@@ -42,11 +50,6 @@ media-video/ffmpeg vmaf
 # Sam James <sam@gentoo.org> (2022-03-06)
 # Unkeyworded dependencies
 net-mail/cyrus-imapd http
-
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-01-11)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
 
 # Sam James <sam@gentoo.org> (2022-01-29)
 # app-text/ronn-ng not keyworded here, bug #801103
@@ -289,11 +292,6 @@ sci-libs/gdal armadillo
 # Pulls in dev-db/redis which is not keyworded on ia64.
 mail-filter/pyzor test
 
-# Sergei Trofimovich <slyfox@gentoo.org> (2017-06-17)
-# dev-python/gevent requires dev-python/greenlet which has not been ported to
-# ia64 (bug #538510)
-mail-filter/pyzor gevent
-
 # Sergei Trofimovich <slyfox@gentoo.org> (2017-06-10)
 # media-libs/libilbc has not been ported to ia64, bug #610546
 media-video/ffmpeg libilbc
@@ -489,7 +487,7 @@ x11-wm/fvwm lock
 dev-lisp/clisp hyperspec svm
 
 # missing keywords
-media-plugins/gst-plugins-meta dts dv lame libvisual modplug taglib vcd wavpack
+media-plugins/gst-plugins-meta dts dv lame libvisual modplug jack taglib vcd wavpack
 
 # Marius Brehler <marfbre@linux.sungazer.de> (2015-08-13)
 # missing keyword

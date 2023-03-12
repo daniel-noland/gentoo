@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit cmake python-r1
 
@@ -20,7 +20,7 @@ S="${WORKDIR}/${PN}-${MY_PV}"
 LICENSE="Apache-2.0 BSD-2"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~arm64 x86"
-IUSE="python"
+IUSE="python udev"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
 # dev-libs/libpcre only required for e2fsdroid
@@ -34,7 +34,7 @@ DEPEND="
 	virtual/libusb:1=
 "
 RDEPEND="${DEPEND}
-	dev-util/android-udev-rules
+	udev? ( dev-util/android-udev-rules )
 	python? ( ${PYTHON_DEPS} )
 "
 BDEPEND="
@@ -55,8 +55,9 @@ src_prepare() {
 
 	cd "${S}/vendor/adb" || die
 	eapply "${FILESDIR}/${P}-adb-0023-Update-usage-of-usbdevfs_urb-to-match-new-kernel-UAP.patch"
+	eapply "${FILESDIR}/${P}-adb-gcc-13.patch"
 
-	cd "${S}"
+	cd "${S}" || die
 	rm -r patches || die
 	cmake_src_prepare
 }

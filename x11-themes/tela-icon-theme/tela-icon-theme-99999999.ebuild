@@ -1,4 +1,4 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2022-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -10,7 +10,7 @@ MY_PV="${PV:0:4}-${PV:4:2}-${PV:6:2}"
 MY_PN="${PN^}"
 
 # standard comes first
-MY_COLOR_VARIANTS=( standard black blue brown green grey orange pink purple red yellow manjaro ubuntu )
+MY_COLOR_VARIANTS=( standard black blue brown green grey orange pink purple red yellow manjaro ubuntu dracula nord )
 
 inherit xdg
 
@@ -56,6 +56,11 @@ src_install() {
 	)
 
 	dodir /usr/share/icons
+
+	# FIXME: remove after merged
+	# https://github.com/vinceliuice/Tela-icon-theme/issues/223
+	rm -v links/scalable/apps/preferences-desktop-keyboard-shortcuts.svg || :
+
 	./install.sh -d "${ED}/usr/share/icons" "${variants[@]}" || die
 	if use hardlink; then
 		einfo "Linking duplicate icons... (may take a long time)"

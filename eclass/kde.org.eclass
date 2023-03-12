@@ -4,7 +4,7 @@
 # @ECLASS: kde.org.eclass
 # @MAINTAINER:
 # kde@gentoo.org
-# @SUPPORTED_EAPIS: 7 8
+# @SUPPORTED_EAPIS: 8
 # @BLURB: Support eclass for packages that are hosted on kde.org infrastructure.
 # @DESCRIPTION:
 # This eclass is mainly providing facilities for the three upstream release
@@ -16,7 +16,7 @@
 # particular build system.
 
 case ${EAPI} in
-	7|8) ;;
+	8) ;;
 	*) die "EAPI=${EAPI:-0} is not supported" ;;
 esac
 
@@ -167,9 +167,11 @@ case ${KDE_BUILD_TYPE} in
 		;;
 	*)
 		if [[ -n ${KDE_ORG_COMMIT} ]]; then
-			SRC_URI="https://invent.kde.org/${KDE_ORG_CATEGORY}/${KDE_ORG_NAME}/-/"
+			_KDE_ORG_TARFILE="${KDE_ORG_NAME}-${PV}-${KDE_ORG_COMMIT:0:8}.tar.gz"
+			SRC_URI="mirror://gentoo/${_KDE_ORG_TARFILE}"
+			SRC_URI+=" https://invent.kde.org/${KDE_ORG_CATEGORY}/${KDE_ORG_NAME}/-/"
 			SRC_URI+="archive/${KDE_ORG_COMMIT}/${KDE_ORG_NAME}-${KDE_ORG_COMMIT}.tar.gz"
-			SRC_URI+=" -> ${KDE_ORG_NAME}-${PV}-${KDE_ORG_COMMIT:0:8}.tar.gz"
+			SRC_URI+=" -> ${_KDE_ORG_TARFILE}"
 		fi
 		[[ ${KDE_ORG_UNRELEASED} == true ]] && RESTRICT+=" fetch"
 		debug-print "${LINENO} ${ECLASS} ${FUNCNAME}: SRC_URI is ${SRC_URI}"

@@ -1,15 +1,15 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
 
 # Patch version
 FIREFOX_PATCHSET="firefox-78esr-patches-19.tar.xz"
-SPIDERMONKEY_PATCHSET="spidermonkey-78-patches-04.tar.xz"
+SPIDERMONKEY_PATCHSET="spidermonkey-78-patches-05.tar.xz"
 
 LLVM_MAX_SLOT=14
 
-PYTHON_COMPAT=( python3_{7..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 PYTHON_REQ_USE="ssl"
 
 WANT_AUTOCONF="2.1"
@@ -52,7 +52,7 @@ fi
 
 PATCH_URIS=(
 	https://dev.gentoo.org/~{whissi,polynomial-c,axs}/mozilla/patchsets/${FIREFOX_PATCHSET}
-	https://dev.gentoo.org/~{whissi,polynomial-c,axs}/mozilla/patchsets/${SPIDERMONKEY_PATCHSET}
+	https://dev.gentoo.org/~juippis/mozilla/patchsets/${SPIDERMONKEY_PATCHSET}
 )
 
 SRC_URI="${MOZ_SRC_BASE_URI}/source/${MOZ_P}.source.tar.xz -> ${MOZ_P_DISTFILES}.source.tar.xz
@@ -126,8 +126,8 @@ llvm_check_deps() {
 		fi
 
 		if use lto ; then
-			if ! has_version -b "=sys-devel/lld-${LLVM_SLOT}*" ; then
-				einfo "=sys-devel/lld-${LLVM_SLOT}* is missing! Cannot use LLVM slot ${LLVM_SLOT} ..." >&2
+			if ! has_version -b "sys-devel/lld:${LLVM_SLOT}" ; then
+				einfo "sys-devel/lld:${LLVM_SLOT} is missing! Cannot use LLVM slot ${LLVM_SLOT} ..." >&2
 				return 1
 			fi
 		fi
@@ -252,10 +252,12 @@ src_configure() {
 	einfo "Current RUSTFLAGS: ${RUSTFLAGS}"
 
 	local have_switched_compiler=
-	if use clang && ! tc-is-clang ; then
+	if use clang; then
 		# Force clang
 		einfo "Enforcing the use of clang due to USE=clang ..."
-		have_switched_compiler=yes
+		if tc-is-gcc; then
+			have_switched_compiler=yes
+		fi
 		AR=llvm-ar
 		CC=${CHOST}-clang
 		CXX=${CHOST}-clang++

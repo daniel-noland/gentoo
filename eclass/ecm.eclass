@@ -4,7 +4,7 @@
 # @ECLASS: ecm.eclass
 # @MAINTAINER:
 # kde@gentoo.org
-# @SUPPORTED_EAPIS: 7 8
+# @SUPPORTED_EAPIS: 8
 # @PROVIDES: cmake virtualx
 # @BLURB: Support eclass for packages that use KDE Frameworks with ECM.
 # @DESCRIPTION:
@@ -22,7 +22,7 @@
 # any phase functions are overridden the version here should also be called.
 
 case ${EAPI} in
-	7|8) ;;
+	8) ;;
 	*) die "${ECLASS}: EAPI=${EAPI:-0} is not supported" ;;
 esac
 
@@ -143,9 +143,9 @@ fi
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # Minimum version of Frameworks to require. Default value for kde-frameworks
-# is ${PV} and 5.64.0 baseline for everything else. This is not going to be
+# is ${PV} and 5.82.0 baseline for everything else. This is not going to be
 # changed unless we also bump EAPI, which usually implies (rev-)bumping.
-# Version will later be used to differentiate between KF5/Qt5 and KF6/Qt6.
+# Version will also be used to differentiate between KF5/Qt5 and KF6/Qt6.
 if [[ ${CATEGORY} = kde-frameworks ]]; then
 	: ${KFMIN:=$(ver_cut 1-2)}
 fi
@@ -218,13 +218,23 @@ case ${ECM_HANDBOOK} in
 		;;
 esac
 
+# Unfortunately, Portage has no concept of BDEPEND=dev-qt/qthelp being broken
+# by having only partially updated Qt dependencies, which means it will order
+# dev-qt/qthelp revdeps in build queue before its own Qt dependencies, leaving
+# qhelpgenerator broken. This is an attempt to help with that. Bug #836726
 case ${ECM_QTHELP} in
 	true)
 		IUSE+=" doc"
 		COMMONDEPEND+=" doc? ( dev-qt/qt-docs:${KFSLOT} )"
 		BDEPEND+=" doc? (
 			>=app-doc/doxygen-1.8.13-r1
-			dev-qt/qthelp:${KFSLOT}
+			(
+				=dev-qt/qtcore-5.15.8*:5
+				=dev-qt/qtgui-5.15.8*:5
+				=dev-qt/qthelp-5.15.8*:5
+				=dev-qt/qtsql-5.15.8*:5
+				=dev-qt/qtwidgets-5.15.8*:5
+			)
 		)"
 		;;
 	false) ;;
@@ -605,16 +615,14 @@ ecm_src_install() {
 	cmake_src_install
 
 	# bug 621970
-	if [[ ${EAPI} != 7 ]]; then
-		if [[ -d "${ED}"/usr/share/applications ]]; then
-			local f
-			for f in "${ED}"/usr/share/applications/*.desktop; do
-				if [[ -x ${f} ]]; then
-					einfo "Removing executable bit from ${f#${ED}}"
-					fperms a-x "${f#${ED}}"
-				fi
-			done
-		fi
+	if [[ -d "${ED}"/usr/share/applications ]]; then
+		local f
+		for f in "${ED}"/usr/share/applications/*.desktop; do
+			if [[ -x ${f} ]]; then
+				einfo "Removing executable bit from ${f#${ED}}"
+				fperms a-x "${f#${ED}}"
+			fi
+		done
 	fi
 }
 
@@ -666,8 +674,4 @@ if [[ -v ${KDE_GCC_MINIMAL} ]]; then
 	EXPORT_FUNCTIONS pkg_pretend
 fi
 
-EXPORT_FUNCTIONS pkg_setup src_prepare src_configure src_test pkg_preinst pkg_postinst pkg_postrm
-
-if [[ ${EAPI} != 7 ]]; then
-	EXPORT_FUNCTIONS src_install
-fi
+EXPORT_FUNCTIONS pkg_setup src_prepare src_configure src_test src_install pkg_preinst pkg_postinst pkg_postrm

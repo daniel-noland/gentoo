@@ -1,20 +1,21 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit distutils-r1
 
 DESCRIPTION="Sphinx Doxygen renderer"
 HOMEPAGE="
 	https://breathe.readthedocs.io/en/latest/
-	https://github.com/michaeljones/breathe/
+	https://github.com/breathe-doc/breathe/
+	https://pypi.org/project/breathe/
 "
 SRC_URI="
-	https://github.com/michaeljones/breathe/archive/v${PV}.tar.gz
+	https://github.com/breathe-doc/breathe/archive/v${PV}.tar.gz
 		-> ${P}.gh.tar.gz
 "
 
@@ -34,3 +35,7 @@ RDEPEND="
 "
 
 distutils_enable_tests pytest
+
+PATCHES=(
+	"${FILESDIR}"/${P}-sphinx-5.3.0.patch
+)

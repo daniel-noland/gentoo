@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 SCONS_MIN_VERSION="3.3.1"
 CHECKREQS_DISK_BUILD="2400M"
@@ -62,6 +62,7 @@ PATCHES=(
 	"${FILESDIR}/${PN}-5.0.2-glibc-2.34.patch"
 	"${FILESDIR}/${PN}-4.4.10-boost-1.79.patch"
 	"${FILESDIR}/${PN}-4.4.10-no-force-lld.patch"
+	"${FILESDIR}/${PN}-4.4.10-boost-1.81.patch"
 )
 
 S="${WORKDIR}/${MY_P}"

@@ -25,6 +25,7 @@ DEPEND="
 	sys-kernel/linux-headers
 	virtual/libelf"
 RDEPEND="${DEPEND}"
+BDEPEND="virtual/pkgconfig"
 
 PATCHES=(
 	"${FILESDIR}"/libbpf-9999-paths.patch
@@ -32,15 +33,16 @@ PATCHES=(
 
 src_configure() {
 	append-cflags -fPIC
-	tc-export CC AR
+	tc-export CC AR PKG_CONFIG
 	export LIBSUBDIR="$(get_libdir)"
-	export LIBDIR="${EPREFIX}/usr/$(get_libdir)"
+	export PREFIX="${EPREFIX}/usr"
 	export V=1
 }
 
 src_install() {
 	emake \
 		DESTDIR="${D}" \
+		LIBSUBDIR="${LIBSUBDIR}" \
 		install install_uapi_headers
 
 	if ! use static-libs; then

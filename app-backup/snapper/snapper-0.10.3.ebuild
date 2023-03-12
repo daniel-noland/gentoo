@@ -11,7 +11,7 @@ SRC_URI="https://github.com/openSUSE/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm64 ~riscv x86"
 IUSE="doc lvm pam test systemd xattr"
 RESTRICT="test"
 
@@ -38,6 +38,7 @@ DEPEND="${RDEPEND}
 PATCHES=(
 	"${FILESDIR}"/cron-confd.patch
 	"${FILESDIR}"/${PN}-0.10.1-testsuite.patch
+	"${FILESDIR}"/${P}-boost-1.81.patch
 )
 
 src_prepare() {
@@ -84,5 +85,6 @@ pkg_postinst() {
 	elog "at least one config first. To do this, run:"
 	elog "snapper create-config <subvolume>"
 	elog "For more information, see man (8) snapper or"
-	elog "http://snapper.io/documentation.html"
+	elog "http://snapper.io/documentation.html and"
+	elog "https://wiki.gentoo.org/wiki/Snapper"
 }

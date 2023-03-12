@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]] ; then
 else
 	SRC_URI="https://github.com/NetworkBlockDevice/nbd/releases/download/${P}/${P}.tar.xz
 		mirror://sourceforge/nbd/${P}.tar.xz"
-	KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ppc ppc64 ~sparc x86"
+	KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ppc ppc64 ~sparc x86"
 fi
 
 LICENSE="GPL-2"
@@ -43,11 +43,12 @@ src_prepare() {
 	default
 
 	if [[ ${PV} = 9999 ]] ; then
-		emake -C man -f Makefile.am \
+		emake -C man -f mans.mk \
 			nbd-server.1.sh.in \
 			nbd-server.5.sh.in \
 			nbd-client.8.sh.in \
 			nbd-trdump.1.sh.in \
+			nbd-trplay.1.sh.in \
 			nbdtab.5.sh.in
 
 		emake -C systemd -f Makefile.am nbd@.service.sh.in

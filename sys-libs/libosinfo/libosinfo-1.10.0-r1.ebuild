@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit meson udev vala xdg
+inherit meson vala xdg
 
 DESCRIPTION="GObject library for managing information about real and virtual OSes"
 HOMEPAGE="https://libosinfo.org/"
@@ -16,7 +16,7 @@ IUSE="gtk-doc +introspection +vala test"
 RESTRICT="!test? ( test )"
 REQUIRED_USE="vala? ( introspection )"
 
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm arm64 ~ia64 ~loong ~ppc ~ppc64 ~riscv ~sparc x86"
 
 # Unsure about osinfo-db-tools rdep, but at least fedora does it too
 RDEPEND="

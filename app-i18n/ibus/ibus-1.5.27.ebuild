@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit autotools bash-completion-r1 gnome2-utils python-r1 toolchain-funcs vala virtualx xdg-utils
 
@@ -18,7 +18,7 @@ SRC_URI="https://github.com/${PN}/${PN}/releases/download/${PV}/${P}.tar.gz
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ia64 ~loong ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="amd64 arm arm64 ~ia64 ~loong ppc ppc64 ~riscv sparc x86"
 IUSE="X appindicator +emoji gtk2 +gtk3 +gtk4 +gui +introspection libnotify nls +python systemd test +unicode vala wayland"
 RESTRICT="!test? ( test )"
 REQUIRED_USE="
@@ -76,13 +76,14 @@ BDEPEND="
 		app-i18n/unicode-emoji
 	)
 	nls? ( sys-devel/gettext )
+	test? ( x11-apps/setxkbmap )
 	unicode? ( app-i18n/unicode-data )"
 
 src_prepare() {
 	vala_src_prepare --ignore-use
-	sed -i "/UCD_DIR=/s/\$with_emoji_annotation_dir/\$with_ucd_dir/" configure.ac
 	if ! has_version 'x11-libs/gtk+:3[wayland]'; then
 		touch ui/gtk3/panelbinding.vala \
+			ui/gtk3/panel.vala \
 			ui/gtk3/emojierapp.vala || die
 	fi
 	if ! use emoji; then
@@ -103,7 +104,7 @@ src_prepare() {
 	# fix for parallel install
 	sed -i "/^if ENABLE_PYTHON2/,/^endif/d" bindings/pygobject/Makefile.am || die
 	# require user interaction
-	sed -i "/^TESTS += ibus-\(compose\|keypress\)/d" src/tests/Makefile.am || die
+	sed -i "/^TESTS_C += ibus-\(compose\|keypress\)/d" src/tests/Makefile.am || die
 
 	sed -i "/^bash_completion/d" tools/Makefile.am || die
 

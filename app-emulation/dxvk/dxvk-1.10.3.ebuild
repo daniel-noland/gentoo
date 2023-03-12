@@ -3,6 +3,9 @@
 
 EAPI=8
 
+# note: version <2.0 should be kept for longer given it's the
+# last version to support <wine-7.1 and <nvidia-drivers-510
+
 MULTILIB_COMPAT=( abi_x86_{32,64} )
 inherit flag-o-matic meson-multilib
 
@@ -11,7 +14,7 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/doitsujin/dxvk.git"
 else
 	SRC_URI="https://github.com/doitsujin/dxvk/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="-* ~amd64 ~x86"
+	KEYWORDS="-* amd64 x86"
 fi
 
 DESCRIPTION="Vulkan-based implementation of D3D9, D3D10 and D3D11 for Linux / Wine"
@@ -69,6 +72,7 @@ src_configure() {
 			filter-flags '-fstack-clash-protection' #758914
 			filter-flags '-fstack-protector*' #870136
 			filter-flags '-fuse-ld=*'
+			filter-flags '-mfunction-return=thunk*' #878849
 		fi
 
 		CHOST_amd64=x86_64-w64-mingw32
@@ -129,11 +133,4 @@ pkg_postinst() {
 		elog "Also, if you were using /etc/${PN}.conf, ${PN} is no longer patched to load"
 		elog "it. See ${EROOT}/usr/share/doc/${PF}/README.md* for handling configs."
 	fi
-
-	# don't try to keep wine-*[vulkan] in RDEPEND, but still give a warning
-	local wine
-	for wine in app-emulation/wine-{vanilla,staging}; do
-		has_version ${wine} && ! has_version ${wine}[vulkan] &&
-			ewarn "${wine} was not built with USE=vulkan, ${PN} will not be usable with it"
-	done
 }

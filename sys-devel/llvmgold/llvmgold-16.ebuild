@@ -9,8 +9,7 @@ S=${WORKDIR}
 
 LICENSE="public-domain"
 SLOT="0"
-KEYWORDS=""
-PROPERTIES="live"
+KEYWORDS="~loong"
 
 RDEPEND="
 	sys-devel/llvm:${PV}[binutils-plugin]

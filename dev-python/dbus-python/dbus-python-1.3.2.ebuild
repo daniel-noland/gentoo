@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 PYTHON_REQ_USE="threads(+)"
 
 inherit autotools python-r1
@@ -30,7 +30,7 @@ BDEPEND="
 	virtual/pkgconfig
 	doc? ( $(python_gen_any_dep '
 			dev-python/sphinx[${PYTHON_USEDEP}]
-			dev-python/sphinx_rtd_theme[${PYTHON_USEDEP}]
+			dev-python/sphinx-rtd-theme[${PYTHON_USEDEP}]
 		') )
 	test? ( dev-python/pygobject:3[${PYTHON_USEDEP}]
 		dev-python/tappy[${PYTHON_USEDEP}] )
@@ -38,7 +38,7 @@ BDEPEND="
 
 python_check_deps() {
 	python_has_version "dev-python/sphinx[${PYTHON_USEDEP}]" \
-		"dev-python/sphinx_rtd_theme[${PYTHON_USEDEP}]"
+		"dev-python/sphinx-rtd-theme[${PYTHON_USEDEP}]"
 }
 
 src_prepare() {

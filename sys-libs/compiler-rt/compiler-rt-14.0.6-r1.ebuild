@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 inherit cmake flag-o-matic llvm llvm.org python-any-r1 toolchain-funcs
 
 DESCRIPTION="Compiler runtime library for clang (built-in part)"
@@ -11,7 +11,7 @@ HOMEPAGE="https://llvm.org/"
 
 LICENSE="Apache-2.0-with-LLVM-exceptions || ( UoI-NCSA MIT )"
 SLOT="$(ver_cut 1-3)"
-KEYWORDS="amd64 arm arm64 ppc64 ~riscv ~x86 ~amd64-linux ~ppc-macos ~x64-macos"
+KEYWORDS="amd64 arm arm64 ppc64 ~riscv x86 ~amd64-linux ~ppc-macos ~x64-macos"
 IUSE="+abi_x86_32 abi_x86_64 +clang debug test"
 RESTRICT="!test? ( test ) !clang? ( test )"
 

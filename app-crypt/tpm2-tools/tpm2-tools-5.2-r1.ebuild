@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit autotools bash-completion-r1 flag-o-matic python-any-r1
 
 DESCRIPTION="Tools for the TPM 2.0 TSS"
@@ -40,6 +40,14 @@ PATCHES=(
 	"${FILESDIR}/${PN}-5.1.1-no-efivar-automagic.patch"
 	"${FILESDIR}/${PN}-5.2-testparms-fix-condition-for-negative-test.patch"
 )
+
+python_check_deps() {
+	python_has_version "dev-python/pyyaml[${PYTHON_USEDEP}]"
+}
+
+pkg_setup() {
+	use test && python-any-r1_pkg_setup
+}
 
 src_prepare() {
 	default

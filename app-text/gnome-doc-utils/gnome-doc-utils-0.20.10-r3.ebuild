@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit gnome2 python-r1
 
@@ -27,7 +27,7 @@ DEPEND="${RDEPEND}
 BDEPEND="
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
-	virtual/awk
+	app-alternatives/awk
 	virtual/pkgconfig
 "
 # dev-libs/glib needed for eautofoo, bug #255114.

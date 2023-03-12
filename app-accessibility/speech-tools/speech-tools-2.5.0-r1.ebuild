@@ -1,15 +1,15 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit autotools toolchain-funcs
+inherit autotools flag-o-matic toolchain-funcs
 
 MY_P=${P/speech-/speech_}
 PATCHSET="r3"
 
 DESCRIPTION="Speech tools for Festival Text to Speech engine"
-HOMEPAGE="http://www.cstr.ed.ac.uk/projects/speech_tools/"
+HOMEPAGE="https://www.cstr.ed.ac.uk/projects/speech_tools/"
 SRC_URI="http://www.festvox.org/packed/festival/$(ver_cut 1-2)/${MY_P}-release.tar.gz
 	https://dev.gentoo.org/~neurogeek/${PN}/speech_tools-2.1-${PATCHSET}-patches.tar.gz"
 S="${WORKDIR}/speech_tools"
@@ -99,6 +99,11 @@ src_configure() {
 }
 
 src_compile() {
+	# Lacks prototypes, bug #881863
+	append-cflags -std=gnu89
+	# Uses 'register' keyword removed in C++17, bug #894184
+	append-cxxflags -std=c++14
+
 	emake -j1 \
 		CC="$(tc-getCC)" \
 		CXX="$(tc-getCXX)" \

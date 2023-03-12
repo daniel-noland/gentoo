@@ -10,7 +10,7 @@ HOMEPAGE="http://xdvi.sourceforge.net/"
 SRC_URI="mirror://sourceforge/xdvi/${P}.tar.gz"
 S="${WORKDIR}"/${P}/texk/xdvik
 
-KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
 SLOT="0"
 LICENSE="GPL-2"
 IUSE="motif neXt Xaw3d emacs"
@@ -35,7 +35,7 @@ RDEPEND="${DEPEND}
 	virtual/latex-base
 	!<app-text/texlive-2007"
 BDEPEND="sys-devel/flex
-	virtual/yacc
+	app-alternatives/yacc
 	virtual/pkgconfig"
 
 src_prepare() {

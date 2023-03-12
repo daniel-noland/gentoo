@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Gentoo Authors
+# Copyright 2019-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: llvm.org.eclass
@@ -60,13 +60,13 @@ LLVM_VERSION=$(ver_cut 1-3)
 # @DESCRIPTION:
 # The major version of current LLVM trunk.  Used to determine
 # the correct branch to use.
-_LLVM_MASTER_MAJOR=16
+_LLVM_MASTER_MAJOR=17
 
 # @ECLASS_VARIABLE: _LLVM_NEWEST_MANPAGE_RELEASE
 # @INTERNAL
 # @DESCRIPTION:
 # The newest release of LLVM for which manpages were generated.
-_LLVM_NEWEST_MANPAGE_RELEASE=15.0.3
+_LLVM_NEWEST_MANPAGE_RELEASE=15.0.7
 
 # @ECLASS_VARIABLE: _LLVM_SOURCE_TYPE
 # @INTERNAL
@@ -81,11 +81,20 @@ if [[ -z ${_LLVM_SOURCE_TYPE+1} ]]; then
 			_LLVM_SOURCE_TYPE=snapshot
 
 			case ${PV} in
-				16.0.0_pre20221016)
-					EGIT_COMMIT=14f996dca8a2b5b17d6917528bfd9ee71ba6192a
+				17.0.0_pre20230203)
+					EGIT_COMMIT=08c915fa76ef91efa16df0676ed69e4fb360989f
 					;;
-				16.0.0_pre20221023)
-					EGIT_COMMIT=b34ea582774c057d9bf5591174d683fd3d8aa02b
+				17.0.0_pre20230211)
+					EGIT_COMMIT=22fb66eb94b643c858c2beecbcfac438a7fa29ed
+					;;
+				17.0.0_pre20230218)
+					EGIT_COMMIT=5e262d58c42668c78d932fab6bf75cf8c3b9d07e
+					;;
+				17.0.0_pre20230225)
+					EGIT_COMMIT=b0676fb0fb0a44a4a1c4ec1f0270fef1f1842817
+					;;
+				17.0.0_pre20230304)
+					EGIT_COMMIT=2708869801ae00f4681f6b2d9d69b25b3fce26b6
 					;;
 				*)
 					die "Unknown snapshot: ${PV}"
@@ -106,7 +115,7 @@ fi
 
 inherit multiprocessing
 
-if [[ ${_LLVM_SOURCE_TYPE} == tar ]] && ver_test -ge 14.0.5; then
+if [[ ${_LLVM_SOURCE_TYPE} == tar ]]; then
 	inherit verify-sig
 fi
 
@@ -177,16 +186,6 @@ fi
 # version.  The value depends on ${PV}.
 
 case ${LLVM_MAJOR} in
-	10|11|12)
-		# this API is not present for old LLVM versions
-		;;
-	13)
-		ALL_LLVM_EXPERIMENTAL_TARGETS=( ARC CSKY M68k VE )
-		ALL_LLVM_PRODUCTION_TARGETS=(
-			AArch64 AMDGPU ARM AVR BPF Hexagon Lanai Mips MSP430 NVPTX
-			PowerPC RISCV Sparc SystemZ WebAssembly X86 XCore
-		)
-		;;
 	14)
 		ALL_LLVM_EXPERIMENTAL_TARGETS=( ARC CSKY M68k )
 		ALL_LLVM_PRODUCTION_TARGETS=(
@@ -194,13 +193,23 @@ case ${LLVM_MAJOR} in
 			PowerPC RISCV Sparc SystemZ VE WebAssembly X86 XCore
 		)
 		;;
-	*)
+	15)
 		ALL_LLVM_EXPERIMENTAL_TARGETS=(
 			ARC CSKY DirectX LoongArch M68k SPIRV
 		)
 		ALL_LLVM_PRODUCTION_TARGETS=(
 			AArch64 AMDGPU ARM AVR BPF Hexagon Lanai Mips MSP430 NVPTX
 			PowerPC RISCV Sparc SystemZ VE WebAssembly X86 XCore
+		)
+		;;
+	*)
+		ALL_LLVM_EXPERIMENTAL_TARGETS=(
+			ARC CSKY DirectX M68k SPIRV Xtensa
+		)
+		ALL_LLVM_PRODUCTION_TARGETS=(
+			AArch64 AMDGPU ARM AVR BPF Hexagon Lanai LoongArch Mips
+			MSP430 NVPTX PowerPC RISCV Sparc SystemZ VE WebAssembly X86
+			XCore
 		)
 		;;
 esac
@@ -243,24 +252,18 @@ llvm.org_set_globals() {
 				EGIT_BRANCH="release/${LLVM_MAJOR}.x"
 			;;
 		tar)
-			if ver_test -ge 14.0.5; then
-				SRC_URI+="
-					https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV/_/-}/llvm-project-${PV/_/}.src.tar.xz
-					verify-sig? (
-						https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV/_/-}/llvm-project-${PV/_/}.src.tar.xz.sig
-					)
-				"
-				BDEPEND+="
-					verify-sig? (
-						>=sec-keys/openpgp-keys-llvm-15
-					)
-				"
-				VERIFY_SIG_OPENPGP_KEY_PATH=${BROOT}/usr/share/openpgp-keys/llvm.asc
-			else
-				SRC_URI+="
-					https://github.com/llvm/llvm-project/archive/llvmorg-${PV/_/-}.tar.gz
-				"
-			fi
+			SRC_URI+="
+				https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV/_/-}/llvm-project-${PV/_/}.src.tar.xz
+				verify-sig? (
+					https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV/_/-}/llvm-project-${PV/_/}.src.tar.xz.sig
+				)
+			"
+			BDEPEND+="
+				verify-sig? (
+					>=sec-keys/openpgp-keys-llvm-15
+				)
+			"
+			VERIFY_SIG_OPENPGP_KEY_PATH=${BROOT}/usr/share/openpgp-keys/llvm.asc
 			;;
 		snapshot)
 			SRC_URI+="
@@ -353,25 +356,16 @@ llvm.org_src_unpack() {
 			git-r3_checkout '' . '' "${components[@]}"
 			;;
 		tar)
-			archive=llvmorg-${PV/_/-}.tar.gz
-			if ver_test -ge 14.0.5; then
-				archive=llvm-project-${PV/_/}.src.tar.xz
-				if use verify-sig; then
-					verify-sig_verify_detached \
-						"${DISTDIR}/${archive}" "${DISTDIR}/${archive}.sig"
-				fi
+			archive=llvm-project-${PV/_/}.src.tar.xz
+			if use verify-sig; then
+				verify-sig_verify_detached \
+					"${DISTDIR}/${archive}" "${DISTDIR}/${archive}.sig"
 			fi
 
 			ebegin "Unpacking from ${archive}"
-			if ver_test -ge 14.0.5; then
-				tar -x -J -o --strip-components 1 \
-					-f "${DISTDIR}/${archive}" \
-					"${components[@]/#/${archive%.tar*}/}" || die
-			else
-				tar -x -z -o --strip-components 1 \
-					-f "${DISTDIR}/${archive}" \
-					"${components[@]/#/llvm-project-${archive%.tar*}/}" || die
-			fi
+			tar -x -J -o --strip-components 1 \
+				-f "${DISTDIR}/${archive}" \
+				"${components[@]/#/${archive%.tar*}/}" || die
 			eend ${?}
 			;;
 		snapshot)
@@ -483,7 +477,7 @@ llvm_install_manpages() {
 	# install pre-generated manpages
 	if ! llvm_are_manpages_built; then
 		# (doman does not support custom paths)
-		insinto "/usr/lib/llvm/${SLOT}/share/man/man1"
+		insinto "/usr/lib/llvm/${LLVM_MAJOR}/share/man/man1"
 		doins "${WORKDIR}/llvm-${PV}-manpages/${LLVM_COMPONENTS[0]}"/*.1
 	fi
 }

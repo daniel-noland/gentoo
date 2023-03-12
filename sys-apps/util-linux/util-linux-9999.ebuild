@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit toolchain-funcs libtool flag-o-matic bash-completion-r1 usr-ldscript \
 	pam python-r1 multilib-minimal multiprocessing systemd
@@ -65,6 +65,7 @@ BDEPEND="
 DEPEND="
 	${RDEPEND}
 	virtual/os-headers
+	acct-group/root
 "
 RDEPEND+="
 	hardlink? ( !app-arch/hardlink )
@@ -156,21 +157,6 @@ src_prepare() {
 	fi
 }
 
-lfs_fallocate_test() {
-	# Make sure we can use fallocate with LFS, bug #300307
-	cat <<-EOF > "${T}"/fallocate.${ABI}.c
-		#define _GNU_SOURCE
-		#include <fcntl.h>
-		main() { return fallocate(0, 0, 0, 0); }
-	EOF
-
-	append-lfs-flags
-
-	$(tc-getCC) ${CFLAGS} ${CPPFLAGS} ${LDFLAGS} "${T}"/fallocate.${ABI}.c -o /dev/null >/dev/null 2>&1 \
-		|| export ac_cv_func_fallocate=no
-	rm -f "${T}"/fallocate.${ABI}.c
-}
-
 python_configure() {
 	local myeconfargs=(
 		"${commonargs[@]}"
@@ -190,8 +176,6 @@ python_configure() {
 }
 
 multilib_src_configure() {
-	lfs_fallocate_test
-
 	# The scanf test in a run-time test which fails while cross-compiling.
 	# Blindly assume a POSIX setup since we require libmount, and libmount
 	# itself fails when the scanf test fails. bug #531856
@@ -294,6 +278,11 @@ multilib_src_configure() {
 	if multilib_is_native_abi && use python ; then
 		python_foreach_impl python_configure
 	fi
+}
+
+src_configure() {
+	append-lfs-flags
+	multilib-minimal_src_configure
 }
 
 python_compile() {

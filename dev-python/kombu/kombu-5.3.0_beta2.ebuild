@@ -1,22 +1,18 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_10 )
 
-inherit distutils-r1 optfeature
+inherit distutils-r1 optfeature pypi
 
-MY_PV="${PV//_beta/b}"
-MY_P="${PN}-${MY_PV}"
 DESCRIPTION="AMQP Messaging Framework for Python"
 HOMEPAGE="
 	https://github.com/celery/kombu/
 	https://pypi.org/project/kombu/
 "
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
-S="${WORKDIR}/${MY_P}"
 
 LICENSE="BSD"
 SLOT="0"
@@ -38,11 +34,11 @@ BDEPEND="
 		>=dev-python/pymongo-4.1.1[${PYTHON_USEDEP}]
 		dev-python/Pyro4[${PYTHON_USEDEP}]
 		dev-python/pytest-freezegun[${PYTHON_USEDEP}]
+		dev-python/zstandard[${PYTHON_USEDEP}]
 		dev-python/pytz[${PYTHON_USEDEP}]
 		>=dev-python/pyyaml-3.10[${PYTHON_USEDEP}]
-		>=dev-python/redis-py-4.2.2[${PYTHON_USEDEP}]
+		>=dev-python/redis-4.2.2[${PYTHON_USEDEP}]
 		dev-python/sqlalchemy[${PYTHON_USEDEP}]
-		dev-python/zstandard[${PYTHON_USEDEP}]
 	)
 "
 
@@ -85,7 +81,7 @@ pkg_postinst() {
 	optfeature "Etcd backend" dev-python/python-etcd
 	optfeature "MongoDB backend" dev-python/pymongo
 	optfeature "Pyro 4 backend" dev-python/Pyro4
-	optfeature "Redis backend" dev-python/redis-py
+	optfeature "Redis backend" dev-python/redis
 	optfeature "sqlalchemy backend" dev-python/sqlalchemy
 	optfeature "yaml backend" dev-python/pyyaml
 	optfeature "MessagePack (de)serializer for Python" dev-python/msgpack

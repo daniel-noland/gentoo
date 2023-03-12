@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit gnome.org gnome2-utils meson python-any-r1 vala xdg
 
 DESCRIPTION="Disk usage browser for GNOME"
@@ -10,7 +10,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Baobab"
 
 LICENSE="GPL-2+ FDL-1.1+"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm arm64 ~ia64 ~ppc ~ppc64 ~riscv ~sparc x86 ~amd64-linux ~x86-linux"
 
 RDEPEND="
 	>=dev-libs/glib-2.44:2

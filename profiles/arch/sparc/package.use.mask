@@ -1,5 +1,46 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
+
+# matoro <matoro_gentoo@matoro.tk> (2023-03-07)
+# Needs dev-db/mariadb for tests, see entry in use.mask
+dev-python/pymysql test
+
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2023-03-07)
+# nbval/nbclassic docs require pandoc which is not keyworded here yet
+dev-python/nbval doc
+dev-python/nbclassic doc
+
+# Andrew Ammerlaan <andrewammerlaan@gentoo.org> (2023-03-07)
+# nbdime webtools require nodejs which is not keyworded here yet
+dev-python/nbdime webtools
+
+# Stijn Tintel <stijn@linux-ipv6.be> (2023-02-02)
+# Dependency not keyworded
+# https://bugs.gentoo.org/show_bug.cgi?id=892389
+net-misc/openvswitch unwind
+
+# Sam James <sam@gentoo.org> (2023-01-31)
+# jit not supported on sparc32 or sparc64
+dev-libs/libpcre2 jit
+
+# Sam James <sam@gentoo.org> (2022-12-26)
+# Unkeyworded dependencies
+dev-util/diffoscope opendocument pascal pdf R
+
+# Matt Turner <mattst88@gentoo.org> (2022-12-16)
+# gui-libs/gtk is not keyworded here
+app-crypt/gcr:4 gtk
+
+# Sam James <sam@gentoo.org> (2022-11-24)
+# Pulls in gjs which is broken on sparc, bug #882071
+app-crypt/libsecret test-rust
+dev-util/glade gjs
+gnome-base/gnome-menus test
+gnome-base/nautilus previewer
+
+# Florian Schmaus <flow@gentoo.org> (2022-11-23)
+# avoid larger deptree, bug #882593
+dev-python/bracex doc
 
 # Sam James <sam@gentoo.org> (2022-10-29)
 # pandoc not keyworded here, bug #878355
@@ -28,7 +69,7 @@ dev-lang/rust wasm
 # Sam James <sam@gentoo.org> (2022-06-25)
 # We're not (yet?) providing our own tarballs for these and
 # upstream don't offer them for this arch (see bug #769467).
-dev-lang/rust-bin clippy doc rls rustfmt
+dev-lang/rust-bin clippy doc rustfmt rust-analyzer
 
 # Nickolas Raymond Kaczynski <nrk@disroot.org> (2022-04-24)
 # Dependencies are missing keywords
@@ -53,11 +94,6 @@ media-video/ffmpeg vmaf
 # Sam James <sam@gentoo.org> (2022-03-06)
 # Unkeyworded dependencies
 net-mail/cyrus-imapd http
-
-# Adel Kara Slimane <adel.ks@zegrapher.com> (2022-02-17)
-# Mask AMF keyword on non-amd64 arches
-# It is unusable, for now, in other arches
-media-video/ffmpeg amf
 
 # Daniel Pielmeier <billie@gentoo.org> (2021-11-07)
 # gnome-base/librsvg is not keyworded here, bug #807130
@@ -291,10 +327,6 @@ dev-libs/dbus-c++ ecore
 # Robin H. Johnson <robbat2@gentoo.org> (2019-12-06)
 # PPS should work on all arches, but only keyworded on some arches
 >=net-misc/ntp-4.2.6_p3-r1 -parse-clocks
-
-# Matt Turner <mattst88@gentoo.org> (2019-12-01)
-# Fails to build, bug #676060
-dev-libs/openssl asm
 
 # Eugene Bright <eugene@bright.gdn> (2019-09-09)
 # Missing keyword on dev-embedded/libjaylink

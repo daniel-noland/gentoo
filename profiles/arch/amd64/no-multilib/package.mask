@@ -31,7 +31,6 @@ app-emulation/crossover-bin
 app-emulation/protontricks
 app-emulation/q4wine
 app-emulation/winetricks
-<=app-shells/scsh-0.6.9
 dev-embedded/libftd2xx
 dev-embedded/openocd
 dev-util/android-ndk
@@ -91,7 +90,6 @@ games-rpg/dungeon-defenders
 games-rpg/eschalon-book-1-demo
 games-rpg/wasteland2
 games-server/etqw-ded
-games-simulation/bcs-demo
 games-strategy/darwinia
 games-strategy/darwinia-demo
 games-strategy/defcon-demo

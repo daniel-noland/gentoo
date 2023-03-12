@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
-	<maintainer type="person">
-		<email>blueness@gentoo.org</email>
-		<name>Anthony G. Basile</name>
+	<maintainer type="person" proxied="yes">
+		<email>Matt.Jolly@footclan.ninja</email>
+		<name>Matt Jolly</name>
+	</maintainer>
+	<maintainer type="project">
+		<email>base-system@gentoo.org</email>
+		<name>Gentoo Base System</name>
 	</maintainer>
 	<use>
 		<flag name="alt-svc">Enable alt-svc support</flag>
@@ -22,6 +26,7 @@
 		<flag name="pop3">Enable Post Office Protocol 3 support</flag>
 		<flag name="progress-meter">Enable the progress meter</flag>
 		<flag name="rtmp">Enable RTMP Streaming Media support</flag>
+		<flag name="rustls">Enable Rustls ssl backend</flag>
 		<flag name="smtp">Enable Simple Mail Transfer Protocol support</flag>
 		<flag name="ssh">Enable SSH urls in curl using libssh2</flag>
 		<flag name="ssl">Enable crypto engine support (via openssl if USE='-gnutls -nss')</flag>

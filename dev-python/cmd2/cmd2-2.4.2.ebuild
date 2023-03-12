@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit distutils-r1 virtualx
 
@@ -32,7 +32,7 @@ RDEPEND="
 # failures.  to avoid them, we must ensure that one of the backends
 # preferred to it is available (i.e. xclip or xsel).
 BDEPEND="
-	dev-python/setuptools_scm[${PYTHON_USEDEP}]
+	dev-python/setuptools-scm[${PYTHON_USEDEP}]
 	test? (
 		dev-python/pytest-mock[${PYTHON_USEDEP}]
 		|| (

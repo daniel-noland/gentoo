@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit font python-any-r1
 
 DESCRIPTION="A clean fixed font for the console and X11"
@@ -18,7 +18,7 @@ IUSE="a-like-o +center-tilde distinct-l +otf pcf-8bit +pcf-unicode +psf quote
 
 BDEPEND="app-arch/gzip
 	${PYTHON_DEPS}
-	virtual/awk
+	app-alternatives/awk
 	pcf-8bit? ( x11-apps/bdftopcf )
 	pcf-unicode? ( x11-apps/bdftopcf )"
 RDEPEND=""

@@ -1,4 +1,4 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2022-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: rocm.eclass
@@ -6,7 +6,7 @@
 # Gentoo Science Project <sci@gentoo.org>
 # @AUTHOR:
 # Yiyang Wu <xgreenlandforwyy@gmail.com>
-# @SUPPORTED_EAPIS: 7 8
+# @SUPPORTED_EAPIS: 8
 # @BLURB: Common functions and variables for ROCm packages written in HIP
 # @DESCRIPTION:
 # ROCm packages such as sci-libs/<roc|hip>*, and packages built on top of ROCm
@@ -82,12 +82,13 @@
 # }
 # @CODE
 
-if [[ ! ${_ROCM_ECLASS} ]]; then
-
 case ${EAPI} in
-	7|8) ;;
+	8) ;;
 	*) die "${ECLASS}: EAPI ${EAPI:-0} not supported" ;;
 esac
+
+if [[ ! ${_ROCM_ECLASS} ]]; then
+_ROCM_ECLASS=1
 
 # @ECLASS_VARIABLE: ROCM_VERSION
 # @REQUIRED
@@ -137,17 +138,18 @@ _rocm_set_globals() {
 	# may help. Gentoo have patches to enable gfx1031 as well.
 	local unofficial_amdgpu_targets official_amdgpu_targets
 	case ${ROCM_VERSION} in
-		4.*)
-			unofficial_amdgpu_targets=(
-				gfx803 gfx900 gfx1010 gfx1011 gfx1012 gfx1030
-			)
-			official_amdgpu_targets=(
-				gfx906 gfx908
-			)
-			;;
-		5.*)
+		5.[0-3].*)
 			unofficial_amdgpu_targets=(
 				gfx803 gfx900 gfx1010 gfx1011 gfx1012 gfx1031
+			)
+			official_amdgpu_targets=(
+				gfx906 gfx908 gfx90a gfx1030
+			)
+			;;
+		5.*|9999)
+			unofficial_amdgpu_targets=(
+				gfx803 gfx900 gfx1010 gfx1011 gfx1012
+				gfx1031 gfx1100 gfx1101 gfx1102
 			)
 			official_amdgpu_targets=(
 				gfx906 gfx908 gfx90a gfx1030
@@ -219,5 +221,4 @@ check_amdgpu() {
 	done
 }
 
-_ROCM_ECLASS=1
 fi

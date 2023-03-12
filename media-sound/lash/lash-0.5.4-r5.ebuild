@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{7..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit autotools multilib-minimal python-single-r1
 
@@ -13,7 +13,7 @@ SRC_URI="mirror://nongnu/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ppc ppc64 ~riscv sparc x86"
+KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv sparc x86"
 IUSE="alsa debug gtk python static-libs" # doc
 
 BDEPEND="

@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 
 inherit cmake flag-o-matic python-single-r1
 
@@ -16,7 +16,7 @@ LICENSE="BSD"
 # TODO: drop .1 on next SONAME bump (2.1 -> 2.2?) as we needed to nudge it
 # to force rebuild of consumers due to changing to openexr 3 changing API.
 SLOT="0/$(ver_cut 1-2).1"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm ~arm64 ~ppc64 ~riscv ~x86"
 IUSE="cpu_flags_x86_sse2 doc opengl python static-libs test"
 REQUIRED_USE="
 	doc? ( python )

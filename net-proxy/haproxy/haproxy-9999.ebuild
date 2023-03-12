@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
@@ -6,7 +6,7 @@ EAPI="7"
 LUA_COMPAT=( lua5-4 lua5-3 )
 
 [[ ${PV} == *9999 ]] && SCM="git-r3"
-inherit toolchain-funcs flag-o-matic lua-single systemd linux-info ${SCM}
+inherit toolchain-funcs lua-single systemd linux-info ${SCM}
 
 MY_P="${PN}-${PV/_beta/-dev}"
 
@@ -70,11 +70,16 @@ pkg_setup() {
 src_compile() {
 	local -a args=(
 		V=1
-		TARGET=linux-glibc
 		# Switching to PCRE2 by default, bug 838013
 		PCRE=
 		PCRE_JIT=
 	)
+
+	if use elibc_musl; then
+		args+=( TARGET=linux-musl )
+	else
+		args+=( TARGET=linux-glibc )
+	fi
 
 	# TODO: PCRE2_WIDTH?
 	args+=( $(haproxy_use threads THREAD) )
@@ -97,19 +102,27 @@ src_compile() {
 	fi
 
 	# HAProxy really needs some of those "SPEC_CFLAGS", like -fno-strict-aliasing
-	emake CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) ${args[@]}
-	emake -C admin/systemd CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) SBINDIR=/usr/sbin
+	emake CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" EXTRA_OBJS="${EXTRA_OBJS}" \
+		TARGET_LDFLAGS="${TARGET_LDFLAGS}" PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) ${args[@]}
+	emake -C admin/systemd CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" \
+		EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) \
+		SBINDIR=/usr/sbin
 
 	if use tools ; then
 		for extra in ${EXTRAS[@]} ; do
 			if [ "${extra}" = "admin/halog" ]; then
-				emake CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) ${args[@]} admin/halog/halog
+				emake CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" \
+					EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" \
+					PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) ${args[@]} admin/halog/halog
 			elif [ "${extra}" = "dev/hpack" ]; then
-				emake CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) ${args[@]} dev/hpack/{decode,gen-enc,gen-rht}
+				emake CFLAGS="${CFLAGS} \$(SPEC_CFLAGS)" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" \
+					EXTRA_OBJS="${EXTRA_OBJS}" TARGET_LDFLAGS="${TARGET_LDFLAGS}" \
+					PCRE_LIB="${ESYSROOT}"/usr/$(get_libdir) ${args[@]} dev/hpack/{decode,gen-enc,gen-rht}
 			else
 				# Those two includes are a workaround for hpack Makefile missing those
 				emake -C ${extra} \
-					CFLAGS="${CFLAGS} -I../../include/ -I../../ebtree/" OPTIMIZE="${CFLAGS}" LDFLAGS="${LDFLAGS}" CC="$(tc-getCC)" ${args[@]}
+					CFLAGS="${CFLAGS} -I../../include/ -I../../ebtree/" OPTIMIZE="${CFLAGS}" LDFLAGS="${LDFLAGS}" \
+						CC="$(tc-getCC)" ${args[@]}
 			fi
 		done
 	fi
@@ -140,7 +153,10 @@ src_install() {
 
 	if use tools ; then
 		has admin/halog "${EXTRAS[@]}" && dobin admin/halog/halog
-		has admin/iprange "${EXTRAS[@]}" && { newbin admin/iprange/iprange haproxy_iprange; newbin admin/iprange/ip6range haproxy_ip6range; }
+		has admin/iprange "${EXTRAS[@]}" && {
+			newbin admin/iprange/iprange haproxy_iprange
+			newbin admin/iprange/ip6range haproxy_ip6range
+		}
 		has dev/tcploop "${EXTRAS[@]}" && newbin dev/tcploop/tcploop haproxy_tcploop
 		has dev/hpack "${EXTRAS[@]}" && {
 			newbin dev/hpack/gen-rht haproxy_gen-rht

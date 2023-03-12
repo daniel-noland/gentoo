@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -49,7 +49,7 @@ BDEPEND="
 DEPEND="
 	${LUA_DEPS}
 	>=dev-libs/glib-2.62
-	>=media-video/pipewire-0.3.53-r1:=
+	>=media-video/pipewire-0.3.65-r1:=
 	virtual/libintl
 	elogind? ( sys-auth/elogind )
 	systemd? ( sys-apps/systemd )
@@ -70,6 +70,9 @@ DOCS=( {NEWS,README}.rst )
 
 src_configure() {
 	local emesonargs=(
+		-Ddaemon=true
+		-Dtools=true
+		-Dmodules=true
 		-Ddoc=disabled # Ebuild not wired up yet (Sphinx, Doxygen?)
 		-Dintrospection=disabled # Only used for Sphinx doc generation
 		-Dsystem-lua=true # We always unbundle everything we can
@@ -81,6 +84,7 @@ src_configure() {
 		-Dsystemd-system-unit-dir=$(systemd_get_systemunitdir)
 		-Dsystemd-user-unit-dir=$(systemd_get_userunitdir)
 		$(meson_use test tests)
+		$(meson_use test dbus-tests)
 	)
 
 	meson_src_configure

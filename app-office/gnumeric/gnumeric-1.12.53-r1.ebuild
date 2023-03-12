@@ -1,8 +1,8 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit autotools gnome.org python-r1 xdg
 
@@ -11,7 +11,7 @@ HOMEPAGE="http://www.gnumeric.org/"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86"
 IUSE="+introspection libgda perl"
 REQUIRED_USE="introspection? ( ${PYTHON_REQUIRED_USE} )"
 

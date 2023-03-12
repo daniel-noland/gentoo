@@ -1,12 +1,12 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{8..11} )
+PYTHON_COMPAT=( pypy3 python3_{9..11} )
 
-inherit distutils-r1 optfeature
+inherit distutils-r1
 
 DESCRIPTION="A WSGI HTTP Server for UNIX"
 HOMEPAGE="
@@ -16,7 +16,7 @@ HOMEPAGE="
 "
 SRC_URI="
 	https://github.com/benoitc/gunicorn/archive/${PV}.tar.gz
-		-> ${P}.tar.gz
+		-> ${P}.gh.tar.gz
 "
 
 LICENSE="MIT PSF-2 doc? ( BSD )"
@@ -47,10 +47,4 @@ python_install_all() {
 	use doc && local HTML_DOCS=( docs/source/_build/html/. )
 
 	distutils-r1_python_install_all
-}
-
-pkg_postinst() {
-	optfeature_header "Alternative worker types need additional packages to be installed:"
-	optfeature "eventlet-based greenlets workers" "dev-python/eventlet"
-	optfeature "gevent-based greenlets workers" "dev-python/gevent"
 }

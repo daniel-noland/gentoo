@@ -1,10 +1,10 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2022-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 # python3_11 fails
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 inherit cmake python-single-r1
 
 MYP=HepMC3-${PV}
@@ -16,7 +16,7 @@ S="${WORKDIR}/${MYP}"
 
 LICENSE="GPL-3+"
 SLOT="3"
-KEYWORDS="~amd64"
+KEYWORDS="~amd64 ~x86"
 IUSE="doc test examples python root"
 RESTRICT="!test? ( test )"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"

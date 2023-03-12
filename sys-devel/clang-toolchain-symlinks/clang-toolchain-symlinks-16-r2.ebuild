@@ -12,8 +12,7 @@ S=${WORKDIR}
 
 LICENSE="public-domain"
 SLOT="${PV}"
-KEYWORDS=""
-PROPERTIES="live"
+KEYWORDS="~loong"
 IUSE="gcc-symlinks multilib-symlinks +native-symlinks"
 
 # Blocker for bug #872416

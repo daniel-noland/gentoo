@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit toolchain-funcs libtool flag-o-matic bash-completion-r1 usr-ldscript \
 	pam python-r1 multilib-minimal multiprocessing systemd
@@ -19,7 +19,7 @@ else
 	inherit verify-sig
 
 	if [[ ${PV} != *_rc* ]] ; then
-		KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
+		KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc ~x86 ~amd64-linux ~x86-linux"
 	fi
 
 	SRC_URI="https://www.kernel.org/pub/linux/utils/util-linux/v${PV:0:4}/${MY_P}.tar.xz"
@@ -65,6 +65,7 @@ BDEPEND="
 DEPEND="
 	${RDEPEND}
 	virtual/os-headers
+	acct-group/root
 "
 RDEPEND+="
 	hardlink? ( !app-arch/hardlink )

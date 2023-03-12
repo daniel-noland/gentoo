@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit distutils-r1
 
@@ -19,7 +19,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ia64 ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
 
 BDEPEND="
 	test? (
@@ -31,6 +31,10 @@ BDEPEND="
 
 DOCS=( NEWS README.rst )
 
+PATCHES=(
+	"${FILESDIR}"/${PN}-1.46.0-sphinx-6.patch
+)
+
 distutils_enable_tests pytest
 distutils_enable_sphinx docs \
-	dev-python/sphinx_rtd_theme
+	dev-python/sphinx-rtd-theme

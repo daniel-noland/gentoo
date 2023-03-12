@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: toolchain.eclass
@@ -271,12 +271,16 @@ if [[ ${PN} != kgcc64 && ${PN} != gcc-* ]] ; then
 	tc_version_is_at_least 8.0 &&
 		IUSE+=" systemtap" TC_FEATURES+=( systemtap )
 
-	tc_version_is_at_least 9.0 && IUSE+=" d"
+	tc_version_is_at_least 9.0 && IUSE+=" d" TC_FEATURES+=( d )
 	tc_version_is_at_least 9.1 && IUSE+=" lto"
 	tc_version_is_at_least 10 && IUSE+=" cet"
 	tc_version_is_at_least 10 && IUSE+=" zstd" TC_FEATURES+=( zstd )
 	tc_version_is_at_least 11 && IUSE+=" valgrind" TC_FEATURES+=( valgrind )
 	tc_version_is_at_least 11 && IUSE+=" custom-cflags"
+	tc_version_is_at_least 12 && IUSE+=" ieee-long-double"
+	tc_version_is_at_least 12.2.1_p20221203 ${PV} && IUSE+=" default-znow"
+	tc_version_is_at_least 12.2.1_p20221203 ${PV} && IUSE+=" default-stack-clash-protection"
+	tc_version_is_at_least 13.0.0_pre20221211 ${PV} && IUSE+=" rust"
 fi
 
 if tc_version_is_at_least 10; then
@@ -289,7 +293,8 @@ fi
 
 #---->> DEPEND <<----
 
-RDEPEND="sys-libs/zlib
+RDEPEND="
+	sys-libs/zlib
 	virtual/libiconv
 	nls? ( virtual/libintl )
 "
@@ -320,7 +325,8 @@ BDEPEND="
 	test? (
 		>=dev-util/dejagnu-1.4.4
 		>=sys-devel/autogen-5.5.4
-	)"
+	)
+"
 DEPEND="${RDEPEND}"
 
 if [[ ${PN} == gcc && ${PV} == *_p* ]] ; then
@@ -713,6 +719,19 @@ toolchain_src_prepare() {
 	einfo "Remove texinfo (bug #198182, bug #464008)"
 	eapply "${FILESDIR}"/gcc-configure-texinfo.patch
 
+	if ! use prefix-guest && [[ -n ${EPREFIX} ]] ; then
+		einfo "Prefixifying dynamic linkers..."
+		for f in gcc/config/*/*linux*.h ; do
+			ebegin "  Updating ${f}"
+			if [[ ${f} == gcc/config/rs6000/linux*.h ]]; then
+				sed -i -r "s,(DYNAMIC_LINKER_PREFIX\s+)\"\",\1\"${EPREFIX}\",g" "${f}" || die
+			else
+				sed -i -r "/_DYNAMIC_LINKER/s,([\":])(/lib),\1${EPREFIX}\2,g" "${f}" || die
+			fi
+			eend $?
+		done
+	fi
+
 	# >=gcc-4
 	if [[ -x contrib/gcc_update ]] ; then
 		einfo "Touching generated files"
@@ -798,12 +817,26 @@ make_gcc_hard() {
 		if _tc_use_if_iuse ssp ; then
 			einfo "Updating gcc to use automatic SSP building ..."
 		fi
+		if _tc_use_if_iuse default-stack-clash-protection ; then
+			# The define DEF_GENTOO_SCP is checked in 24_all_DEF_GENTOO_SCP-fstack-clash-protection.patch
+			einfo "Updating gcc to use automatic stack clash protection ..."
+			gcc_hard_flags+=" -DDEF_GENTOO_SCP"
+		fi
+		if _tc_use_if_iuse default-znow ; then
+			# The define DEF_GENTOO_ZNOW is checked in 23_all_DEF_GENTOO_ZNOW-z-now.patch
+			einfo "Updating gcc to request symbol resolution at start (-z now) ..."
+			gcc_hard_flags+=" -DDEF_GENTOO_ZNOW"
+		fi
 		if _tc_use_if_iuse hardened ; then
-			# Will add some hardened options as default, like:
+			# Will add some hardened options as default, e.g. for gcc-12
 			# * -fstack-clash-protection
 			# * -z now
 			# See gcc *_all_extra-options.patch patches.
 			gcc_hard_flags+=" -DEXTRA_OPTIONS"
+			# Default to -D_FORTIFY_SOURCE=3 instead of -D_FORTIFY_SOURCE=2
+			gcc_hard_flags+=" -DGENTOO_FORTIFY_SOURCE_LEVEL=3"
+			# Add -D_GLIBCXX_ASSERTIONS
+			gcc_hard_flags+=" -DDEF_GENTOO_GLIBCXX_ASSERTIONS"
 
 			if _tc_use_if_iuse cet && [[ ${CTARGET} == *x86_64*-linux* ]] ; then
 				gcc_hard_flags+=" -DEXTRA_OPTIONS_CF"
@@ -1005,8 +1038,8 @@ toolchain_src_configure() {
 	is_fortran && GCC_LANG+=",fortran"
 	is_f77 && GCC_LANG+=",f77"
 	is_f95 && GCC_LANG+=",f95"
-
 	is_ada && GCC_LANG+=",ada"
+	is_rust && GCC_LANG+=",rust"
 
 	confgcc+=( --enable-languages=${GCC_LANG} )
 
@@ -1180,6 +1213,21 @@ toolchain_src_configure() {
 				confgcc+=( --enable-threads=posix )
 				;;
 		esac
+
+		if ! use prefix-guest ; then
+			# GNU ld scripts, such as those in glibc, reference unprefixed paths
+			# as the sysroot given here is automatically prepended. For
+			# prefix-guest, we use the host's libc instead.
+			if [[ -n ${EPREFIX} ]] ; then
+				confgcc+=( --with-sysroot="${EPREFIX}" )
+			fi
+
+			# We need to build against the right headers and libraries. Again,
+			# for prefix-guest, this is the host's.
+			if [[ -n ${ESYSROOT} ]] ; then
+				confgcc+=( --with-build-sysroot="${ESYSROOT}" )
+			fi
+		fi
 	fi
 
 	# __cxa_atexit is "essential for fully standards-compliant handling of
@@ -1312,6 +1360,13 @@ toolchain_src_configure() {
 			# - bug #704784
 			# - https://gcc.gnu.org/PR93157
 			[[ ${CTARGET} == powerpc64-*-musl ]] && confgcc+=( --with-abi=elfv2 )
+
+			if in_iuse ieee-long-double; then
+				# musl requires 64-bit long double, not IBM double-double or IEEE quad.
+				if [[ ${CTARGET} == powerpc64le-*-gnu ]]; then
+					use ieee-long-double && confgcc+=( --with-long-double-format=ieee )
+				fi
+			fi
 			;;
 		riscv)
 			# Add --with-abi flags to set default ABI
@@ -2086,7 +2141,7 @@ toolchain_src_install() {
 	cd "${D}"${BINPATH} || die
 	# Ugh: we really need to auto-detect this list.
 	#      It's constantly out of date.
-	for x in cpp gcc g++ c++ gcov g77 gcj gcjh gfortran gccgo gnat* ; do
+	for x in cpp gcc gccrs g++ c++ gcov g77 gcj gcjh gfortran gccgo gnat* ; do
 		# For some reason, g77 gets made instead of ${CTARGET}-g77...
 		# this should take care of that
 		if [[ -f ${x} ]] ; then
@@ -2665,6 +2720,11 @@ is_objc() {
 is_objcxx() {
 	gcc-lang-supported 'obj-c++' || return 1
 	_tc_use_if_iuse cxx && _tc_use_if_iuse objc++
+}
+
+is_rust() {
+	gcc-lang-supported rust || return 1
+	_tc_use_if_iuse rust
 }
 
 # Grab a variable from the build system (taken from linux-info.eclass)

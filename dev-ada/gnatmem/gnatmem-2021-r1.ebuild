@@ -3,7 +3,7 @@
 
 EAPI=7
 
-ADA_COMPAT=( gnat_202{0..1} gcc_12_2_0 )
+ADA_COMPAT=( gnat_2021 gcc_12_2_0 )
 inherit ada multiprocessing autotools
 
 MYP=${P}-${PV}0518-19F7B-src
@@ -16,7 +16,7 @@ SRC_URI="${ADAMIRROR}/${ID}?filename=${MYP}.tar.gz -> ${MYP}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="${ADA_DEPS}"

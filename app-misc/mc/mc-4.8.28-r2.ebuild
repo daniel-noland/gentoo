@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -7,7 +7,7 @@ inherit autotools flag-o-matic
 
 MY_P="${P/_/-}"
 SRC_URI="http://ftp.midnight-commander.org/${MY_P}.tar.xz"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~ppc-macos ~x64-macos ~sparc-solaris ~sparc64-solaris ~x86-solaris"
 
 DESCRIPTION="GNU Midnight Commander is a text based file manager"
 HOMEPAGE="https://midnight-commander.org"
@@ -51,12 +51,6 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-4.8.26-ncurses-mouse.patch
 	"${FILESDIR}"/${P}-tests.patch #836812
 )
-
-pkg_pretend() {
-	if use slang && use unicode ; then
-		ewarn "\"unicode\" USE flag only takes effect when the \"slang\" USE flag is disabled."
-	fi
-}
 
 src_prepare() {
 	default

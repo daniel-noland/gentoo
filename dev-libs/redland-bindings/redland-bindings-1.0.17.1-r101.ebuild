@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 LUA_COMPAT=( lua5-{1..4} luajit )
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 USE_PHP="php7-4"
 PHP_EXT_ECONF_ARGS="--with-php=yes --without-lua --without-perl --without-python --without-ruby"
@@ -27,8 +27,7 @@ REQUIRED_USE="lua? ( ${LUA_REQUIRED_USE} )
 	python? ( ${PYTHON_REQUIRED_USE} )"
 RESTRICT="!test? ( test )"
 
-BDEPEND="sys-apps/sed
-	virtual/pkgconfig"
+BDEPEND="virtual/pkgconfig"
 
 RDEPEND="dev-libs/redland
 	lua? ( ${LUA_DEPS} )

@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit distutils-r1
 
@@ -19,7 +19,7 @@ KEYWORDS="amd64 ~arm ~arm64 ~riscv x86"
 RDEPEND="
 	>dev-python/pbr-2.1.0[${PYTHON_USEDEP}]
 	>=dev-python/debtcollector-1.2.0[${PYTHON_USEDEP}]
-	>=dev-python/keystoneauth-3.4.0[${PYTHON_USEDEP}]
+	>=dev-python/keystoneauth1-3.4.0[${PYTHON_USEDEP}]
 	>=dev-python/oslo-config-5.2.0[${PYTHON_USEDEP}]
 	>=dev-python/oslo-i18n-3.15.3[${PYTHON_USEDEP}]
 	>dev-python/oslo-serialization-2.19.1[${PYTHON_USEDEP}]

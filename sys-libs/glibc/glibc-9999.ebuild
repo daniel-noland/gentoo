@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -6,7 +6,7 @@ EAPI=7
 # Bumping notes: https://wiki.gentoo.org/wiki/Project:Toolchain/sys-libs/glibc
 # Please read & adapt the page as necessary if obsolete.
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 TMPFILES_OPTIONAL=1
 
 inherit python-any-r1 prefix preserve-libs toolchain-funcs flag-o-matic gnuconfig \
@@ -43,7 +43,7 @@ SRC_URI+=" https://gitweb.gentoo.org/proj/locale-gen.git/snapshot/locale-gen-${L
 SRC_URI+=" multilib-bootstrap? ( https://dev.gentoo.org/~dilfridge/distfiles/gcc-multilib-bootstrap-${GCC_BOOTSTRAP_VER}.tar.xz )"
 SRC_URI+=" systemd? ( https://gitweb.gentoo.org/proj/toolchain/glibc-systemd.git/snapshot/glibc-systemd-${GLIBC_SYSTEMD_VER}.tar.gz )"
 
-IUSE="audit caps cet compile-locales +crypt custom-cflags doc gd hash-sysv-compat headers-only +multiarch multilib multilib-bootstrap nscd profile selinux +ssp stack-realign +static-libs suid systemd systemtap test vanilla"
+IUSE="audit caps cet compile-locales +crypt custom-cflags doc gd hash-sysv-compat headers-only +multiarch multilib multilib-bootstrap nscd perl profile selinux +ssp stack-realign +static-libs suid systemd systemtap test vanilla"
 
 # Minimum kernel version that glibc requires
 MIN_KERN_VER="3.2.0"
@@ -109,8 +109,9 @@ BDEPEND="
 	!compile-locales? (
 		app-arch/gzip
 		sys-apps/grep
-		virtual/awk
+		app-alternatives/awk
 	)
+	test? ( dev-lang/perl )
 "
 COMMON_DEPEND="
 	gd? ( media-libs/gd:2= )
@@ -118,6 +119,8 @@ COMMON_DEPEND="
 		audit? ( sys-process/audit )
 		caps? ( sys-libs/libcap )
 	) )
+	perl? ( dev-lang/perl )
+	test? ( dev-lang/perl )
 	suid? ( caps? ( sys-libs/libcap ) )
 	selinux? ( sys-libs/libselinux )
 	systemtap? ( dev-util/systemtap )
@@ -126,14 +129,14 @@ DEPEND="${COMMON_DEPEND}
 	compile-locales? (
 		app-arch/gzip
 		sys-apps/grep
-		virtual/awk
+		app-alternatives/awk
 	)
 	test? ( >=net-dns/libidn2-2.3.0 )
 "
 RDEPEND="${COMMON_DEPEND}
 	app-arch/gzip
 	sys-apps/grep
-	virtual/awk
+	app-alternatives/awk
 	sys-apps/gentoo-functions
 	!<app-misc/pax-utils-${MIN_PAX_UTILS_VER}
 	!<net-misc/openssh-8.1_p1-r2
@@ -438,6 +441,9 @@ setup_flags() {
 
 	# #492892
 	filter-flags -frecord-gcc-switches
+
+	# #898098
+	filter-flags -fno-builtin
 
 	# #829583
 	filter-lfs-flags
@@ -1009,6 +1015,14 @@ glibc_do_configure() {
 		$(use_enable systemtap)
 		$(use_enable nscd)
 
+		# /usr/bin/mtrace has a Perl shebang. Gentoo Prefix QA checks fail if
+		# Perl hasn't been installed inside the prefix yet and configure picks
+		# up a Perl from outside the prefix instead. configure will fail to
+		# execute Perl during configure if we're cross-compiling a prefix, but
+		# it will just disable mtrace in that case.
+		# Note: mtrace is needed by the test suite.
+		ac_cv_path_PERL="$(usex perl "${EPREFIX}"/usr/bin/perl $(usex test "${EPREFIX}"/usr/bin/perl no))"
+
 		# locale data is arch-independent
 		# https://bugs.gentoo.org/753740
 		libc_cv_complocaledir='${exec_prefix}/lib/locale'
@@ -1304,6 +1318,17 @@ glibc_do_src_install() {
 		sed -i "s@\(libm-${upstream_pv}.a\)@${P}/\1@" "${ED}"/$(alt_usrlibdir)/libm.a || die
 		dodir $(alt_usrlibdir)/${P}
 		mv "${ED}"/$(alt_usrlibdir)/libm-${upstream_pv}.a "${ED}"/$(alt_usrlibdir)/${P}/libm-${upstream_pv}.a || die
+	fi
+
+	# We configure toolchains for standalone prefix systems with a sysroot,
+	# which is prepended to paths in ld scripts, so strip the prefix from these.
+	# Before: GROUP ( /foo/lib64/libc.so.6 /foo/usr/lib64/libc_nonshared.a  AS_NEEDED ( /foo/lib64/ld-linux-x86-64.so.2 ) )
+	# After: GROUP ( /lib64/libc.so.6 /usr/lib64/libc_nonshared.a  AS_NEEDED ( /lib64/ld-linux-x86-64.so.2 ) )
+	if [[ -n $(host_eprefix) ]] ; then
+		local file
+		grep -lZIF "ld script" "${ED}/$(alt_usrlibdir)"/lib*.{a,so} 2>/dev/null | while read -rd '' file ; do
+			sed -i "s|$(host_eprefix)/|/|g" "${file}" || die
+		done
 	fi
 
 	# We'll take care of the cache ourselves

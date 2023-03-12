@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 LUA_COMPAT=( luajit )
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 LLVM_MAX_SLOT=14
 
 inherit cmake linux-info llvm lua-single python-r1 toolchain-funcs
@@ -94,7 +94,7 @@ src_configure() {
 	local bcc_python_impls
 	python_foreach_impl python_add_impl
 
-	local -a mycmakeargs=(
+	local mycmakeargs=(
 		-DREVISION=${PV%%_*}
 		-DENABLE_LLVM_SHARED=ON
 		-DCMAKE_USE_LIBBPF_PACKAGE=ON

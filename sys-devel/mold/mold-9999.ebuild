@@ -1,4 +1,4 @@
-# Copyright 2021-2022 Gentoo Authors
+# Copyright 2021-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -12,31 +12,24 @@ if [[ ${PV} == 9999 ]] ; then
 	inherit git-r3
 else
 	SRC_URI="https://github.com/rui314/mold/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~amd64 ~riscv"
+	KEYWORDS="~amd64 ~ppc64 ~riscv ~x86"
 fi
 
 # mold (AGPL-3)
 #  - xxhash (BSD-2)
-#  - tbb (Apache-2.0)
-LICENSE="AGPL-3 Apache-2.0 BSD-2"
+LICENSE="AGPL-3 BSD-2"
 SLOT="0"
-IUSE="system-tbb"
 
 RDEPEND="
 	app-arch/zstd:=
+	>=dev-cpp/tbb-2021.7.0-r1:=
 	sys-libs/zlib
-	system-tbb? ( >=dev-cpp/tbb-2021.4.0:= )
 	!kernel_Darwin? (
 		>=dev-libs/mimalloc-2:=
 		dev-libs/openssl:=
 	)
 "
 DEPEND="${RDEPEND}"
-
-PATCHES=(
-	# https://bugs.gentoo.org/865837
-	"${FILESDIR}"/mold-1.4.1-tbb-flags-stripping.patch
-)
 
 pkg_pretend() {
 	# Requires a c++20 compiler, see #831473
@@ -75,7 +68,7 @@ src_configure() {
 		-DMOLD_ENABLE_QEMU_TESTS=OFF
 		-DMOLD_LTO=OFF # Should be up to the user to decide this with CXXFLAGS.
 		-DMOLD_USE_SYSTEM_MIMALLOC=ON
-		-DMOLD_USE_SYSTEM_TBB=$(usex system-tbb)
+		-DMOLD_USE_SYSTEM_TBB=ON
 	)
 	cmake_src_configure
 }

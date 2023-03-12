@@ -1,10 +1,10 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_OPTIONAL=1
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 VERIFY_SIG_OPENPGP_KEY_PATH="${BROOT}"/usr/share/openpgp-keys/netfilter.org.asc
 inherit edo linux-info distutils-r1 systemd verify-sig
 
@@ -20,9 +20,9 @@ if [[ ${PV} =~ ^[9]{4,}$ ]]; then
 		sys-devel/flex
 	"
 else
-	SRC_URI="https://netfilter.org/projects/nftables/files/${P}.tar.bz2
-		verify-sig? ( https://netfilter.org/projects/nftables/files/${P}.tar.bz2.sig )"
-	KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
+	SRC_URI="https://netfilter.org/projects/nftables/files/${P}.tar.xz
+		verify-sig? ( https://netfilter.org/projects/nftables/files/${P}.tar.xz.sig )"
+	KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
 	BDEPEND+="verify-sig? ( sec-keys/openpgp-keys-netfilter )"
 fi
 
@@ -32,8 +32,8 @@ IUSE="debug doc +gmp json libedit +modern-kernel python +readline static-libs te
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-	>=net-libs/libmnl-1.0.4:0=
-	>=net-libs/libnftnl-1.2.3:0=
+	>=net-libs/libmnl-1.0.4:=
+	>=net-libs/libnftnl-1.2.4:=
 	gmp? ( dev-libs/gmp:= )
 	json? ( dev-libs/jansson:= )
 	python? ( ${PYTHON_DEPS} )
@@ -167,6 +167,8 @@ src_install() {
 }
 
 pkg_preinst() {
+	# There's a history of regressions with nftables upgrades. Add a safety
+	# check to help us spot them earlier.
 	if [[ -d /sys/module/nf_tables ]] && [[ -x /sbin/nft ]] && [[ -z ${ROOT} ]]; then
 		if ! /sbin/nft -t list ruleset | "${ED}"/sbin/nft -c -f -; then
 			eerror "Your currently loaded ruleset cannot be parsed by the newly built instance of"

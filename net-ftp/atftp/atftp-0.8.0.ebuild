@@ -11,7 +11,7 @@ SRC_URI="mirror://sourceforge/atftp/${P}.tar.gz"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="amd64 arm ppc ppc64 ~riscv ~s390 ~sparc x86"
 IUSE="selinux tcpd readline pcre"
 
 DEPEND="tcpd? ( sys-apps/tcp-wrappers )
@@ -38,6 +38,8 @@ src_prepare() {
 }
 
 src_configure() {
+	filter-lto # https://bugs.gentoo.org/876939
+
 	econf \
 		$(use_enable tcpd libwrap) \
 		$(use_enable readline libreadline) \

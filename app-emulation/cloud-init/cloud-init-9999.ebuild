@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,7 +6,7 @@ EAPI=8
 # Disabled for now: bug #850628
 #DISTUTILS_USE_PEP517=setuptools
 # https://bugs.launchpad.net/cloud-init/+bug/1978328
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_10 python3_11 )
 
 inherit distutils-r1 udev
 
@@ -23,6 +23,7 @@ HOMEPAGE="https://launchpad.net/cloud-init"
 
 LICENSE="GPL-3"
 SLOT="0"
+IUSE="selinux"
 
 CDEPEND="
 	dev-python/jinja[${PYTHON_USEDEP}]
@@ -51,6 +52,7 @@ RDEPEND="
 	sys-apps/iproute2
 	sys-fs/growpart
 	virtual/logger
+	selinux? ( sec-policy/selinux-cloudinit )
 "
 
 distutils_enable_tests pytest

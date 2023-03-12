@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit readme.gentoo-r1 autotools perl-functions python-single-r1 udev
 
@@ -19,7 +19,7 @@ S="${WORKDIR}/${PN}-user-${PV}"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~x86"
+KEYWORDS="amd64 ~arm ~x86"
 IUSE="pcmcia static guile perl php python tcl doc firmware"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 

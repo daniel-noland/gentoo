@@ -1,9 +1,9 @@
-# Copyright 2020-2022 Gentoo Authors
+# Copyright 2020-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..10} )
 inherit autotools pam python-single-r1 systemd
 
 DESCRIPTION="The FRRouting Protocol Suite"
@@ -36,7 +36,7 @@ COMMON_DEPEND="
 BDEPEND="
 	~dev-util/clippy-${PV}
 	sys-devel/flex
-	virtual/yacc
+	app-alternatives/yacc
 	doc? ( dev-python/sphinx )
 "
 DEPEND="
